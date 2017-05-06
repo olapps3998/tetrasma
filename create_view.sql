@@ -1,7 +1,110 @@
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_jurnal` AS select `db_tetrasma`.`t_level4`.`level4_id` AS `level4_id`,concat(`db_tetrasma`.`t_level1`.`level1_no`,'.',`db_tetrasma`.`t_level2`.`level2_no`,'.',`db_tetrasma`.`t_level3`.`level3_no`,'.',`db_tetrasma`.`t_level4`.`level4_no`) AS `no_akun`,`db_tetrasma`.`t_level4`.`level4_nama` AS `nama_akun`,concat(`db_tetrasma`.`t_level1`.`level1_no`,'.',`db_tetrasma`.`t_level2`.`level2_no`,'.',`db_tetrasma`.`t_level3`.`level3_no`,'.',`db_tetrasma`.`t_level4`.`level4_no`,' - ',`db_tetrasma`.`t_level4`.`level4_nama`) AS `no_nama_akun`,`db_tetrasma`.`t_level4`.`jurnal` AS `jurnal`,`db_tetrasma`.`t_level4`.`jurnal_kode` AS `jurnal_kode` from (((`db_tetrasma`.`t_level4` join `db_tetrasma`.`t_level1` on((`db_tetrasma`.`t_level4`.`level1_id` = `db_tetrasma`.`t_level1`.`level1_id`))) join `db_tetrasma`.`t_level2` on((`db_tetrasma`.`t_level4`.`level2_id` = `db_tetrasma`.`t_level2`.`level2_id`))) join `db_tetrasma`.`t_level3` on((`db_tetrasma`.`t_level4`.`level3_id` = `db_tetrasma`.`t_level3`.`level3_id`)));
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_kasbank_jurnal` AS select NULL AS `detail_id`,`db_tetrasma`.`t_jurnal`.`jurnal_id` AS `jurnal_id`,`db_tetrasma`.`t_jurnal`.`no_bukti` AS `no_bukti`,`db_tetrasma`.`t_jurnal`.`tgl` AS `tgl`,`db_tetrasma`.`t_jurnal`.`ket` AS `ket`,`db_tetrasma`.`t_jurnal`.`akun_id` AS `akun_id`,(case when (`db_tetrasma`.`t_jurnal`.`jenis_jurnal` = 'M') then `db_tetrasma`.`t_jurnal`.`nilai` else 0 end) AS `debet`,(case when (`db_tetrasma`.`t_jurnal`.`jenis_jurnal` <> 'M') then `db_tetrasma`.`t_jurnal`.`nilai` else 0 end) AS `kredit` from `db_tetrasma`.`t_jurnal`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_kasbank_detail` AS select `a`.`detail_id` AS `detail_id`,`a`.`jurnal_id` AS `jurnal_id`,`b`.`no_bukti` AS `no_bukti`,`b`.`tgl` AS `tgl`,`b`.`ket` AS `ket`,`a`.`akun_id` AS `akun_id`,(case when (`a`.`dk` = 0) then `a`.`nilai` else 0 end) AS `debet`,(case when (`a`.`dk` = 1) then `a`.`nilai` else 0 end) AS `kredit` from (`db_tetrasma`.`t_detail` `a` left join `db_tetrasma`.`t_jurnal` `b` on((`a`.`jurnal_id` = `b`.`jurnal_id`)));
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_kasbank` AS select `v_kasbank_jurnal`.`detail_id` AS `detail_id`,`v_kasbank_jurnal`.`jurnal_id` AS `jurnal_id`,`v_kasbank_jurnal`.`no_bukti` AS `no_bukti`,`v_kasbank_jurnal`.`tgl` AS `tgl`,`v_kasbank_jurnal`.`ket` AS `ket`,`v_kasbank_jurnal`.`akun_id` AS `akun_id`,`v_kasbank_jurnal`.`debet` AS `debet`,`v_kasbank_jurnal`.`kredit` AS `kredit` from `db_tetrasma`.`v_kasbank_jurnal` union select `v_kasbank_detail`.`detail_id` AS `detail_id`,`v_kasbank_detail`.`jurnal_id` AS `jurnal_id`,`v_kasbank_detail`.`no_bukti` AS `no_bukti`,`v_kasbank_detail`.`tgl` AS `tgl`,`v_kasbank_detail`.`ket` AS `ket`,`v_kasbank_detail`.`akun_id` AS `akun_id`,`v_kasbank_detail`.`debet` AS `debet`,`v_kasbank_detail`.`kredit` AS `kredit` from `db_tetrasma`.`v_kasbank_detail`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_memorial` AS select `a`.`detailm_id` AS `detailm_id`,`a`.`jurnalm_id` AS `jurnalm_id`,`b`.`no_buktim` AS `no_buktim`,`b`.`tglm` AS `tglm`,`b`.`ketm` AS `ketm`,`a`.`akunm_id` AS `akunm_id`,`a`.`nilaim_debet` AS `nilaim_debet`,`a`.`nilaim_kredit` AS `nilaim_kredit` from (`db_tetrasma`.`t_detailm` `a` left join `db_tetrasma`.`t_jurnalm` `b` on((`a`.`jurnalm_id` = `b`.`jurnalm_id`)));
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_kasbank_memorial` AS select `v_kasbank`.`detail_id` AS `detail_id`,`v_kasbank`.`jurnal_id` AS `jurnal_id`,`v_kasbank`.`no_bukti` AS `no_bukti`,`v_kasbank`.`tgl` AS `tgl`,`v_kasbank`.`ket` AS `ket`,`v_kasbank`.`akun_id` AS `akun_id`,`v_kasbank`.`debet` AS `debet`,`v_kasbank`.`kredit` AS `kredit` from `db_tetrasma`.`v_kasbank` union select `v_memorial`.`detailm_id` AS `detailm_id`,`v_memorial`.`jurnalm_id` AS `jurnalm_id`,`v_memorial`.`no_buktim` AS `no_buktim`,`v_memorial`.`tglm` AS `tglm`,`v_memorial`.`ketm` AS `ketm`,`v_memorial`.`akunm_id` AS `akunm_id`,`v_memorial`.`nilaim_debet` AS `nilaim_debet`,`v_memorial`.`nilaim_kredit` AS `nilaim_kredit` from `db_tetrasma`.`v_memorial`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_bukubesar` AS select `a`.`detail_id` AS `detail_id`,`a`.`jurnal_id` AS `jurnal_id`,`a`.`no_bukti` AS `no_bukti`,`a`.`tgl` AS `tgl`,`a`.`ket` AS `ket`,`a`.`akun_id` AS `akun_id`,`a`.`debet` AS `debet`,`a`.`kredit` AS `kredit`,`c`.`no_akun` AS `no_akun`,`c`.`nama_akun` AS `nama_akun`,`c`.`no_nama_akun` AS `no_nama_akun`,`b`.`saldo_awal` AS `saldo_awal`,`b`.`saldo` AS `saldo` from ((`db_tetrasma`.`v_kasbank_memorial` `a` left join `db_tetrasma`.`t_level4` `b` on((`a`.`akun_id` = `b`.`level4_id`))) left join `db_tetrasma`.`v_akun_jurnal` `c` on((`a`.`akun_id` = `c`.`level4_id`)));
+CREATE VIEW `v_akun_jurnal` AS
+Select t_level4.level4_id As level4_id,
+  Concat(t_level1.level1_no, '.', t_level2.level2_no, '.', t_level3.level3_no,
+  '.', t_level4.level4_no) As no_akun,
+  t_level4.level4_nama As nama_akun,
+  Concat(t_level1.level1_no, '.', t_level2.level2_no, '.', t_level3.level3_no,
+  '.', t_level4.level4_no, ' - ', t_level4.level4_nama) As no_nama_akun,
+  t_level4.jurnal As jurnal,
+  t_level4.jurnal_kode As jurnal_kode
+From ((t_level4
+  Join t_level1 On t_level4.level1_id = t_level1.level1_id)
+  Join t_level2 On t_level4.level2_id = t_level2.level2_id)
+  Join t_level3 On t_level4.level3_id = t_level3.level3_id;
+
+CREATE VIEW `v_kasbank_jurnal` AS  
+Select Null As detail_id,
+  t_jurnal.jurnal_id As jurnal_id,
+  t_jurnal.no_bukti As no_bukti,
+  t_jurnal.tgl As tgl,
+  t_jurnal.ket As ket,
+  t_jurnal.akun_id As akun_id,
+  (Case When (t_jurnal.jenis_jurnal = 'M') Then t_jurnal.nilai Else 0
+  End) As debet,
+  (Case When (t_jurnal.jenis_jurnal <> 'M') Then t_jurnal.nilai Else 0
+  End) As kredit
+From t_jurnal;
+
+CREATE VIEW `v_kasbank_detail` AS
+Select a.detail_id As detail_id,
+  a.jurnal_id As jurnal_id,
+  b.no_bukti As no_bukti,
+  b.tgl As tgl,
+  b.ket As ket,
+  a.akun_id As akun_id,
+  (Case When (a.dk = 0) Then a.nilai Else 0 End) As debet,
+  (Case When (a.dk = 1) Then a.nilai Else 0 End) As kredit
+From t_detail a
+  Left Join t_jurnal b On a.jurnal_id = b.jurnal_id;
+  
+CREATE VIEW `v_kasbank` AS
+Select v_kasbank_jurnal.detail_id As detail_id,
+  v_kasbank_jurnal.jurnal_id As jurnal_id,
+  v_kasbank_jurnal.no_bukti As no_bukti,
+  v_kasbank_jurnal.tgl As tgl,
+  v_kasbank_jurnal.ket As ket,
+  v_kasbank_jurnal.akun_id As akun_id,
+  v_kasbank_jurnal.debet As debet,
+  v_kasbank_jurnal.kredit As kredit
+From v_kasbank_jurnal
+union
+Select v_kasbank_detail.detail_id As detail_id,
+  v_kasbank_detail.jurnal_id As jurnal_id,
+  v_kasbank_detail.no_bukti As no_bukti,
+  v_kasbank_detail.tgl As tgl,
+  v_kasbank_detail.ket As ket,
+  v_kasbank_detail.akun_id As akun_id,
+  v_kasbank_detail.debet As debet,
+  v_kasbank_detail.kredit As kredit
+From v_kasbank_detail;
+
+CREATE VIEW `v_memorial` AS
+Select a.detailm_id As detailm_id,
+  a.jurnalm_id As jurnalm_id,
+  b.no_buktim As no_buktim,
+  b.tglm As tglm,
+  b.ketm As ketm,
+  a.akunm_id As akunm_id,
+  a.nilaim_debet As nilaim_debet,
+  a.nilaim_kredit As nilaim_kredit
+From t_detailm a
+  Left Join t_jurnalm b On a.jurnalm_id = b.jurnalm_id;
+  
+CREATE VIEW `v_kasbank_memorial` AS
+Select v_kasbank.detail_id As detail_id,
+  v_kasbank.jurnal_id As jurnal_id,
+  v_kasbank.no_bukti As no_bukti,
+  v_kasbank.tgl As tgl,
+  v_kasbank.ket As ket,
+  v_kasbank.akun_id As akun_id,
+  v_kasbank.debet As debet,
+  v_kasbank.kredit As kredit
+From v_kasbank
+union
+Select v_memorial.detailm_id As detailm_id,
+  v_memorial.jurnalm_id As jurnalm_id,
+  v_memorial.no_buktim As no_buktim,
+  v_memorial.tglm As tglm,
+  v_memorial.ketm As ketm,
+  v_memorial.akunm_id As akunm_id,
+  v_memorial.nilaim_debet As nilaim_debet,
+  v_memorial.nilaim_kredit As nilaim_kredit
+From v_memorial;
+
+CREATE VIEW `v_bukubesar` AS
+Select a.detail_id As detail_id,
+  a.jurnal_id As jurnal_id,
+  a.no_bukti As no_bukti,
+  a.tgl As tgl,
+  a.ket As ket,
+  a.akun_id As akun_id,
+  a.debet As debet,
+  a.kredit As kredit,
+  c.no_akun As no_akun,
+  c.nama_akun As nama_akun,
+  c.no_nama_akun As no_nama_akun,
+  b.saldo_awal As saldo_awal,
+  b.saldo As saldo
+From (v_kasbank_memorial a
+  Left Join t_level4 b On a.akun_id = b.level4_id)
+  Left Join v_akun_jurnal c On a.akun_id = c.level4_id;
