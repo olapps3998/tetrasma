@@ -318,7 +318,7 @@ Page_Rendering();
 <p>to do ::</p>
 <p>- tampilkan nilai total_detail di jurnal_master view dan list</p>
 </br>
-&copy; 2017 Tetrasma. Dibuat oleh Selaras Solusindo. Hak cipta dilindungi Undang-undang.
+&copy; 2017 Tetrasma. Dibuat oleh Selaras Solusindo. Hak cipta dilindungi Undang-Undang.
 	</body>
 </html>
 <?php if (EW_DEBUG_ENABLED) echo ew_DebugMsg(); ?>
