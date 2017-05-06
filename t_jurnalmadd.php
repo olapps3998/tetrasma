@@ -1121,7 +1121,7 @@ if (EW_DEBUG_ENABLED)
 // document.write("page loaded");
 // isi tanggal jurnal memorial ostosmastis tanggal hari ini
 
-$("#x_tglm").val("<?php echo date('d/m/Y'); ?>");
+$("#x_tglm").val("<?php echo date('d-m-Y'); ?>");
 
 function debet_onchange(event) {
 	var elm_name = $(event.target).val();

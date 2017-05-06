@@ -293,8 +293,9 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		$gsEmailContentType = @$_POST["contenttype"]; // Get email content type
 
 		// Setup placeholder
-		// Setup export options
+		$this->tgl->PlaceHolder = $this->tgl->FldCaption();
 
+		// Setup export options
 		$this->SetupExportOptions();
 
 		// Global Page Loading event (in userfn*.php)
@@ -323,21 +324,21 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		// Printer friendly
 		$item = &$this->ExportOptions->Add("print");
 		$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("PrinterFriendly", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("PrinterFriendly", TRUE)) . "\" href=\"" . $this->ExportPrintUrl . "\">" . $ReportLanguage->Phrase("PrinterFriendly") . "</a>";
-		$item->Visible = FALSE;
+		$item->Visible = TRUE;
 		$ReportTypes["print"] = $item->Visible ? $ReportLanguage->Phrase("ReportFormPrint") : "";
 
 		// Export to Excel
 		$item = &$this->ExportOptions->Add("excel");
 		$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToExcel", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToExcel", TRUE)) . "\" href=\"" . $this->ExportExcelUrl . "\">" . $ReportLanguage->Phrase("ExportToExcel") . "</a>";
-		$item->Visible = FALSE;
+		$item->Visible = TRUE;
 		$ReportTypes["excel"] = $item->Visible ? $ReportLanguage->Phrase("ReportFormExcel") : "";
 
 		// Export to Word
 		$item = &$this->ExportOptions->Add("word");
 		$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToWord", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToWord", TRUE)) . "\" href=\"" . $this->ExportWordUrl . "\">" . $ReportLanguage->Phrase("ExportToWord") . "</a>";
 
-		//$item->Visible = FALSE;
-		$item->Visible = FALSE;
+		//$item->Visible = TRUE;
+		$item->Visible = TRUE;
 		$ReportTypes["word"] = $item->Visible ? $ReportLanguage->Phrase("ReportFormWord") : "";
 
 		// Export to Pdf
@@ -346,7 +347,7 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		$item->Visible = FALSE;
 
 		// Uncomment codes below to show export to Pdf link
-//		$item->Visible = FALSE;
+//		$item->Visible = TRUE;
 
 		$ReportTypes["pdf"] = $item->Visible ? $ReportLanguage->Phrase("ReportFormPdf") : "";
 
@@ -354,12 +355,12 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		$item = &$this->ExportOptions->Add("email");
 		$url = $this->PageUrl() . "export=email";
 		$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToEmail", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToEmail", TRUE)) . "\" id=\"emf_r_bukubesar\" href=\"javascript:void(0);\" onclick=\"ewr_EmailDialogShow({lnk:'emf_r_bukubesar',hdr:ewLanguage.Phrase('ExportToEmail'),url:'$url',exportid:'$exportid',el:this});\">" . $ReportLanguage->Phrase("ExportToEmail") . "</a>";
-		$item->Visible = FALSE;
+		$item->Visible = TRUE;
 		$ReportTypes["email"] = $item->Visible ? $ReportLanguage->Phrase("ReportFormEmail") : "";
 		$ReportOptions["ReportTypes"] = $ReportTypes;
 
 		// Drop down button for export
-		$this->ExportOptions->UseDropDownButton = FALSE;
+		$this->ExportOptions->UseDropDownButton = TRUE;
 		$this->ExportOptions->UseButtonGroup = TRUE;
 		$this->ExportOptions->UseImageAndText = $this->ExportOptions->UseDropDownButton;
 		$this->ExportOptions->DropDownButtonPhrase = $ReportLanguage->Phrase("ButtonExport");
@@ -409,12 +410,12 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		$item = &$this->SearchOptions->Add("searchtoggle");
 		$SearchToggleClass = $this->FilterApplied ? " active" : " active";
 		$item->Body = "<button type=\"button\" class=\"btn btn-default ewSearchToggle" . $SearchToggleClass . "\" title=\"" . $ReportLanguage->Phrase("SearchBtn", TRUE) . "\" data-caption=\"" . $ReportLanguage->Phrase("SearchBtn", TRUE) . "\" data-toggle=\"button\" data-form=\"fr_bukubesarsummary\">" . $ReportLanguage->Phrase("SearchBtn") . "</button>";
-		$item->Visible = FALSE;
+		$item->Visible = TRUE;
 
 		// Reset filter
 		$item = &$this->SearchOptions->Add("resetfilter");
 		$item->Body = "<button type=\"button\" class=\"btn btn-default\" title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ResetAllFilter", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ResetAllFilter", TRUE)) . "\" onclick=\"location='" . ewr_CurrentPage() . "?cmd=reset'\">" . $ReportLanguage->Phrase("ResetAllFilter") . "</button>";
-		$item->Visible = FALSE && $this->FilterApplied;
+		$item->Visible = TRUE && $this->FilterApplied;
 
 		// Button group for reset filter
 		$this->SearchOptions->UseButtonGroup = TRUE;
@@ -537,19 +538,18 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		global $ReportLanguage;
 
 		// Set field visibility for detail fields
-		$this->level4_id->SetVisibility();
-		$this->no_nama_akun->SetVisibility();
-		$this->jurnal->SetVisibility();
-		$this->jurnal_kode->SetVisibility();
-		$this->no_akun->SetVisibility();
-		$this->nama_akun->SetVisibility();
+		$this->tgl->SetVisibility();
+		$this->no_bukti->SetVisibility();
+		$this->ket->SetVisibility();
+		$this->debet->SetVisibility();
+		$this->kredit->SetVisibility();
 
 		// Aggregate variables
 		// 1st dimension = no of groups (level 0 used for grand total)
 		// 2nd dimension = no of fields
 
-		$nDtls = 7;
-		$nGrps = 1;
+		$nDtls = 6;
+		$nGrps = 2;
 		$this->Val = &ewr_InitArray($nDtls, 0);
 		$this->Cnt = &ewr_Init2DArray($nGrps, $nDtls, 0);
 		$this->Smry = &ewr_Init2DArray($nGrps, $nDtls, 0);
@@ -561,7 +561,7 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		$this->GrandMx = &ewr_InitArray($nDtls, NULL);
 
 		// Set up array if accumulation required: array(Accum, SkipNullOrZero)
-		$this->Col = array(array(FALSE, FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE));
+		$this->Col = array(array(FALSE, FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(TRUE,FALSE), array(TRUE,FALSE));
 
 		// Set up groups per page dynamically
 		$this->SetUpDisplayGrps();
@@ -569,6 +569,15 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		// Set up Breadcrumb
 		if ($this->Export == "")
 			$this->SetupBreadcrumb();
+		$this->tgl->SelectionList = "";
+		$this->tgl->DefaultSelectionList = "";
+		$this->tgl->ValueList = "";
+
+		// Check if search command
+		$this->SearchCommand = (@$_GET["cmd"] == "search");
+
+		// Load default filter values
+		$this->LoadDefaultFilters();
 
 		// Load custom filters
 		$this->Page_FilterLoad();
@@ -585,19 +594,28 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		// Extended filter
 		$sExtendedFilter = "";
 
+		// Restore filter list
+		$this->RestoreFilterList();
+
+		// Build extended filter
+		$sExtendedFilter = $this->GetExtendedFilter();
+		ewr_AddFilter($this->Filter, $sExtendedFilter);
+
 		// Build popup filter
 		$sPopupFilter = $this->GetPopupFilter();
 
 		//ewr_SetDebugMsg("popup filter: " . $sPopupFilter);
 		ewr_AddFilter($this->Filter, $sPopupFilter);
 
-		// No filter
-		$this->FilterApplied = FALSE;
-		$this->FilterOptions->GetItem("savecurrentfilter")->Visible = FALSE;
-		$this->FilterOptions->GetItem("deletefilter")->Visible = FALSE;
+		// Check if filter applied
+		$this->FilterApplied = $this->CheckFilter();
 
 		// Call Page Selecting event
 		$this->Page_Selecting($this->Filter);
+
+		// Requires search criteria
+		if (($this->Filter == $this->UserIDFilter || $gsFormError != "") && !$this->DrillDown)
+			$this->Filter = "0=101";
 
 		// Search options
 		$this->SetupSearchOptions();
@@ -605,15 +623,16 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		// Get sort
 		$this->Sort = $this->GetSort($this->GenOptions);
 
-		// Get total count
-		$sSql = ewr_BuildReportSql($this->getSqlSelect(), $this->getSqlWhere(), $this->getSqlGroupBy(), $this->getSqlHaving(), $this->getSqlOrderBy(), $this->Filter, $this->Sort);
-		$this->TotalGrps = $this->GetCnt($sSql);
+		// Get total group count
+		$sGrpSort = ewr_UpdateSortFields($this->getSqlOrderByGroup(), $this->Sort, 2); // Get grouping field only
+		$sSql = ewr_BuildReportSql($this->getSqlSelectGroup(), $this->getSqlWhere(), $this->getSqlGroupBy(), $this->getSqlHaving(), $this->getSqlOrderByGroup(), $this->Filter, $sGrpSort);
+		$this->TotalGrps = $this->GetGrpCnt($sSql);
 		if ($this->DisplayGrps <= 0 || $this->DrillDown) // Display all groups
 			$this->DisplayGrps = $this->TotalGrps;
 		$this->StartGrp = 1;
 
 		// Show header
-		$this->ShowHeader = ($this->TotalGrps > 0);
+		$this->ShowHeader = TRUE;
 
 		// Set up start position if not export all
 		if ($this->ExportAll && $this->Export <> "")
@@ -645,9 +664,39 @@ class crr_bukubesar_summary extends crr_bukubesar {
 			$this->GenerateOptions->HideAllOptions();
 		}
 
-		// Get current page records
-		$rs = $this->GetRs($sSql, $this->StartGrp, $this->DisplayGrps);
+		// Get current page groups
+		$rsgrp = $this->GetGrpRs($sSql, $this->StartGrp, $this->DisplayGrps);
+
+		// Init detail recordset
+		$rs = NULL;
 		$this->SetupFieldCount();
+	}
+
+	// Get summary count
+	function GetSummaryCount($lvl, $curValue = TRUE) {
+		$cnt = 0;
+		foreach ($this->DetailRows as $row) {
+			$wrkno_nama_akun = $row["no_nama_akun"];
+			if ($lvl >= 1) {
+				$val = $curValue ? $this->no_nama_akun->CurrentValue : $this->no_nama_akun->OldValue;
+				$grpval = $curValue ? $this->no_nama_akun->GroupValue() : $this->no_nama_akun->GroupOldValue();
+				if (is_null($val) && !is_null($wrkno_nama_akun) || !is_null($val) && is_null($wrkno_nama_akun) ||
+					$grpval <> $this->no_nama_akun->getGroupValueBase($wrkno_nama_akun))
+				continue;
+			}
+			$cnt++;
+		}
+		return $cnt;
+	}
+
+	// Check level break
+	function ChkLvlBreak($lvl) {
+		switch ($lvl) {
+			case 1:
+				return (is_null($this->no_nama_akun->CurrentValue) && !is_null($this->no_nama_akun->OldValue)) ||
+					(!is_null($this->no_nama_akun->CurrentValue) && is_null($this->no_nama_akun->OldValue)) ||
+					($this->no_nama_akun->GroupValue() <> $this->no_nama_akun->GroupOldValue());
+		}
 	}
 
 	// Accummulate summary
@@ -738,21 +787,57 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		}
 	}
 
-	// Get count
-	function GetCnt($sql) {
+	// Get group count
+	function GetGrpCnt($sql) {
 		$conn = &$this->Connection();
-		$rscnt = $conn->Execute($sql);
-		$cnt = ($rscnt) ? $rscnt->RecordCount() : 0;
-		if ($rscnt) $rscnt->Close();
-		return $cnt;
+		$rsgrpcnt = $conn->Execute($sql);
+		$grpcnt = ($rsgrpcnt) ? $rsgrpcnt->RecordCount() : 0;
+		if ($rsgrpcnt) $rsgrpcnt->Close();
+		return $grpcnt;
 	}
 
-	// Get recordset
-	function GetRs($wrksql, $start, $grps) {
+	// Get group recordset
+	function GetGrpRs($wrksql, $start = -1, $grps = -1) {
 		$conn = &$this->Connection();
 		$conn->raiseErrorFn = $GLOBALS["EWR_ERROR_FN"];
 		$rswrk = $conn->SelectLimit($wrksql, $grps, $start - 1);
 		$conn->raiseErrorFn = '';
+		return $rswrk;
+	}
+
+	// Get group row values
+	function GetGrpRow($opt) {
+		global $rsgrp;
+		if (!$rsgrp)
+			return;
+		if ($opt == 1) { // Get first group
+
+			//$rsgrp->MoveFirst(); // NOTE: no need to move position
+			$this->no_nama_akun->setDbValue(""); // Init first value
+		} else { // Get next group
+			$rsgrp->MoveNext();
+		}
+		if (!$rsgrp->EOF)
+			$this->no_nama_akun->setDbValue($rsgrp->fields[0]);
+		if ($rsgrp->EOF) {
+			$this->no_nama_akun->setDbValue("");
+		}
+	}
+
+	// Get detail recordset
+	function GetDetailRs($wrksql) {
+		$conn = &$this->Connection();
+		$conn->raiseErrorFn = $GLOBALS["EWR_ERROR_FN"];
+		$rswrk = $conn->Execute($wrksql);
+		$dbtype = ewr_GetConnectionType($this->DBID);
+		if ($dbtype == "MYSQL" || $dbtype == "POSTGRESQL") {
+			$this->DetailRows = ($rswrk) ? $rswrk->GetRows() : array();
+		} else { // Cannot MoveFirst, use another recordset
+			$rstmp = $conn->Execute($wrksql);
+			$this->DetailRows = ($rstmp) ? $rstmp->GetRows() : array();
+			$rstmp->Close();
+		}
+		$conn->raiseErrorFn = "";
 		return $rswrk;
 	}
 
@@ -763,36 +848,62 @@ class crr_bukubesar_summary extends crr_bukubesar {
 			return;
 		if ($opt == 1) { // Get first row
 			$rs->MoveFirst(); // Move first
+			if ($this->GrpCount == 1) {
 				$this->FirstRowData = array();
-				$this->FirstRowData['level4_id'] = ewr_Conv($rs->fields('level4_id'), 3);
-				$this->FirstRowData['no_nama_akun'] = ewr_Conv($rs->fields('no_nama_akun'), 200);
-				$this->FirstRowData['jurnal'] = ewr_Conv($rs->fields('jurnal'), 16);
-				$this->FirstRowData['jurnal_kode'] = ewr_Conv($rs->fields('jurnal_kode'), 200);
+				$this->FirstRowData['detail_id'] = ewr_Conv($rs->fields('detail_id'), 3);
+				$this->FirstRowData['jurnal_id'] = ewr_Conv($rs->fields('jurnal_id'), 3);
+				$this->FirstRowData['akun_id'] = ewr_Conv($rs->fields('akun_id'), 3);
 				$this->FirstRowData['no_akun'] = ewr_Conv($rs->fields('no_akun'), 200);
 				$this->FirstRowData['nama_akun'] = ewr_Conv($rs->fields('nama_akun'), 200);
+				$this->FirstRowData['saldo_awal'] = ewr_Conv($rs->fields('saldo_awal'), 20);
+				$this->FirstRowData['saldo'] = ewr_Conv($rs->fields('saldo'), 20);
+				$this->FirstRowData['no_nama_akun'] = ewr_Conv($rs->fields('no_nama_akun'), 200);
+				$this->FirstRowData['tgl'] = ewr_Conv($rs->fields('tgl'), 133);
+				$this->FirstRowData['no_bukti'] = ewr_Conv($rs->fields('no_bukti'), 200);
+				$this->FirstRowData['debet'] = ewr_Conv($rs->fields('debet'), 20);
+				$this->FirstRowData['kredit'] = ewr_Conv($rs->fields('kredit'), 20);
+			}
 		} else { // Get next row
 			$rs->MoveNext();
 		}
 		if (!$rs->EOF) {
-			$this->level4_id->setDbValue($rs->fields('level4_id'));
-			$this->no_nama_akun->setDbValue($rs->fields('no_nama_akun'));
-			$this->jurnal->setDbValue($rs->fields('jurnal'));
-			$this->jurnal_kode->setDbValue($rs->fields('jurnal_kode'));
+			$this->detail_id->setDbValue($rs->fields('detail_id'));
+			$this->jurnal_id->setDbValue($rs->fields('jurnal_id'));
+			$this->akun_id->setDbValue($rs->fields('akun_id'));
 			$this->no_akun->setDbValue($rs->fields('no_akun'));
 			$this->nama_akun->setDbValue($rs->fields('nama_akun'));
-			$this->Val[1] = $this->level4_id->CurrentValue;
-			$this->Val[2] = $this->no_nama_akun->CurrentValue;
-			$this->Val[3] = $this->jurnal->CurrentValue;
-			$this->Val[4] = $this->jurnal_kode->CurrentValue;
-			$this->Val[5] = $this->no_akun->CurrentValue;
-			$this->Val[6] = $this->nama_akun->CurrentValue;
+			$this->saldo_awal->setDbValue($rs->fields('saldo_awal'));
+			$this->saldo->setDbValue($rs->fields('saldo'));
+			if ($opt <> 1) {
+				if (is_array($this->no_nama_akun->GroupDbValues))
+					$this->no_nama_akun->setDbValue(@$this->no_nama_akun->GroupDbValues[$rs->fields('no_nama_akun')]);
+				else
+					$this->no_nama_akun->setDbValue(ewr_GroupValue($this->no_nama_akun, $rs->fields('no_nama_akun')));
+			}
+			$this->tgl->setDbValue($rs->fields('tgl'));
+			$this->no_bukti->setDbValue($rs->fields('no_bukti'));
+			$this->ket->setDbValue($rs->fields('ket'));
+			$this->debet->setDbValue($rs->fields('debet'));
+			$this->kredit->setDbValue($rs->fields('kredit'));
+			$this->Val[1] = $this->tgl->CurrentValue;
+			$this->Val[2] = $this->no_bukti->CurrentValue;
+			$this->Val[3] = $this->ket->CurrentValue;
+			$this->Val[4] = $this->debet->CurrentValue;
+			$this->Val[5] = $this->kredit->CurrentValue;
 		} else {
-			$this->level4_id->setDbValue("");
-			$this->no_nama_akun->setDbValue("");
-			$this->jurnal->setDbValue("");
-			$this->jurnal_kode->setDbValue("");
+			$this->detail_id->setDbValue("");
+			$this->jurnal_id->setDbValue("");
+			$this->akun_id->setDbValue("");
 			$this->no_akun->setDbValue("");
 			$this->nama_akun->setDbValue("");
+			$this->saldo_awal->setDbValue("");
+			$this->saldo->setDbValue("");
+			$this->no_nama_akun->setDbValue("");
+			$this->tgl->setDbValue("");
+			$this->no_bukti->setDbValue("");
+			$this->ket->setDbValue("");
+			$this->debet->setDbValue("");
+			$this->kredit->setDbValue("");
 		}
 	}
 
@@ -853,8 +964,39 @@ class crr_bukubesar_summary extends crr_bukubesar {
 			$popupname = $_GET["popup"];
 
 			// Check popup name
-			// Output data as Json
+			// Build distinct values for tgl
 
+			if ($popupname == 'r_bukubesar_tgl') {
+				$bNullValue = FALSE;
+				$bEmptyValue = FALSE;
+				$sFilter = $this->Filter;
+
+				// Call Page Filtering event
+				$this->Page_Filtering($this->tgl, $sFilter, "popup");
+				$sSql = ewr_BuildReportSql($this->tgl->SqlSelect, $this->getSqlWhere(), $this->getSqlGroupBy(), $this->getSqlHaving(), $this->tgl->SqlOrderBy, $sFilter, "");
+				$rswrk = $conn->Execute($sSql);
+				while ($rswrk && !$rswrk->EOF) {
+					$this->tgl->setDbValue($rswrk->fields[0]);
+					$this->tgl->ViewValue = @$rswrk->fields[1];
+					if (is_null($this->tgl->CurrentValue)) {
+						$bNullValue = TRUE;
+					} elseif ($this->tgl->CurrentValue == "") {
+						$bEmptyValue = TRUE;
+					} else {
+						ewr_SetupDistinctValues($this->tgl->ValueList, $this->tgl->CurrentValue, $this->tgl->ViewValue, FALSE, $this->tgl->FldDelimiter);
+					}
+					$rswrk->MoveNext();
+				}
+				if ($rswrk)
+					$rswrk->Close();
+				if ($bEmptyValue)
+					ewr_SetupDistinctValues($this->tgl->ValueList, EWR_EMPTY_VALUE, $ReportLanguage->Phrase("EmptyLabel"), FALSE);
+				if ($bNullValue)
+					ewr_SetupDistinctValues($this->tgl->ValueList, EWR_NULL_VALUE, $ReportLanguage->Phrase("NullLabel"), FALSE);
+				$fld = &$this->tgl;
+			}
+
+			// Output data as Json
 			if (!is_null($fld)) {
 				$jsdb = ewr_GetJsDb($fld, $fld->FldType);
 				if (ob_get_length())
@@ -881,6 +1023,13 @@ class crr_bukubesar_summary extends crr_bukubesar {
 					$arValues = ewr_StripSlashes($_POST["sel_$sName"]);
 					if (trim($arValues[0]) == "") // Select all
 						$arValues = EWR_INIT_VALUE;
+					$this->PopupName = $sName;
+					if (ewr_IsAdvancedFilterValue($arValues) || $arValues == EWR_INIT_VALUE)
+						$this->PopupValue = $arValues;
+					if (!ewr_MatchedArray($arValues, $_SESSION["sel_$sName"])) {
+						if ($this->HasSessionFilterValues($sName))
+							$this->ClearExtFilter = $sName; // Clear extended filter for this field
+					}
 					$_SESSION["sel_$sName"] = $arValues;
 					$_SESSION["rf_$sName"] = ewr_StripSlashes(@$_POST["rf_$sName"]);
 					$_SESSION["rt_$sName"] = ewr_StripSlashes(@$_POST["rt_$sName"]);
@@ -892,11 +1041,19 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		} elseif (@$_GET["cmd"] <> "") {
 			$sCmd = $_GET["cmd"];
 			if (strtolower($sCmd) == "reset") {
+				$this->ClearSessionSelection('tgl');
 				$this->ResetPager();
 			}
 		}
 
 		// Load selection criteria to array
+		// Get tgl selected values
+
+		if (is_array(@$_SESSION["sel_r_bukubesar_tgl"])) {
+			$this->LoadSelectionFromSession('tgl');
+		} elseif (@$_SESSION["sel_r_bukubesar_tgl"] == EWR_INIT_VALUE) { // Select all
+			$this->tgl->SelectionList = "";
+		}
 	}
 
 	// Reset pager
@@ -952,7 +1109,22 @@ class crr_bukubesar_summary extends crr_bukubesar {
 			} else {
 				$this->TotCount = 0;
 			}
-		$bGotSummary = TRUE;
+
+			// Get total from sql directly
+			$sSql = ewr_BuildReportSql($this->getSqlSelectAgg(), $this->getSqlWhere(), $this->getSqlGroupBy(), $this->getSqlHaving(), "", $this->Filter, "");
+			$sSql = $this->getSqlAggPfx() . $sSql . $this->getSqlAggSfx();
+			$rsagg = $conn->Execute($sSql);
+			if ($rsagg) {
+				$this->GrandCnt[1] = $this->TotCount;
+				$this->GrandCnt[2] = $this->TotCount;
+				$this->GrandCnt[3] = $this->TotCount;
+				$this->GrandCnt[4] = $this->TotCount;
+				$this->GrandSmry[4] = $rsagg->fields("sum_debet");
+				$this->GrandCnt[5] = $this->TotCount;
+				$this->GrandSmry[5] = $rsagg->fields("sum_kredit");
+				$rsagg->Close();
+				$bGotSummary = TRUE;
+			}
 
 			// Accumulate grand summary from detail records
 			if (!$bGotCount || !$bGotSummary) {
@@ -979,129 +1151,187 @@ class crr_bukubesar_summary extends crr_bukubesar {
 
 		if ($this->RowType == EWR_ROWTYPE_TOTAL && !($this->RowTotalType == EWR_ROWTOTAL_GROUP && $this->RowTotalSubType == EWR_ROWTOTAL_HEADER)) { // Summary row
 			ewr_PrependClass($this->RowAttrs["class"], ($this->RowTotalType == EWR_ROWTOTAL_PAGE || $this->RowTotalType == EWR_ROWTOTAL_GRAND) ? "ewRptGrpAggregate" : "ewRptGrpSummary" . $this->RowGroupLevel); // Set up row class
+			if ($this->RowTotalType == EWR_ROWTOTAL_GROUP) $this->RowAttrs["data-group"] = $this->no_nama_akun->GroupOldValue(); // Set up group attribute
 
-			// level4_id
-			$this->level4_id->HrefValue = "";
+			// no_nama_akun
+			$this->no_nama_akun->GroupViewValue = $this->no_nama_akun->GroupOldValue();
+			$this->no_nama_akun->CellAttrs["class"] = "ewRptGrpField1";
+			$this->no_nama_akun->GroupViewValue = ewr_DisplayGroupValue($this->no_nama_akun, $this->no_nama_akun->GroupViewValue);
+			$this->no_nama_akun->GroupSummaryOldValue = $this->no_nama_akun->GroupSummaryValue;
+			$this->no_nama_akun->GroupSummaryValue = $this->no_nama_akun->GroupViewValue;
+			$this->no_nama_akun->GroupSummaryViewValue = ($this->no_nama_akun->GroupSummaryOldValue <> $this->no_nama_akun->GroupSummaryValue) ? $this->no_nama_akun->GroupSummaryValue : "&nbsp;";
+
+			// debet
+			$this->debet->SumViewValue = $this->debet->SumValue;
+			$this->debet->SumViewValue = ewr_FormatNumber($this->debet->SumViewValue, 0, -2, -2, -2);
+			$this->debet->CellAttrs["style"] = "text-align:right;";
+			$this->debet->CellAttrs["class"] = ($this->RowTotalType == EWR_ROWTOTAL_PAGE || $this->RowTotalType == EWR_ROWTOTAL_GRAND) ? "ewRptGrpAggregate" : "ewRptGrpSummary" . $this->RowGroupLevel;
+
+			// kredit
+			$this->kredit->SumViewValue = $this->kredit->SumValue;
+			$this->kredit->SumViewValue = ewr_FormatNumber($this->kredit->SumViewValue, 0, -2, -2, -2);
+			$this->kredit->CellAttrs["style"] = "text-align:right;";
+			$this->kredit->CellAttrs["class"] = ($this->RowTotalType == EWR_ROWTOTAL_PAGE || $this->RowTotalType == EWR_ROWTOTAL_GRAND) ? "ewRptGrpAggregate" : "ewRptGrpSummary" . $this->RowGroupLevel;
 
 			// no_nama_akun
 			$this->no_nama_akun->HrefValue = "";
 
-			// jurnal
-			$this->jurnal->HrefValue = "";
+			// tgl
+			$this->tgl->HrefValue = "";
 
-			// jurnal_kode
-			$this->jurnal_kode->HrefValue = "";
+			// no_bukti
+			$this->no_bukti->HrefValue = "";
 
-			// no_akun
-			$this->no_akun->HrefValue = "";
+			// ket
+			$this->ket->HrefValue = "";
 
-			// nama_akun
-			$this->nama_akun->HrefValue = "";
+			// debet
+			$this->debet->HrefValue = "";
+
+			// kredit
+			$this->kredit->HrefValue = "";
 		} else {
 			if ($this->RowTotalType == EWR_ROWTOTAL_GROUP && $this->RowTotalSubType == EWR_ROWTOTAL_HEADER) {
+			$this->RowAttrs["data-group"] = $this->no_nama_akun->GroupValue(); // Set up group attribute
 			} else {
+			$this->RowAttrs["data-group"] = $this->no_nama_akun->GroupValue(); // Set up group attribute
 			}
 
-			// level4_id
-			$this->level4_id->ViewValue = $this->level4_id->CurrentValue;
-			$this->level4_id->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
-
 			// no_nama_akun
-			$this->no_nama_akun->ViewValue = $this->no_nama_akun->CurrentValue;
-			$this->no_nama_akun->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+			$this->no_nama_akun->GroupViewValue = $this->no_nama_akun->GroupValue();
+			$this->no_nama_akun->CellAttrs["class"] = "ewRptGrpField1";
+			$this->no_nama_akun->GroupViewValue = ewr_DisplayGroupValue($this->no_nama_akun, $this->no_nama_akun->GroupViewValue);
+			if ($this->no_nama_akun->GroupValue() == $this->no_nama_akun->GroupOldValue() && !$this->ChkLvlBreak(1))
+				$this->no_nama_akun->GroupViewValue = "&nbsp;";
 
-			// jurnal
-			$this->jurnal->ViewValue = $this->jurnal->CurrentValue;
-			$this->jurnal->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+			// tgl
+			$this->tgl->ViewValue = $this->tgl->CurrentValue;
+			$this->tgl->ViewValue = ewr_FormatDateTime($this->tgl->ViewValue, 0);
+			$this->tgl->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
 
-			// jurnal_kode
-			$this->jurnal_kode->ViewValue = $this->jurnal_kode->CurrentValue;
-			$this->jurnal_kode->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+			// no_bukti
+			$this->no_bukti->ViewValue = $this->no_bukti->CurrentValue;
+			$this->no_bukti->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
 
-			// no_akun
-			$this->no_akun->ViewValue = $this->no_akun->CurrentValue;
-			$this->no_akun->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+			// ket
+			$this->ket->ViewValue = $this->ket->CurrentValue;
+			$this->ket->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
 
-			// nama_akun
-			$this->nama_akun->ViewValue = $this->nama_akun->CurrentValue;
-			$this->nama_akun->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+			// debet
+			$this->debet->ViewValue = $this->debet->CurrentValue;
+			$this->debet->ViewValue = ewr_FormatNumber($this->debet->ViewValue, 0, -2, -2, -2);
+			$this->debet->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+			$this->debet->CellAttrs["style"] = "text-align:right;";
 
-			// level4_id
-			$this->level4_id->HrefValue = "";
+			// kredit
+			$this->kredit->ViewValue = $this->kredit->CurrentValue;
+			$this->kredit->ViewValue = ewr_FormatNumber($this->kredit->ViewValue, 0, -2, -2, -2);
+			$this->kredit->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+			$this->kredit->CellAttrs["style"] = "text-align:right;";
 
 			// no_nama_akun
 			$this->no_nama_akun->HrefValue = "";
 
-			// jurnal
-			$this->jurnal->HrefValue = "";
+			// tgl
+			$this->tgl->HrefValue = "";
 
-			// jurnal_kode
-			$this->jurnal_kode->HrefValue = "";
+			// no_bukti
+			$this->no_bukti->HrefValue = "";
 
-			// no_akun
-			$this->no_akun->HrefValue = "";
+			// ket
+			$this->ket->HrefValue = "";
 
-			// nama_akun
-			$this->nama_akun->HrefValue = "";
+			// debet
+			$this->debet->HrefValue = "";
+
+			// kredit
+			$this->kredit->HrefValue = "";
 		}
 
 		// Call Cell_Rendered event
 		if ($this->RowType == EWR_ROWTYPE_TOTAL) { // Summary row
-		} else {
-
-			// level4_id
-			$CurrentValue = $this->level4_id->CurrentValue;
-			$ViewValue = &$this->level4_id->ViewValue;
-			$ViewAttrs = &$this->level4_id->ViewAttrs;
-			$CellAttrs = &$this->level4_id->CellAttrs;
-			$HrefValue = &$this->level4_id->HrefValue;
-			$LinkAttrs = &$this->level4_id->LinkAttrs;
-			$this->Cell_Rendered($this->level4_id, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
 
 			// no_nama_akun
-			$CurrentValue = $this->no_nama_akun->CurrentValue;
-			$ViewValue = &$this->no_nama_akun->ViewValue;
+			$CurrentValue = $this->no_nama_akun->GroupViewValue;
+			$ViewValue = &$this->no_nama_akun->GroupViewValue;
 			$ViewAttrs = &$this->no_nama_akun->ViewAttrs;
 			$CellAttrs = &$this->no_nama_akun->CellAttrs;
 			$HrefValue = &$this->no_nama_akun->HrefValue;
 			$LinkAttrs = &$this->no_nama_akun->LinkAttrs;
 			$this->Cell_Rendered($this->no_nama_akun, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
 
-			// jurnal
-			$CurrentValue = $this->jurnal->CurrentValue;
-			$ViewValue = &$this->jurnal->ViewValue;
-			$ViewAttrs = &$this->jurnal->ViewAttrs;
-			$CellAttrs = &$this->jurnal->CellAttrs;
-			$HrefValue = &$this->jurnal->HrefValue;
-			$LinkAttrs = &$this->jurnal->LinkAttrs;
-			$this->Cell_Rendered($this->jurnal, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+			// debet
+			$CurrentValue = $this->debet->SumValue;
+			$ViewValue = &$this->debet->SumViewValue;
+			$ViewAttrs = &$this->debet->ViewAttrs;
+			$CellAttrs = &$this->debet->CellAttrs;
+			$HrefValue = &$this->debet->HrefValue;
+			$LinkAttrs = &$this->debet->LinkAttrs;
+			$this->Cell_Rendered($this->debet, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
 
-			// jurnal_kode
-			$CurrentValue = $this->jurnal_kode->CurrentValue;
-			$ViewValue = &$this->jurnal_kode->ViewValue;
-			$ViewAttrs = &$this->jurnal_kode->ViewAttrs;
-			$CellAttrs = &$this->jurnal_kode->CellAttrs;
-			$HrefValue = &$this->jurnal_kode->HrefValue;
-			$LinkAttrs = &$this->jurnal_kode->LinkAttrs;
-			$this->Cell_Rendered($this->jurnal_kode, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+			// kredit
+			$CurrentValue = $this->kredit->SumValue;
+			$ViewValue = &$this->kredit->SumViewValue;
+			$ViewAttrs = &$this->kredit->ViewAttrs;
+			$CellAttrs = &$this->kredit->CellAttrs;
+			$HrefValue = &$this->kredit->HrefValue;
+			$LinkAttrs = &$this->kredit->LinkAttrs;
+			$this->Cell_Rendered($this->kredit, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+		} else {
 
-			// no_akun
-			$CurrentValue = $this->no_akun->CurrentValue;
-			$ViewValue = &$this->no_akun->ViewValue;
-			$ViewAttrs = &$this->no_akun->ViewAttrs;
-			$CellAttrs = &$this->no_akun->CellAttrs;
-			$HrefValue = &$this->no_akun->HrefValue;
-			$LinkAttrs = &$this->no_akun->LinkAttrs;
-			$this->Cell_Rendered($this->no_akun, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+			// no_nama_akun
+			$CurrentValue = $this->no_nama_akun->GroupValue();
+			$ViewValue = &$this->no_nama_akun->GroupViewValue;
+			$ViewAttrs = &$this->no_nama_akun->ViewAttrs;
+			$CellAttrs = &$this->no_nama_akun->CellAttrs;
+			$HrefValue = &$this->no_nama_akun->HrefValue;
+			$LinkAttrs = &$this->no_nama_akun->LinkAttrs;
+			$this->Cell_Rendered($this->no_nama_akun, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
 
-			// nama_akun
-			$CurrentValue = $this->nama_akun->CurrentValue;
-			$ViewValue = &$this->nama_akun->ViewValue;
-			$ViewAttrs = &$this->nama_akun->ViewAttrs;
-			$CellAttrs = &$this->nama_akun->CellAttrs;
-			$HrefValue = &$this->nama_akun->HrefValue;
-			$LinkAttrs = &$this->nama_akun->LinkAttrs;
-			$this->Cell_Rendered($this->nama_akun, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+			// tgl
+			$CurrentValue = $this->tgl->CurrentValue;
+			$ViewValue = &$this->tgl->ViewValue;
+			$ViewAttrs = &$this->tgl->ViewAttrs;
+			$CellAttrs = &$this->tgl->CellAttrs;
+			$HrefValue = &$this->tgl->HrefValue;
+			$LinkAttrs = &$this->tgl->LinkAttrs;
+			$this->Cell_Rendered($this->tgl, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+
+			// no_bukti
+			$CurrentValue = $this->no_bukti->CurrentValue;
+			$ViewValue = &$this->no_bukti->ViewValue;
+			$ViewAttrs = &$this->no_bukti->ViewAttrs;
+			$CellAttrs = &$this->no_bukti->CellAttrs;
+			$HrefValue = &$this->no_bukti->HrefValue;
+			$LinkAttrs = &$this->no_bukti->LinkAttrs;
+			$this->Cell_Rendered($this->no_bukti, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+
+			// ket
+			$CurrentValue = $this->ket->CurrentValue;
+			$ViewValue = &$this->ket->ViewValue;
+			$ViewAttrs = &$this->ket->ViewAttrs;
+			$CellAttrs = &$this->ket->CellAttrs;
+			$HrefValue = &$this->ket->HrefValue;
+			$LinkAttrs = &$this->ket->LinkAttrs;
+			$this->Cell_Rendered($this->ket, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+
+			// debet
+			$CurrentValue = $this->debet->CurrentValue;
+			$ViewValue = &$this->debet->ViewValue;
+			$ViewAttrs = &$this->debet->ViewAttrs;
+			$CellAttrs = &$this->debet->CellAttrs;
+			$HrefValue = &$this->debet->HrefValue;
+			$LinkAttrs = &$this->debet->LinkAttrs;
+			$this->Cell_Rendered($this->debet, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+
+			// kredit
+			$CurrentValue = $this->kredit->CurrentValue;
+			$ViewValue = &$this->kredit->ViewValue;
+			$ViewAttrs = &$this->kredit->ViewAttrs;
+			$CellAttrs = &$this->kredit->CellAttrs;
+			$HrefValue = &$this->kredit->HrefValue;
+			$LinkAttrs = &$this->kredit->LinkAttrs;
+			$this->Cell_Rendered($this->kredit, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
 		}
 
 		// Call Row_Rendered event
@@ -1114,12 +1344,12 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		$this->GrpColumnCount = 0;
 		$this->SubGrpColumnCount = 0;
 		$this->DtlColumnCount = 0;
-		if ($this->level4_id->Visible) $this->DtlColumnCount += 1;
-		if ($this->no_nama_akun->Visible) $this->DtlColumnCount += 1;
-		if ($this->jurnal->Visible) $this->DtlColumnCount += 1;
-		if ($this->jurnal_kode->Visible) $this->DtlColumnCount += 1;
-		if ($this->no_akun->Visible) $this->DtlColumnCount += 1;
-		if ($this->nama_akun->Visible) $this->DtlColumnCount += 1;
+		if ($this->no_nama_akun->Visible) $this->GrpColumnCount += 1;
+		if ($this->tgl->Visible) $this->DtlColumnCount += 1;
+		if ($this->no_bukti->Visible) $this->DtlColumnCount += 1;
+		if ($this->ket->Visible) $this->DtlColumnCount += 1;
+		if ($this->debet->Visible) $this->DtlColumnCount += 1;
+		if ($this->kredit->Visible) $this->DtlColumnCount += 1;
 	}
 
 	// Set up Breadcrumb
@@ -1134,7 +1364,531 @@ class crr_bukubesar_summary extends crr_bukubesar {
 	function SetupExportOptionsExt() {
 		global $ReportLanguage, $ReportOptions;
 		$ReportTypes = $ReportOptions["ReportTypes"];
+		$item =& $this->ExportOptions->GetItem("pdf");
+		$item->Visible = TRUE;
+		if ($item->Visible)
+			$ReportTypes["pdf"] = $ReportLanguage->Phrase("ReportFormPdf");
+		$exportid = session_id();
+		$url = $this->ExportPdfUrl;
+		$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToPDF", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToPDF", TRUE)) . "\" href=\"javascript:void(0);\" onclick=\"ewr_ExportCharts(this, '" . $url . "', '" . $exportid . "');\">" . $ReportLanguage->Phrase("ExportToPDF") . "</a>";
 		$ReportOptions["ReportTypes"] = $ReportTypes;
+	}
+
+	// Return extended filter
+	function GetExtendedFilter() {
+		global $gsFormError;
+		$sFilter = "";
+		if ($this->DrillDown)
+			return "";
+		$bPostBack = ewr_IsHttpPost();
+		$bRestoreSession = TRUE;
+		$bSetupFilter = FALSE;
+
+		// Reset extended filter if filter changed
+		if ($bPostBack) {
+
+			// Clear extended filter for field tgl
+			if ($this->ClearExtFilter == 'r_bukubesar_tgl')
+				$this->SetSessionFilterValues('', '=', 'AND', '', '=', 'tgl');
+
+		// Reset search command
+		} elseif (@$_GET["cmd"] == "reset") {
+
+			// Load default values
+			$this->SetSessionFilterValues($this->tgl->SearchValue, $this->tgl->SearchOperator, $this->tgl->SearchCondition, $this->tgl->SearchValue2, $this->tgl->SearchOperator2, 'tgl'); // Field tgl
+
+			//$bSetupFilter = TRUE; // No need to set up, just use default
+		} else {
+			$bRestoreSession = !$this->SearchCommand;
+
+			// Field tgl
+			if ($this->GetFilterValues($this->tgl)) {
+				$bSetupFilter = TRUE;
+			}
+			if (!$this->ValidateForm()) {
+				$this->setFailureMessage($gsFormError);
+				return $sFilter;
+			}
+		}
+
+		// Restore session
+		if ($bRestoreSession) {
+			$this->GetSessionFilterValues($this->tgl); // Field tgl
+		}
+
+		// Call page filter validated event
+		$this->Page_FilterValidated();
+
+		// Build SQL
+		$this->BuildExtendedFilter($this->tgl, $sFilter, FALSE, TRUE); // Field tgl
+
+		// Save parms to session
+		$this->SetSessionFilterValues($this->tgl->SearchValue, $this->tgl->SearchOperator, $this->tgl->SearchCondition, $this->tgl->SearchValue2, $this->tgl->SearchOperator2, 'tgl'); // Field tgl
+
+		// Setup filter
+		if ($bSetupFilter) {
+
+			// Field tgl
+			$sWrk = "";
+			$this->BuildExtendedFilter($this->tgl, $sWrk);
+			ewr_LoadSelectionFromFilter($this->tgl, $sWrk, $this->tgl->SelectionList);
+			$_SESSION['sel_r_bukubesar_tgl'] = ($this->tgl->SelectionList == "") ? EWR_INIT_VALUE : $this->tgl->SelectionList;
+		}
+		return $sFilter;
+	}
+
+	// Build dropdown filter
+	function BuildDropDownFilter(&$fld, &$FilterClause, $FldOpr, $Default = FALSE, $SaveFilter = FALSE) {
+		$FldVal = ($Default) ? $fld->DefaultDropDownValue : $fld->DropDownValue;
+		$sSql = "";
+		if (is_array($FldVal)) {
+			foreach ($FldVal as $val) {
+				$sWrk = $this->GetDropDownFilter($fld, $val, $FldOpr);
+
+				// Call Page Filtering event
+				if (substr($val, 0, 2) <> "@@") $this->Page_Filtering($fld, $sWrk, "dropdown", $FldOpr, $val);
+				if ($sWrk <> "") {
+					if ($sSql <> "")
+						$sSql .= " OR " . $sWrk;
+					else
+						$sSql = $sWrk;
+				}
+			}
+		} else {
+			$sSql = $this->GetDropDownFilter($fld, $FldVal, $FldOpr);
+
+			// Call Page Filtering event
+			if (substr($FldVal, 0, 2) <> "@@") $this->Page_Filtering($fld, $sSql, "dropdown", $FldOpr, $FldVal);
+		}
+		if ($sSql <> "") {
+			ewr_AddFilter($FilterClause, $sSql);
+			if ($SaveFilter) $fld->CurrentFilter = $sSql;
+		}
+	}
+
+	function GetDropDownFilter(&$fld, $FldVal, $FldOpr) {
+		$FldName = $fld->FldName;
+		$FldExpression = $fld->FldExpression;
+		$FldDataType = $fld->FldDataType;
+		$FldDelimiter = $fld->FldDelimiter;
+		$FldVal = strval($FldVal);
+		if ($FldOpr == "") $FldOpr = "=";
+		$sWrk = "";
+		if (ewr_SameStr($FldVal, EWR_NULL_VALUE)) {
+			$sWrk = $FldExpression . " IS NULL";
+		} elseif (ewr_SameStr($FldVal, EWR_NOT_NULL_VALUE)) {
+			$sWrk = $FldExpression . " IS NOT NULL";
+		} elseif (ewr_SameStr($FldVal, EWR_EMPTY_VALUE)) {
+			$sWrk = $FldExpression . " = ''";
+		} elseif (ewr_SameStr($FldVal, EWR_ALL_VALUE)) {
+			$sWrk = "1 = 1";
+		} else {
+			if (substr($FldVal, 0, 2) == "@@") {
+				$sWrk = $this->GetCustomFilter($fld, $FldVal, $this->DBID);
+			} elseif ($FldDelimiter <> "" && trim($FldVal) <> "" && ($FldDataType == EWR_DATATYPE_STRING || $FldDataType == EWR_DATATYPE_MEMO)) {
+				$sWrk = ewr_GetMultiSearchSql($FldExpression, trim($FldVal), $this->DBID);
+			} else {
+				if ($FldVal <> "" && $FldVal <> EWR_INIT_VALUE) {
+					if ($FldDataType == EWR_DATATYPE_DATE && $FldOpr <> "") {
+						$sWrk = ewr_DateFilterString($FldExpression, $FldOpr, $FldVal, $FldDataType, $this->DBID);
+					} else {
+						$sWrk = ewr_FilterString($FldOpr, $FldVal, $FldDataType, $this->DBID);
+						if ($sWrk <> "") $sWrk = $FldExpression . $sWrk;
+					}
+				}
+			}
+		}
+		return $sWrk;
+	}
+
+	// Get custom filter
+	function GetCustomFilter(&$fld, $FldVal, $dbid = 0) {
+		$sWrk = "";
+		if (is_array($fld->AdvancedFilters)) {
+			foreach ($fld->AdvancedFilters as $filter) {
+				if ($filter->ID == $FldVal && $filter->Enabled) {
+					$sFld = $fld->FldExpression;
+					$sFn = $filter->FunctionName;
+					$wrkid = (substr($filter->ID,0,2) == "@@") ? substr($filter->ID,2) : $filter->ID;
+					if ($sFn <> "")
+						$sWrk = $sFn($sFld, $dbid);
+					else
+						$sWrk = "";
+					$this->Page_Filtering($fld, $sWrk, "custom", $wrkid);
+					break;
+				}
+			}
+		}
+		return $sWrk;
+	}
+
+	// Build extended filter
+	function BuildExtendedFilter(&$fld, &$FilterClause, $Default = FALSE, $SaveFilter = FALSE) {
+		$sWrk = ewr_GetExtendedFilter($fld, $Default, $this->DBID);
+		if (!$Default)
+			$this->Page_Filtering($fld, $sWrk, "extended", $fld->SearchOperator, $fld->SearchValue, $fld->SearchCondition, $fld->SearchOperator2, $fld->SearchValue2);
+		if ($sWrk <> "") {
+			ewr_AddFilter($FilterClause, $sWrk);
+			if ($SaveFilter) $fld->CurrentFilter = $sWrk;
+		}
+	}
+
+	// Get drop down value from querystring
+	function GetDropDownValue(&$fld) {
+		$parm = substr($fld->FldVar, 2);
+		if (ewr_IsHttpPost())
+			return FALSE; // Skip post back
+		if (isset($_GET["so_$parm"]))
+			$fld->SearchOperator = ewr_StripSlashes(@$_GET["so_$parm"]);
+		if (isset($_GET["sv_$parm"])) {
+			$fld->DropDownValue = ewr_StripSlashes(@$_GET["sv_$parm"]);
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	// Get filter values from querystring
+	function GetFilterValues(&$fld) {
+		$parm = substr($fld->FldVar, 2);
+		if (ewr_IsHttpPost())
+			return; // Skip post back
+		$got = FALSE;
+		if (isset($_GET["sv_$parm"])) {
+			$fld->SearchValue = ewr_StripSlashes(@$_GET["sv_$parm"]);
+			$got = TRUE;
+		}
+		if (isset($_GET["so_$parm"])) {
+			$fld->SearchOperator = ewr_StripSlashes(@$_GET["so_$parm"]);
+			$got = TRUE;
+		}
+		if (isset($_GET["sc_$parm"])) {
+			$fld->SearchCondition = ewr_StripSlashes(@$_GET["sc_$parm"]);
+			$got = TRUE;
+		}
+		if (isset($_GET["sv2_$parm"])) {
+			$fld->SearchValue2 = ewr_StripSlashes(@$_GET["sv2_$parm"]);
+			$got = TRUE;
+		}
+		if (isset($_GET["so2_$parm"])) {
+			$fld->SearchOperator2 = ewr_StripSlashes($_GET["so2_$parm"]);
+			$got = TRUE;
+		}
+		return $got;
+	}
+
+	// Set default ext filter
+	function SetDefaultExtFilter(&$fld, $so1, $sv1, $sc, $so2, $sv2) {
+		$fld->DefaultSearchValue = $sv1; // Default ext filter value 1
+		$fld->DefaultSearchValue2 = $sv2; // Default ext filter value 2 (if operator 2 is enabled)
+		$fld->DefaultSearchOperator = $so1; // Default search operator 1
+		$fld->DefaultSearchOperator2 = $so2; // Default search operator 2 (if operator 2 is enabled)
+		$fld->DefaultSearchCondition = $sc; // Default search condition (if operator 2 is enabled)
+	}
+
+	// Apply default ext filter
+	function ApplyDefaultExtFilter(&$fld) {
+		$fld->SearchValue = $fld->DefaultSearchValue;
+		$fld->SearchValue2 = $fld->DefaultSearchValue2;
+		$fld->SearchOperator = $fld->DefaultSearchOperator;
+		$fld->SearchOperator2 = $fld->DefaultSearchOperator2;
+		$fld->SearchCondition = $fld->DefaultSearchCondition;
+	}
+
+	// Check if Text Filter applied
+	function TextFilterApplied(&$fld) {
+		return (strval($fld->SearchValue) <> strval($fld->DefaultSearchValue) ||
+			strval($fld->SearchValue2) <> strval($fld->DefaultSearchValue2) ||
+			(strval($fld->SearchValue) <> "" &&
+				strval($fld->SearchOperator) <> strval($fld->DefaultSearchOperator)) ||
+			(strval($fld->SearchValue2) <> "" &&
+				strval($fld->SearchOperator2) <> strval($fld->DefaultSearchOperator2)) ||
+			strval($fld->SearchCondition) <> strval($fld->DefaultSearchCondition));
+	}
+
+	// Check if Non-Text Filter applied
+	function NonTextFilterApplied(&$fld) {
+		if (is_array($fld->DropDownValue)) {
+			if (is_array($fld->DefaultDropDownValue)) {
+				if (count($fld->DefaultDropDownValue) <> count($fld->DropDownValue))
+					return TRUE;
+				else
+					return (count(array_diff($fld->DefaultDropDownValue, $fld->DropDownValue)) <> 0);
+			} else {
+				return TRUE;
+			}
+		} else {
+			if (is_array($fld->DefaultDropDownValue))
+				return TRUE;
+			else
+				$v1 = strval($fld->DefaultDropDownValue);
+			if ($v1 == EWR_INIT_VALUE)
+				$v1 = "";
+			$v2 = strval($fld->DropDownValue);
+			if ($v2 == EWR_INIT_VALUE || $v2 == EWR_ALL_VALUE)
+				$v2 = "";
+			return ($v1 <> $v2);
+		}
+	}
+
+	// Get dropdown value from session
+	function GetSessionDropDownValue(&$fld) {
+		$parm = substr($fld->FldVar, 2);
+		$this->GetSessionValue($fld->DropDownValue, 'sv_r_bukubesar_' . $parm);
+		$this->GetSessionValue($fld->SearchOperator, 'so_r_bukubesar_' . $parm);
+	}
+
+	// Get filter values from session
+	function GetSessionFilterValues(&$fld) {
+		$parm = substr($fld->FldVar, 2);
+		$this->GetSessionValue($fld->SearchValue, 'sv_r_bukubesar_' . $parm);
+		$this->GetSessionValue($fld->SearchOperator, 'so_r_bukubesar_' . $parm);
+		$this->GetSessionValue($fld->SearchCondition, 'sc_r_bukubesar_' . $parm);
+		$this->GetSessionValue($fld->SearchValue2, 'sv2_r_bukubesar_' . $parm);
+		$this->GetSessionValue($fld->SearchOperator2, 'so2_r_bukubesar_' . $parm);
+	}
+
+	// Get value from session
+	function GetSessionValue(&$sv, $sn) {
+		if (array_key_exists($sn, $_SESSION))
+			$sv = $_SESSION[$sn];
+	}
+
+	// Set dropdown value to session
+	function SetSessionDropDownValue($sv, $so, $parm) {
+		$_SESSION['sv_r_bukubesar_' . $parm] = $sv;
+		$_SESSION['so_r_bukubesar_' . $parm] = $so;
+	}
+
+	// Set filter values to session
+	function SetSessionFilterValues($sv1, $so1, $sc, $sv2, $so2, $parm) {
+		$_SESSION['sv_r_bukubesar_' . $parm] = $sv1;
+		$_SESSION['so_r_bukubesar_' . $parm] = $so1;
+		$_SESSION['sc_r_bukubesar_' . $parm] = $sc;
+		$_SESSION['sv2_r_bukubesar_' . $parm] = $sv2;
+		$_SESSION['so2_r_bukubesar_' . $parm] = $so2;
+	}
+
+	// Check if has Session filter values
+	function HasSessionFilterValues($parm) {
+		return ((@$_SESSION['sv_' . $parm] <> "" && @$_SESSION['sv_' . $parm] <> EWR_INIT_VALUE) ||
+			(@$_SESSION['sv_' . $parm] <> "" && @$_SESSION['sv_' . $parm] <> EWR_INIT_VALUE) ||
+			(@$_SESSION['sv2_' . $parm] <> "" && @$_SESSION['sv2_' . $parm] <> EWR_INIT_VALUE));
+	}
+
+	// Dropdown filter exist
+	function DropDownFilterExist(&$fld, $FldOpr) {
+		$sWrk = "";
+		$this->BuildDropDownFilter($fld, $sWrk, $FldOpr);
+		return ($sWrk <> "");
+	}
+
+	// Extended filter exist
+	function ExtendedFilterExist(&$fld) {
+		$sExtWrk = "";
+		$this->BuildExtendedFilter($fld, $sExtWrk);
+		return ($sExtWrk <> "");
+	}
+
+	// Validate form
+	function ValidateForm() {
+		global $ReportLanguage, $gsFormError;
+
+		// Initialize form error message
+		$gsFormError = "";
+
+		// Check if validation required
+		if (!EWR_SERVER_VALIDATE)
+			return ($gsFormError == "");
+		if (!ewr_CheckDateDef($this->tgl->SearchValue)) {
+			if ($gsFormError <> "") $gsFormError .= "<br>";
+			$gsFormError .= $this->tgl->FldErrMsg();
+		}
+		if (!ewr_CheckDateDef($this->tgl->SearchValue2)) {
+			if ($gsFormError <> "") $gsFormError .= "<br>";
+			$gsFormError .= $this->tgl->FldErrMsg();
+		}
+
+		// Return validate result
+		$ValidateForm = ($gsFormError == "");
+
+		// Call Form_CustomValidate event
+		$sFormCustomError = "";
+		$ValidateForm = $ValidateForm && $this->Form_CustomValidate($sFormCustomError);
+		if ($sFormCustomError <> "") {
+			$gsFormError .= ($gsFormError <> "") ? "<p>&nbsp;</p>" : "";
+			$gsFormError .= $sFormCustomError;
+		}
+		return $ValidateForm;
+	}
+
+	// Clear selection stored in session
+	function ClearSessionSelection($parm) {
+		$_SESSION["sel_r_bukubesar_$parm"] = "";
+		$_SESSION["rf_r_bukubesar_$parm"] = "";
+		$_SESSION["rt_r_bukubesar_$parm"] = "";
+	}
+
+	// Load selection from session
+	function LoadSelectionFromSession($parm) {
+		$fld = &$this->FieldByParm($parm);
+		$fld->SelectionList = @$_SESSION["sel_r_bukubesar_$parm"];
+		$fld->RangeFrom = @$_SESSION["rf_r_bukubesar_$parm"];
+		$fld->RangeTo = @$_SESSION["rt_r_bukubesar_$parm"];
+	}
+
+	// Load default value for filters
+	function LoadDefaultFilters() {
+		/**
+		* Set up default values for non Text filters
+		*/
+		/**
+		* Set up default values for extended filters
+		* function SetDefaultExtFilter(&$fld, $so1, $sv1, $sc, $so2, $sv2)
+		* Parameters:
+		* $fld - Field object
+		* $so1 - Default search operator 1
+		* $sv1 - Default ext filter value 1
+		* $sc - Default search condition (if operator 2 is enabled)
+		* $so2 - Default search operator 2 (if operator 2 is enabled)
+		* $sv2 - Default ext filter value 2 (if operator 2 is enabled)
+		*/
+
+		// Field tgl
+		$this->SetDefaultExtFilter($this->tgl, "BETWEEN", NULL, 'AND', "=", NULL);
+		if (!$this->SearchCommand) $this->ApplyDefaultExtFilter($this->tgl);
+		$sWrk = "";
+		$this->BuildExtendedFilter($this->tgl, $sWrk, TRUE);
+		ewr_LoadSelectionFromFilter($this->tgl, $sWrk, $this->tgl->DefaultSelectionList);
+		if (!$this->SearchCommand) $this->tgl->SelectionList = $this->tgl->DefaultSelectionList;
+		/**
+		* Set up default values for popup filters
+		*/
+
+		// Field tgl
+		// $this->tgl->DefaultSelectionList = array("val1", "val2");
+
+	}
+
+	// Check if filter applied
+	function CheckFilter() {
+
+		// Check tgl text filter
+		if ($this->TextFilterApplied($this->tgl))
+			return TRUE;
+
+		// Check tgl popup filter
+		if (!ewr_MatchedArray($this->tgl->DefaultSelectionList, $this->tgl->SelectionList))
+			return TRUE;
+		return FALSE;
+	}
+
+	// Show list of filters
+	function ShowFilterList($showDate = FALSE) {
+		global $ReportLanguage;
+
+		// Initialize
+		$sFilterList = "";
+
+		// Field tgl
+		$sExtWrk = "";
+		$sWrk = "";
+		$this->BuildExtendedFilter($this->tgl, $sExtWrk);
+		if (is_array($this->tgl->SelectionList))
+			$sWrk = ewr_JoinArray($this->tgl->SelectionList, ", ", EWR_DATATYPE_DATE, 0, $this->DBID);
+		$sFilter = "";
+		if ($sExtWrk <> "")
+			$sFilter .= "<span class=\"ewFilterValue\">$sExtWrk</span>";
+		elseif ($sWrk <> "")
+			$sFilter .= "<span class=\"ewFilterValue\">$sWrk</span>";
+		if ($sFilter <> "")
+			$sFilterList .= "<div><span class=\"ewFilterCaption\">" . $this->tgl->FldCaption() . "</span>" . $sFilter . "</div>";
+		$divstyle = "";
+		$divdataclass = "";
+
+		// Show Filters
+		if ($sFilterList <> "" || $showDate) {
+			$sMessage = "<div" . $divstyle . $divdataclass . "><div id=\"ewrFilterList\" class=\"alert alert-info ewDisplayTable\">";
+			if ($showDate)
+				$sMessage .= "<div id=\"ewrCurrentDate\">" . $ReportLanguage->Phrase("ReportGeneratedDate") . ewr_FormatDateTime(date("Y-m-d H:i:s"), 1) . "</div>";
+			if ($sFilterList <> "")
+				$sMessage .= "<div id=\"ewrCurrentFilters\">" . $ReportLanguage->Phrase("CurrentFilters") . "</div>" . $sFilterList;
+			$sMessage .= "</div></div>";
+			$this->Message_Showing($sMessage, "");
+			echo $sMessage;
+		}
+	}
+
+	// Get list of filters
+	function GetFilterList() {
+
+		// Initialize
+		$sFilterList = "";
+
+		// Field tgl
+		$sWrk = "";
+		if ($this->tgl->SearchValue <> "" || $this->tgl->SearchValue2 <> "") {
+			$sWrk = "\"sv_tgl\":\"" . ewr_JsEncode2($this->tgl->SearchValue) . "\"," .
+				"\"so_tgl\":\"" . ewr_JsEncode2($this->tgl->SearchOperator) . "\"," .
+				"\"sc_tgl\":\"" . ewr_JsEncode2($this->tgl->SearchCondition) . "\"," .
+				"\"sv2_tgl\":\"" . ewr_JsEncode2($this->tgl->SearchValue2) . "\"," .
+				"\"so2_tgl\":\"" . ewr_JsEncode2($this->tgl->SearchOperator2) . "\"";
+		}
+		if ($sWrk == "") {
+			$sWrk = ($this->tgl->SelectionList <> EWR_INIT_VALUE) ? $this->tgl->SelectionList : "";
+			if (is_array($sWrk))
+				$sWrk = implode("||", $sWrk);
+			if ($sWrk <> "")
+				$sWrk = "\"sel_tgl\":\"" . ewr_JsEncode2($sWrk) . "\"";
+		}
+		if ($sWrk <> "") {
+			if ($sFilterList <> "") $sFilterList .= ",";
+			$sFilterList .= $sWrk;
+		}
+
+		// Return filter list in json
+		if ($sFilterList <> "")
+			return "{" . $sFilterList . "}";
+		else
+			return "null";
+	}
+
+	// Restore list of filters
+	function RestoreFilterList() {
+
+		// Return if not reset filter
+		if (@$_POST["cmd"] <> "resetfilter")
+			return FALSE;
+		$filter = json_decode(ewr_StripSlashes(@$_POST["filter"]), TRUE);
+		return $this->SetupFilterList($filter);
+	}
+
+	// Setup list of filters
+	function SetupFilterList($filter) {
+		if (!is_array($filter))
+			return FALSE;
+
+		// Field tgl
+		$bRestoreFilter = FALSE;
+		if (array_key_exists("sv_tgl", $filter) || array_key_exists("so_tgl", $filter) ||
+			array_key_exists("sc_tgl", $filter) ||
+			array_key_exists("sv2_tgl", $filter) || array_key_exists("so2_tgl", $filter)) {
+			$this->SetSessionFilterValues(@$filter["sv_tgl"], @$filter["so_tgl"], @$filter["sc_tgl"], @$filter["sv2_tgl"], @$filter["so2_tgl"], "tgl");
+			$bRestoreFilter = TRUE;
+		}
+		if (array_key_exists("sel_tgl", $filter)) {
+			$sWrk = $filter["sel_tgl"];
+			$sWrk = explode("||", $sWrk);
+			$this->tgl->SelectionList = $sWrk;
+			$_SESSION["sel_r_bukubesar_tgl"] = $sWrk;
+			$this->SetSessionFilterValues("", "=", "AND", "", "=", "tgl"); // Clear extended filter
+			$bRestoreFilter = TRUE;
+		}
+		if (!$bRestoreFilter) { // Clear filter
+			$this->SetSessionFilterValues("", "=", "AND", "", "=", "tgl");
+			$this->tgl->SelectionList = "";
+			$_SESSION["sel_r_bukubesar_tgl"] = "";
+		}
+		return TRUE;
 	}
 
 	// Return popup filter
@@ -1142,6 +1896,16 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		$sWrk = "";
 		if ($this->DrillDown)
 			return "";
+		if (!$this->ExtendedFilterExist($this->tgl)) {
+			if (is_array($this->tgl->SelectionList)) {
+				$sFilter = ewr_FilterSQL($this->tgl, "`tgl`", EWR_DATATYPE_DATE, $this->DBID);
+
+				// Call Page Filtering event
+				$this->Page_Filtering($this->tgl, $sFilter, "popup");
+				$this->tgl->CurrentFilter = $sFilter;
+				ewr_AddFilter($sWrk, $sFilter);
+			}
+		}
 		return $sWrk;
 	}
 
@@ -1151,31 +1915,250 @@ class crr_bukubesar_summary extends crr_bukubesar {
 	// - Variables setup: Session[EWR_TABLE_SESSION_ORDER_BY], Session["sort_Table_Field"]
 	function GetSort($options = array()) {
 		if ($this->DrillDown)
-			return "";
+			return "`tgl` ASC, `no_bukti` ASC";
 		$bResetSort = @$options["resetsort"] == "1" || @$_GET["cmd"] == "resetsort";
 		$orderBy = (@$options["order"] <> "") ? @$options["order"] : ewr_StripSlashes(@$_GET["order"]);
 		$orderType = (@$options["ordertype"] <> "") ? @$options["ordertype"] : ewr_StripSlashes(@$_GET["ordertype"]);
+
+		// Check for Ctrl pressed
+		$bCtrl = (@$_GET["ctrl"] <> "");
 
 		// Check for a resetsort command
 		if ($bResetSort) {
 			$this->setOrderBy("");
 			$this->setStartGroup(1);
-			$this->level4_id->setSort("");
 			$this->no_nama_akun->setSort("");
-			$this->jurnal->setSort("");
-			$this->jurnal_kode->setSort("");
-			$this->no_akun->setSort("");
-			$this->nama_akun->setSort("");
+			$this->tgl->setSort("");
+			$this->no_bukti->setSort("");
+			$this->ket->setSort("");
+			$this->debet->setSort("");
+			$this->kredit->setSort("");
 
 		// Check for an Order parameter
 		} elseif ($orderBy <> "") {
 			$this->CurrentOrder = $orderBy;
 			$this->CurrentOrderType = $orderType;
+			$this->UpdateSort($this->no_nama_akun, $bCtrl); // no_nama_akun
+			$this->UpdateSort($this->tgl, $bCtrl); // tgl
+			$this->UpdateSort($this->no_bukti, $bCtrl); // no_bukti
+			$this->UpdateSort($this->ket, $bCtrl); // ket
+			$this->UpdateSort($this->debet, $bCtrl); // debet
+			$this->UpdateSort($this->kredit, $bCtrl); // kredit
 			$sSortSql = $this->SortSql();
 			$this->setOrderBy($sSortSql);
 			$this->setStartGroup(1);
 		}
+
+		// Set up default sort
+		if ($this->getOrderBy() == "") {
+			$this->setOrderBy("`tgl` ASC, `no_bukti` ASC");
+			$this->tgl->setSort("ASC");
+			$this->no_bukti->setSort("ASC");
+		}
 		return $this->getOrderBy();
+	}
+
+	// Export email
+	function ExportEmail($EmailContent, $options = array()) {
+		global $gTmpImages, $ReportLanguage;
+		$bGenRequest = @$options["reporttype"] == "email";
+		$sFailRespPfx = $bGenRequest ? "" : "<p class=\"text-error\">";
+		$sSuccessRespPfx = $bGenRequest ? "" : "<p class=\"text-success\">";
+		$sRespPfx = $bGenRequest ? "" : "</p>";
+		$sContentType = (@$options["contenttype"] <> "") ? $options["contenttype"] : @$_POST["contenttype"];
+		$sSender = (@$options["sender"] <> "") ? $options["sender"] : @$_POST["sender"];
+		$sRecipient = (@$options["recipient"] <> "") ? $options["recipient"] : @$_POST["recipient"];
+		$sCc = (@$options["cc"] <> "") ? $options["cc"] : @$_POST["cc"];
+		$sBcc = (@$options["bcc"] <> "") ? $options["bcc"] : @$_POST["bcc"];
+
+		// Subject
+		$sEmailSubject = (@$options["subject"] <> "") ? $options["subject"] : ewr_StripSlashes(@$_POST["subject"]);
+
+		// Message
+		$sEmailMessage = (@$options["message"] <> "") ? $options["message"] : ewr_StripSlashes(@$_POST["message"]);
+
+		// Check sender
+		if ($sSender == "")
+			return $sFailRespPfx . $ReportLanguage->Phrase("EnterSenderEmail") . $sRespPfx;
+		if (!ewr_CheckEmail($sSender))
+			return $sFailRespPfx . $ReportLanguage->Phrase("EnterProperSenderEmail") . $sRespPfx;
+
+		// Check recipient
+		if (!ewr_CheckEmailList($sRecipient, EWR_MAX_EMAIL_RECIPIENT))
+			return $sFailRespPfx . $ReportLanguage->Phrase("EnterProperRecipientEmail") . $sRespPfx;
+
+		// Check cc
+		if (!ewr_CheckEmailList($sCc, EWR_MAX_EMAIL_RECIPIENT))
+			return $sFailRespPfx . $ReportLanguage->Phrase("EnterProperCcEmail") . $sRespPfx;
+
+		// Check bcc
+		if (!ewr_CheckEmailList($sBcc, EWR_MAX_EMAIL_RECIPIENT))
+			return $sFailRespPfx . $ReportLanguage->Phrase("EnterProperBccEmail") . $sRespPfx;
+
+		// Check email sent count
+		$emailcount = $bGenRequest ? 0 : ewr_LoadEmailCount();
+		if (intval($emailcount) >= EWR_MAX_EMAIL_SENT_COUNT)
+			return $sFailRespPfx . $ReportLanguage->Phrase("ExceedMaxEmailExport") . $sRespPfx;
+		if ($sEmailMessage <> "") {
+			if (EWR_REMOVE_XSS) $sEmailMessage = ewr_RemoveXSS($sEmailMessage);
+			$sEmailMessage .= ($sContentType == "url") ? "\r\n\r\n" : "<br><br>";
+		}
+		$sAttachmentContent = ewr_AdjustEmailContent($EmailContent);
+		$sAppPath = ewr_FullUrl();
+		$sAppPath = substr($sAppPath, 0, strrpos($sAppPath, "/")+1);
+		if (strpos($sAttachmentContent, "<head>") !== FALSE)
+			$sAttachmentContent = str_replace("<head>", "<head><base href=\"" . $sAppPath . "\">", $sAttachmentContent); // Add <base href> statement inside the header
+		else
+			$sAttachmentContent = "<base href=\"" . $sAppPath . "\">" . $sAttachmentContent; // Add <base href> statement as the first statement
+
+		//$sAttachmentFile = $this->TableVar . "_" . Date("YmdHis") . ".html";
+		$sAttachmentFile = $this->TableVar . "_" . Date("YmdHis") . "_" . ewr_Random() . ".html";
+		if ($sContentType == "url") {
+			ewr_SaveFile(EWR_UPLOAD_DEST_PATH, $sAttachmentFile, $sAttachmentContent);
+			$sAttachmentFile = EWR_UPLOAD_DEST_PATH . $sAttachmentFile;
+			$sUrl = $sAppPath . $sAttachmentFile;
+			$sEmailMessage .= $sUrl; // Send URL only
+			$sAttachmentFile = "";
+			$sAttachmentContent = "";
+		} else {
+			$sEmailMessage .= $sAttachmentContent;
+			$sAttachmentFile = "";
+			$sAttachmentContent = "";
+		}
+
+		// Send email
+		$Email = new crEmail();
+		$Email->Sender = $sSender; // Sender
+		$Email->Recipient = $sRecipient; // Recipient
+		$Email->Cc = $sCc; // Cc
+		$Email->Bcc = $sBcc; // Bcc
+		$Email->Subject = $sEmailSubject; // Subject
+		$Email->Content = $sEmailMessage; // Content
+		if ($sAttachmentFile <> "")
+			$Email->AddAttachment($sAttachmentFile, $sAttachmentContent);
+		if ($sContentType <> "url") {
+			foreach ($gTmpImages as $tmpimage)
+				$Email->AddEmbeddedImage($tmpimage);
+		}
+		$Email->Format = ($sContentType == "url") ? "text" : "html";
+		$Email->Charset = EWR_EMAIL_CHARSET;
+		$EventArgs = array();
+		$bEmailSent = FALSE;
+		if ($this->Email_Sending($Email, $EventArgs))
+			$bEmailSent = $Email->Send();
+		ewr_DeleteTmpImages($EmailContent);
+
+		// Check email sent status
+		if ($bEmailSent) {
+
+			// Update email sent count and write log
+			ewr_AddEmailLog($sSender, $sRecipient, $sEmailSubject, $sEmailMessage);
+
+			// Sent email success
+			return $sSuccessRespPfx . $ReportLanguage->Phrase("SendEmailSuccess") . $sRespPfx; // Set up success message
+		} else {
+
+			// Sent email failure
+			return $sFailRespPfx . $Email->SendErrDescription . $sRespPfx;
+		}
+	}
+
+	// Export to HTML
+	function ExportHtml($html, $options = array()) {
+
+		//global $gsExportFile;
+		//header('Content-Type: text/html' . (EWR_CHARSET <> '' ? ';charset=' . EWR_CHARSET : ''));
+		//header('Content-Disposition: attachment; filename=' . $gsExportFile . '.html');
+
+		$folder = @$this->GenOptions["folder"];
+		$fileName = @$this->GenOptions["filename"];
+		$responseType = @$options["responsetype"];
+		$saveToFile = "";
+
+		// Save generate file for print
+		if ($folder <> "" && $fileName <> "" && ($responseType == "json" || $responseType == "file" && EWR_REPORT_SAVE_OUTPUT_ON_SERVER)) {
+			$baseTag = "<base href=\"" . ewr_BaseUrl() . "\">";
+			$html = preg_replace('/<head>/', '<head>' . $baseTag, $html);
+			ewr_SaveFile($folder, $fileName, $html);
+			$saveToFile = ewr_UploadPathEx(FALSE, $folder) . $fileName;
+		}
+		if ($saveToFile == "" || $responseType == "file")
+			echo $html;
+		return $saveToFile;
+	}
+
+	// Export to WORD
+	function ExportWord($html, $options = array()) {
+		global $gsExportFile;
+		$folder = @$options["folder"];
+		$fileName = @$options["filename"];
+		$responseType = @$options["responsetype"];
+		$saveToFile = "";
+		if ($folder <> "" && $fileName <> "" && ($responseType == "json" || $responseType == "file" && EWR_REPORT_SAVE_OUTPUT_ON_SERVER)) {
+		 	ewr_SaveFile(ewr_PathCombine(ewr_AppRoot(), $folder, TRUE), $fileName, $html);
+			$saveToFile = ewr_UploadPathEx(FALSE, $folder) . $fileName;
+		}
+		if ($saveToFile == "" || $responseType == "file") {
+			header('Content-Type: application/vnd.ms-word' . (EWR_CHARSET <> '' ? ';charset=' . EWR_CHARSET : ''));
+			header('Content-Disposition: attachment; filename=' . $gsExportFile . '.doc');
+			echo $html;
+		}
+		return $saveToFile;
+	}
+
+	// Export to EXCEL
+	function ExportExcel($html, $options = array()) {
+		global $gsExportFile;
+		$folder = @$options["folder"];
+		$fileName = @$options["filename"];
+		$responseType = @$options["responsetype"];
+		$saveToFile = "";
+		if ($folder <> "" && $fileName <> "" && ($responseType == "json" || $responseType == "file" && EWR_REPORT_SAVE_OUTPUT_ON_SERVER)) {
+		 	ewr_SaveFile(ewr_PathCombine(ewr_AppRoot(), $folder, TRUE), $fileName, $html);
+			$saveToFile = ewr_UploadPathEx(FALSE, $folder) . $fileName;
+		}
+		if ($saveToFile == "" || $responseType == "file") {
+			header('Content-Type: application/vnd.ms-excel' . (EWR_CHARSET <> '' ? ';charset=' . EWR_CHARSET : ''));
+			header('Content-Disposition: attachment; filename=' . $gsExportFile . '.xls');
+			echo $html;
+		}
+		return $saveToFile;
+	}
+
+	// Export PDF
+	function ExportPdf($html, $options = array()) {
+		global $gsExportFile;
+		@ini_set("memory_limit", EWR_PDF_MEMORY_LIMIT);
+		set_time_limit(EWR_PDF_TIME_LIMIT);
+		if (EWR_DEBUG_ENABLED) // Add debug message
+			$html = str_replace("</body>", ewr_DebugMsg() . "</body>", $html);
+		$dompdf = new \Dompdf\Dompdf(array("pdf_backend" => "Cpdf"));
+		$doc = new DOMDocument();
+		@$doc->loadHTML('<?xml encoding="uft-8">' . ewr_ConvertToUtf8($html)); // Convert to utf-8
+		$spans = $doc->getElementsByTagName("span");
+		foreach ($spans as $span) {
+			if ($span->getAttribute("class") == "ewFilterCaption")
+				$span->parentNode->insertBefore($doc->createElement("span", ":&nbsp;"), $span->nextSibling);
+		}
+		$html = $doc->saveHTML();
+		$html = ewr_ConvertFromUtf8($html);
+		$dompdf->load_html($html);
+		$dompdf->set_paper("a4", "portrait");
+		$dompdf->render();
+		$folder = @$options["folder"];
+		$fileName = @$options["filename"];
+		$responseType = @$options["responsetype"];
+		$saveToFile = "";
+		if ($folder <> "" && $fileName <> "" && ($responseType == "json" || $responseType == "file" && EWR_REPORT_SAVE_OUTPUT_ON_SERVER)) {
+			ewr_SaveFile(ewr_PathCombine(ewr_AppRoot(), $folder, TRUE), $fileName, $dompdf->output());
+			$saveToFile = ewr_UploadPathEx(FALSE, $folder) . $fileName;
+		}
+		if ($saveToFile == "" || $responseType == "file") {
+			$sExportFile = strtolower(substr($gsExportFile, -4)) == ".pdf" ? $gsExportFile : $gsExportFile . ".pdf";
+			$dompdf->stream($sExportFile, array("Attachment" => 1)); // 0 to open in browser, 1 to download
+		}
+		ewr_DeleteTmpImages($html);
+		return $saveToFile;
 	}
 
 	// Page Load event
@@ -1260,6 +2243,7 @@ $Page->Page_Render();
 ?>
 <?php include_once "header.php" ?>
 <?php include_once "phprptinc/header.php" ?>
+<?php if ($Page->Export == "" || $Page->Export == "print" || $Page->Export == "email" && @$gsEmailContentType == "url") { ?>
 <script type="text/javascript">
 
 // Create page object
@@ -1283,25 +2267,70 @@ r_bukubesar_summary.Chart_Rendered =
  	//alert(chartid);
  }
 </script>
-<?php if (!$Page->DrillDown) { ?>
 <?php } ?>
-<?php if (!$Page->DrillDown) { ?>
+<?php if ($Page->Export == "" && !$Page->DrillDown) { ?>
+<script type="text/javascript">
+
+// Form object
+var CurrentForm = fr_bukubesarsummary = new ewr_Form("fr_bukubesarsummary");
+
+// Validate method
+fr_bukubesarsummary.Validate = function() {
+	if (!this.ValidateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.GetForm(), $fobj = $(fobj);
+	var elm = fobj.sv_tgl;
+	if (elm && !ewr_CheckDateDef(elm.value)) {
+		if (!this.OnError(elm, "<?php echo ewr_JsEncode2($Page->tgl->FldErrMsg()) ?>"))
+			return false;
+	}
+	var elm = fobj.sv2_tgl;
+	if (elm && !ewr_CheckDateDef(elm.value)) {
+		if (!this.OnError(elm, "<?php echo ewr_JsEncode2($Page->tgl->FldErrMsg()) ?>"))
+			return false;
+	}
+
+	// Call Form Custom Validate event
+	if (!this.Form_CustomValidate(fobj))
+		return false;
+	return true;
+}
+
+// Form_CustomValidate method
+fr_bukubesarsummary.Form_CustomValidate = 
+ function(fobj) { // DO NOT CHANGE THIS LINE!
+
+ 	// Your custom validation code here, return false if invalid.
+ 	return true;
+ }
+<?php if (EWR_CLIENT_VALIDATE) { ?>
+fr_bukubesarsummary.ValidateRequired = true; // Uses JavaScript validation
+<?php } else { ?>
+fr_bukubesarsummary.ValidateRequired = false; // No JavaScript validation
+<?php } ?>
+
+// Use Ajax
+</script>
+<?php } ?>
+<?php if ($Page->Export == "" && !$Page->DrillDown) { ?>
 <script type="text/javascript">
 
 // Write your client script here, no need to add script tags.
 </script>
 <?php } ?>
+<?php if ($Page->Export == "") { ?>
 <!-- container (begin) -->
 <div id="ewContainer" class="ewContainer">
 <!-- top container (begin) -->
 <div id="ewTop" class="ewTop">
 <a id="top"></a>
+<?php } ?>
 <?php if (@$Page->GenOptions["showfilter"] == "1") { ?>
 <?php $Page->ShowFilterList(TRUE) ?>
 <?php } ?>
 <!-- top slot -->
 <div class="ewToolbar">
-<?php if (!$Page->DrillDown || !$Page->DrillDownInPanel) { ?>
+<?php if ($Page->Export == "" && (!$Page->DrillDown || !$Page->DrillDownInPanel)) { ?>
 <?php if ($ReportBreadcrumb) $ReportBreadcrumb->Render(); ?>
 <?php } ?>
 <?php
@@ -1312,25 +2341,65 @@ if (!$Page->DrillDownInPanel) {
 	$Page->GenerateOptions->Render("body");
 }
 ?>
-<?php if (!$Page->DrillDown) { ?>
+<?php if ($Page->Export == "" && !$Page->DrillDown) { ?>
 <?php echo $ReportLanguage->SelectionForm(); ?>
 <?php } ?>
 <div class="clearfix"></div>
 </div>
 <?php $Page->ShowPageHeader(); ?>
 <?php $Page->ShowMessage(); ?>
+<?php if ($Page->Export == "") { ?>
 </div>
 <!-- top container (end) -->
 	<!-- left container (begin) -->
 	<div id="ewLeft" class="ewLeft">
+<?php } ?>
 	<!-- Left slot -->
+<?php if ($Page->Export == "") { ?>
 	</div>
 	<!-- left container (end) -->
 	<!-- center container - report (begin) -->
 	<div id="ewCenter" class="ewCenter">
+<?php } ?>
 	<!-- center slot -->
 <!-- summary report starts -->
+<?php if ($Page->Export <> "pdf") { ?>
 <div id="report_summary">
+<?php } ?>
+<?php if ($Page->Export == "" && !$Page->DrillDown) { ?>
+<!-- Search form (begin) -->
+<form name="fr_bukubesarsummary" id="fr_bukubesarsummary" class="form-inline ewForm ewExtFilterForm" action="<?php echo ewr_CurrentPage() ?>">
+<?php $SearchPanelClass = ($Page->Filter <> "") ? " in" : " in"; ?>
+<div id="fr_bukubesarsummary_SearchPanel" class="ewSearchPanel collapse<?php echo $SearchPanelClass ?>">
+<input type="hidden" name="cmd" value="search">
+<div id="r_1" class="ewRow">
+<div id="c_tgl" class="ewCell form-group">
+	<label for="sv_tgl" class="ewSearchCaption ewLabel"><?php echo $Page->tgl->FldCaption() ?></label>
+	<span class="ewSearchOperator"><?php echo $ReportLanguage->Phrase("BETWEEN"); ?><input type="hidden" name="so_tgl" id="so_tgl" value="BETWEEN"></span>
+	<span class="control-group ewSearchField">
+<?php ewr_PrependClass($Page->tgl->EditAttrs["class"], "form-control"); // PR8 ?>
+<input type="text" data-table="r_bukubesar" data-field="x_tgl" id="sv_tgl" name="sv_tgl" placeholder="<?php echo $Page->tgl->PlaceHolder ?>" value="<?php echo ewr_HtmlEncode($Page->tgl->SearchValue) ?>" data-calendar="true" data-formatid="0"<?php echo $Page->tgl->EditAttributes() ?>>
+</span>
+	<span class="ewSearchCond btw1_tgl"><?php echo $ReportLanguage->Phrase("AND") ?></span>
+	<span class="ewSearchField btw1_tgl">
+<?php ewr_PrependClass($Page->tgl->EditAttrs["class"], "form-control"); // PR8 ?>
+<input type="text" data-table="r_bukubesar" data-field="x_tgl" id="sv2_tgl" name="sv2_tgl" placeholder="<?php echo $Page->tgl->PlaceHolder ?>" value="<?php echo ewr_HtmlEncode($Page->tgl->SearchValue2) ?>" data-calendar="true" data-formatid="0"<?php echo $Page->tgl->EditAttributes() ?>>
+</span>
+</div>
+</div>
+<div class="ewRow"><input type="submit" name="btnsubmit" id="btnsubmit" class="btn btn-primary" value="<?php echo $ReportLanguage->Phrase("Search") ?>">
+<input type="reset" name="btnreset" id="btnreset" class="btn hide" value="<?php echo $ReportLanguage->Phrase("Reset") ?>"></div>
+</div>
+</form>
+<script type="text/javascript">
+fr_bukubesarsummary.Init();
+fr_bukubesarsummary.FilterList = <?php echo $Page->GetFilterList() ?>;
+</script>
+<!-- Search form (end) -->
+<?php } ?>
+<?php if ($Page->ShowCurrentFilter) { ?>
+<?php $Page->ShowFilterList() ?>
+<?php } ?>
 <?php
 
 // Set the last group to display if not export all
@@ -1348,49 +2417,61 @@ $Page->RecIndex = 0;
 
 // Get first row
 if ($Page->TotalGrps > 0) {
-	$Page->GetRow(1);
+	$Page->GetGrpRow(1);
 	$Page->GrpCount = 1;
 }
-$Page->GrpIdx = ewr_InitArray(2, -1);
-$Page->GrpIdx[0] = -1;
-$Page->GrpIdx[1] = $Page->StopGrp - $Page->StartGrp + 1;
-while ($rs && !$rs->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page->ShowHeader) {
+$Page->GrpIdx = ewr_InitArray($Page->StopGrp - $Page->StartGrp + 1, -1);
+while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page->ShowHeader) {
 
 	// Show dummy header for custom template
 	// Show header
 
 	if ($Page->ShowHeader) {
 ?>
+<?php if ($Page->GrpCount > 1) { ?>
+</tbody>
+</table>
+<?php if ($Page->Export <> "pdf") { ?>
+</div>
+<?php } ?>
+<?php if ($Page->TotalGrps > 0) { ?>
+<?php if ($Page->Export == "" && !($Page->DrillDown && $Page->TotalGrps > 0)) { ?>
+<div class="panel-footer ewGridLowerPanel">
+<?php include "r_bukubesarsmrypager.php" ?>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
+<?php } ?>
+<?php if ($Page->Export <> "pdf") { ?>
+</div>
+<?php } ?>
+<span data-class="tpb<?php echo $Page->GrpCount-1 ?>_r_bukubesar"><?php echo $Page->PageBreakContent ?></span>
+<?php } ?>
+<?php if ($Page->Export <> "pdf") { ?>
 <?php if ($Page->Export == "word" || $Page->Export == "excel") { ?>
 <div class="ewGrid"<?php echo $Page->ReportTableStyle ?>>
 <?php } else { ?>
 <div class="panel panel-default ewGrid"<?php echo $Page->ReportTableStyle ?>>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->Export == "" && !($Page->DrillDown && $Page->TotalGrps > 0)) { ?>
+<div class="panel-heading ewGridUpperPanel">
+<?php include "r_bukubesarsmrypager.php" ?>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <!-- Report grid (begin) -->
+<?php if ($Page->Export <> "pdf") { ?>
 <div class="<?php if (ewr_IsResponsiveLayout()) { echo "table-responsive "; } ?>ewGridMiddlePanel">
+<?php } ?>
 <table class="<?php echo $Page->ReportTableClass ?>">
 <thead>
 	<!-- Table header -->
 	<tr class="ewTableHeader">
-<?php if ($Page->level4_id->Visible) { ?>
-<?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
-	<td data-field="level4_id"><div class="r_bukubesar_level4_id"><span class="ewTableHeaderCaption"><?php echo $Page->level4_id->FldCaption() ?></span></div></td>
-<?php } else { ?>
-	<td data-field="level4_id">
-<?php if ($Page->SortUrl($Page->level4_id) == "") { ?>
-		<div class="ewTableHeaderBtn r_bukubesar_level4_id">
-			<span class="ewTableHeaderCaption"><?php echo $Page->level4_id->FldCaption() ?></span>
-		</div>
-<?php } else { ?>
-		<div class="ewTableHeaderBtn ewPointer r_bukubesar_level4_id" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->level4_id) ?>',0);">
-			<span class="ewTableHeaderCaption"><?php echo $Page->level4_id->FldCaption() ?></span>
-			<span class="ewTableHeaderSort"><?php if ($Page->level4_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->level4_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
-		</div>
-<?php } ?>
-	</td>
-<?php } ?>
-<?php } ?>
 <?php if ($Page->no_nama_akun->Visible) { ?>
+	<?php if ($Page->no_nama_akun->ShowGroupHeaderAsRow) { ?>
+	<td data-field="no_nama_akun">&nbsp;</td>
+	<?php } else { ?>
 <?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
 	<td data-field="no_nama_akun"><div class="r_bukubesar_no_nama_akun"><span class="ewTableHeaderCaption"><?php echo $Page->no_nama_akun->FldCaption() ?></span></div></td>
 <?php } else { ?>
@@ -1400,81 +2481,102 @@ while ($rs && !$rs->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page->ShowH
 			<span class="ewTableHeaderCaption"><?php echo $Page->no_nama_akun->FldCaption() ?></span>
 		</div>
 <?php } else { ?>
-		<div class="ewTableHeaderBtn ewPointer r_bukubesar_no_nama_akun" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->no_nama_akun) ?>',0);">
+		<div class="ewTableHeaderBtn ewPointer r_bukubesar_no_nama_akun" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->no_nama_akun) ?>',2);">
 			<span class="ewTableHeaderCaption"><?php echo $Page->no_nama_akun->FldCaption() ?></span>
 			<span class="ewTableHeaderSort"><?php if ($Page->no_nama_akun->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->no_nama_akun->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
 		</div>
 <?php } ?>
 	</td>
 <?php } ?>
+	<?php } ?>
 <?php } ?>
-<?php if ($Page->jurnal->Visible) { ?>
+<?php if ($Page->tgl->Visible) { ?>
 <?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
-	<td data-field="jurnal"><div class="r_bukubesar_jurnal"><span class="ewTableHeaderCaption"><?php echo $Page->jurnal->FldCaption() ?></span></div></td>
+	<td data-field="tgl"><div class="r_bukubesar_tgl"><span class="ewTableHeaderCaption"><?php echo $Page->tgl->FldCaption() ?></span></div></td>
 <?php } else { ?>
-	<td data-field="jurnal">
-<?php if ($Page->SortUrl($Page->jurnal) == "") { ?>
-		<div class="ewTableHeaderBtn r_bukubesar_jurnal">
-			<span class="ewTableHeaderCaption"><?php echo $Page->jurnal->FldCaption() ?></span>
+	<td data-field="tgl">
+<?php if ($Page->SortUrl($Page->tgl) == "") { ?>
+		<div class="ewTableHeaderBtn r_bukubesar_tgl">
+			<span class="ewTableHeaderCaption"><?php echo $Page->tgl->FldCaption() ?></span>
+			<a class="ewTableHeaderPopup" title="<?php echo $ReportLanguage->Phrase("Filter"); ?>" onclick="ewr_ShowPopup.call(this, event, 'r_bukubesar_tgl', false, '<?php echo $Page->tgl->RangeFrom; ?>', '<?php echo $Page->tgl->RangeTo; ?>');" id="x_tgl<?php echo $Page->Cnt[0][0]; ?>"><span class="icon-filter"></span></a>
 		</div>
 <?php } else { ?>
-		<div class="ewTableHeaderBtn ewPointer r_bukubesar_jurnal" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->jurnal) ?>',0);">
-			<span class="ewTableHeaderCaption"><?php echo $Page->jurnal->FldCaption() ?></span>
-			<span class="ewTableHeaderSort"><?php if ($Page->jurnal->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->jurnal->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		<div class="ewTableHeaderBtn ewPointer r_bukubesar_tgl" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->tgl) ?>',2);">
+			<span class="ewTableHeaderCaption"><?php echo $Page->tgl->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->tgl->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->tgl->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+			<a class="ewTableHeaderPopup" title="<?php echo $ReportLanguage->Phrase("Filter"); ?>" onclick="ewr_ShowPopup.call(this, event, 'r_bukubesar_tgl', false, '<?php echo $Page->tgl->RangeFrom; ?>', '<?php echo $Page->tgl->RangeTo; ?>');" id="x_tgl<?php echo $Page->Cnt[0][0]; ?>"><span class="icon-filter"></span></a>
 		</div>
 <?php } ?>
 	</td>
 <?php } ?>
 <?php } ?>
-<?php if ($Page->jurnal_kode->Visible) { ?>
+<?php if ($Page->no_bukti->Visible) { ?>
 <?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
-	<td data-field="jurnal_kode"><div class="r_bukubesar_jurnal_kode"><span class="ewTableHeaderCaption"><?php echo $Page->jurnal_kode->FldCaption() ?></span></div></td>
+	<td data-field="no_bukti"><div class="r_bukubesar_no_bukti"><span class="ewTableHeaderCaption"><?php echo $Page->no_bukti->FldCaption() ?></span></div></td>
 <?php } else { ?>
-	<td data-field="jurnal_kode">
-<?php if ($Page->SortUrl($Page->jurnal_kode) == "") { ?>
-		<div class="ewTableHeaderBtn r_bukubesar_jurnal_kode">
-			<span class="ewTableHeaderCaption"><?php echo $Page->jurnal_kode->FldCaption() ?></span>
+	<td data-field="no_bukti">
+<?php if ($Page->SortUrl($Page->no_bukti) == "") { ?>
+		<div class="ewTableHeaderBtn r_bukubesar_no_bukti">
+			<span class="ewTableHeaderCaption"><?php echo $Page->no_bukti->FldCaption() ?></span>
 		</div>
 <?php } else { ?>
-		<div class="ewTableHeaderBtn ewPointer r_bukubesar_jurnal_kode" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->jurnal_kode) ?>',0);">
-			<span class="ewTableHeaderCaption"><?php echo $Page->jurnal_kode->FldCaption() ?></span>
-			<span class="ewTableHeaderSort"><?php if ($Page->jurnal_kode->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->jurnal_kode->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		<div class="ewTableHeaderBtn ewPointer r_bukubesar_no_bukti" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->no_bukti) ?>',2);">
+			<span class="ewTableHeaderCaption"><?php echo $Page->no_bukti->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->no_bukti->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->no_bukti->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
 		</div>
 <?php } ?>
 	</td>
 <?php } ?>
 <?php } ?>
-<?php if ($Page->no_akun->Visible) { ?>
+<?php if ($Page->ket->Visible) { ?>
 <?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
-	<td data-field="no_akun"><div class="r_bukubesar_no_akun"><span class="ewTableHeaderCaption"><?php echo $Page->no_akun->FldCaption() ?></span></div></td>
+	<td data-field="ket"><div class="r_bukubesar_ket"><span class="ewTableHeaderCaption"><?php echo $Page->ket->FldCaption() ?></span></div></td>
 <?php } else { ?>
-	<td data-field="no_akun">
-<?php if ($Page->SortUrl($Page->no_akun) == "") { ?>
-		<div class="ewTableHeaderBtn r_bukubesar_no_akun">
-			<span class="ewTableHeaderCaption"><?php echo $Page->no_akun->FldCaption() ?></span>
+	<td data-field="ket">
+<?php if ($Page->SortUrl($Page->ket) == "") { ?>
+		<div class="ewTableHeaderBtn r_bukubesar_ket">
+			<span class="ewTableHeaderCaption"><?php echo $Page->ket->FldCaption() ?></span>
 		</div>
 <?php } else { ?>
-		<div class="ewTableHeaderBtn ewPointer r_bukubesar_no_akun" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->no_akun) ?>',0);">
-			<span class="ewTableHeaderCaption"><?php echo $Page->no_akun->FldCaption() ?></span>
-			<span class="ewTableHeaderSort"><?php if ($Page->no_akun->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->no_akun->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		<div class="ewTableHeaderBtn ewPointer r_bukubesar_ket" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->ket) ?>',2);">
+			<span class="ewTableHeaderCaption"><?php echo $Page->ket->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->ket->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->ket->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
 		</div>
 <?php } ?>
 	</td>
 <?php } ?>
 <?php } ?>
-<?php if ($Page->nama_akun->Visible) { ?>
+<?php if ($Page->debet->Visible) { ?>
 <?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
-	<td data-field="nama_akun"><div class="r_bukubesar_nama_akun"><span class="ewTableHeaderCaption"><?php echo $Page->nama_akun->FldCaption() ?></span></div></td>
+	<td data-field="debet"><div class="r_bukubesar_debet" style="text-align: right;"><span class="ewTableHeaderCaption"><?php echo $Page->debet->FldCaption() ?></span></div></td>
 <?php } else { ?>
-	<td data-field="nama_akun">
-<?php if ($Page->SortUrl($Page->nama_akun) == "") { ?>
-		<div class="ewTableHeaderBtn r_bukubesar_nama_akun">
-			<span class="ewTableHeaderCaption"><?php echo $Page->nama_akun->FldCaption() ?></span>
+	<td data-field="debet">
+<?php if ($Page->SortUrl($Page->debet) == "") { ?>
+		<div class="ewTableHeaderBtn r_bukubesar_debet" style="text-align: right;">
+			<span class="ewTableHeaderCaption"><?php echo $Page->debet->FldCaption() ?></span>
 		</div>
 <?php } else { ?>
-		<div class="ewTableHeaderBtn ewPointer r_bukubesar_nama_akun" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->nama_akun) ?>',0);">
-			<span class="ewTableHeaderCaption"><?php echo $Page->nama_akun->FldCaption() ?></span>
-			<span class="ewTableHeaderSort"><?php if ($Page->nama_akun->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->nama_akun->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		<div class="ewTableHeaderBtn ewPointer r_bukubesar_debet" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->debet) ?>',2);" style="text-align: right;">
+			<span class="ewTableHeaderCaption"><?php echo $Page->debet->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->debet->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->debet->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		</div>
+<?php } ?>
+	</td>
+<?php } ?>
+<?php } ?>
+<?php if ($Page->kredit->Visible) { ?>
+<?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
+	<td data-field="kredit"><div class="r_bukubesar_kredit" style="text-align: right;"><span class="ewTableHeaderCaption"><?php echo $Page->kredit->FldCaption() ?></span></div></td>
+<?php } else { ?>
+	<td data-field="kredit">
+<?php if ($Page->SortUrl($Page->kredit) == "") { ?>
+		<div class="ewTableHeaderBtn r_bukubesar_kredit" style="text-align: right;">
+			<span class="ewTableHeaderCaption"><?php echo $Page->kredit->FldCaption() ?></span>
+		</div>
+<?php } else { ?>
+		<div class="ewTableHeaderBtn ewPointer r_bukubesar_kredit" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->kredit) ?>',2);" style="text-align: right;">
+			<span class="ewTableHeaderCaption"><?php echo $Page->kredit->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->kredit->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->kredit->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
 		</div>
 <?php } ?>
 	</td>
@@ -1487,9 +2589,60 @@ while ($rs && !$rs->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page->ShowH
 		if ($Page->TotalGrps == 0) break; // Show header only
 		$Page->ShowHeader = FALSE;
 	}
-	$Page->RecCount++;
-	$Page->RecIndex++;
+
+	// Build detail SQL
+	$sWhere = ewr_DetailFilterSQL($Page->no_nama_akun, $Page->getSqlFirstGroupField(), $Page->no_nama_akun->GroupValue(), $Page->DBID);
+	if ($Page->PageFirstGroupFilter <> "") $Page->PageFirstGroupFilter .= " OR ";
+	$Page->PageFirstGroupFilter .= $sWhere;
+	if ($Page->Filter != "")
+		$sWhere = "($Page->Filter) AND ($sWhere)";
+	$sSql = ewr_BuildReportSql($Page->getSqlSelect(), $Page->getSqlWhere(), $Page->getSqlGroupBy(), $Page->getSqlHaving(), $Page->getSqlOrderBy(), $sWhere, $Page->Sort);
+	$rs = $Page->GetDetailRs($sSql);
+	$rsdtlcnt = ($rs) ? $rs->RecordCount() : 0;
+	if ($rsdtlcnt > 0)
+		$Page->GetRow(1);
+	$Page->GrpIdx[$Page->GrpCount] = $rsdtlcnt;
+	while ($rs && !$rs->EOF) { // Loop detail records
+		$Page->RecCount++;
+		$Page->RecIndex++;
 ?>
+<?php if ($Page->no_nama_akun->Visible && $Page->ChkLvlBreak(1) && $Page->no_nama_akun->ShowGroupHeaderAsRow) { ?>
+<?php
+
+		// Render header row
+		$Page->ResetAttrs();
+		$Page->RowType = EWR_ROWTYPE_TOTAL;
+		$Page->RowTotalType = EWR_ROWTOTAL_GROUP;
+		$Page->RowTotalSubType = EWR_ROWTOTAL_HEADER;
+		$Page->RowGroupLevel = 1;
+		$Page->no_nama_akun->Count = $Page->GetSummaryCount(1);
+		$Page->RenderRow();
+?>
+	<tr<?php echo $Page->RowAttributes(); ?>>
+<?php if ($Page->no_nama_akun->Visible) { ?>
+		<td data-field="no_nama_akun"<?php echo $Page->no_nama_akun->CellAttributes(); ?>><span class="ewGroupToggle icon-collapse"></span></td>
+<?php } ?>
+		<td data-field="no_nama_akun" colspan="<?php echo ($Page->GrpColumnCount + $Page->DtlColumnCount - 1) ?>"<?php echo $Page->no_nama_akun->CellAttributes() ?>>
+<?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
+		<span class="ewSummaryCaption r_bukubesar_no_nama_akun"><span class="ewTableHeaderCaption"><?php echo $Page->no_nama_akun->FldCaption() ?></span></span>
+<?php } else { ?>
+	<?php if ($Page->SortUrl($Page->no_nama_akun) == "") { ?>
+		<span class="ewSummaryCaption r_bukubesar_no_nama_akun">
+			<span class="ewTableHeaderCaption"><?php echo $Page->no_nama_akun->FldCaption() ?></span>
+		</span>
+	<?php } else { ?>
+		<span class="ewTableHeaderBtn ewPointer ewSummaryCaption r_bukubesar_no_nama_akun" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->no_nama_akun) ?>',2);">
+			<span class="ewTableHeaderCaption"><?php echo $Page->no_nama_akun->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->no_nama_akun->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->no_nama_akun->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		</span>
+	<?php } ?>
+<?php } ?>
+		<?php echo $ReportLanguage->Phrase("SummaryColon") ?>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_r_bukubesar_no_nama_akun"<?php echo $Page->no_nama_akun->ViewAttributes() ?>><?php echo $Page->no_nama_akun->GroupViewValue ?></span>
+		<span class="ewSummaryCount">(<span class="ewAggregateCaption"><?php echo $ReportLanguage->Phrase("RptCnt") ?></span><?php echo $ReportLanguage->Phrase("AggregateEqual") ?><span class="ewAggregateValue"><?php echo ewr_FormatNumber($Page->no_nama_akun->Count,0,-2,-2,-2) ?></span>)</span>
+		</td>
+	</tr>
+<?php } ?>
 <?php
 
 		// Render detail row
@@ -1498,29 +2651,33 @@ while ($rs && !$rs->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page->ShowH
 		$Page->RenderRow();
 ?>
 	<tr<?php echo $Page->RowAttributes(); ?>>
-<?php if ($Page->level4_id->Visible) { ?>
-		<td data-field="level4_id"<?php echo $Page->level4_id->CellAttributes() ?>>
-<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_level4_id"<?php echo $Page->level4_id->ViewAttributes() ?>><?php echo $Page->level4_id->ListViewValue() ?></span></td>
-<?php } ?>
 <?php if ($Page->no_nama_akun->Visible) { ?>
-		<td data-field="no_nama_akun"<?php echo $Page->no_nama_akun->CellAttributes() ?>>
-<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_no_nama_akun"<?php echo $Page->no_nama_akun->ViewAttributes() ?>><?php echo $Page->no_nama_akun->ListViewValue() ?></span></td>
+	<?php if ($Page->no_nama_akun->ShowGroupHeaderAsRow) { ?>
+		<td data-field="no_nama_akun"<?php echo $Page->no_nama_akun->CellAttributes(); ?>>&nbsp;</td>
+	<?php } else { ?>
+		<td data-field="no_nama_akun"<?php echo $Page->no_nama_akun->CellAttributes(); ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_r_bukubesar_no_nama_akun"<?php echo $Page->no_nama_akun->ViewAttributes() ?>><?php echo $Page->no_nama_akun->GroupViewValue ?></span></td>
+	<?php } ?>
 <?php } ?>
-<?php if ($Page->jurnal->Visible) { ?>
-		<td data-field="jurnal"<?php echo $Page->jurnal->CellAttributes() ?>>
-<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_jurnal"<?php echo $Page->jurnal->ViewAttributes() ?>><?php echo $Page->jurnal->ListViewValue() ?></span></td>
+<?php if ($Page->tgl->Visible) { ?>
+		<td data-field="tgl"<?php echo $Page->tgl->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_tgl"<?php echo $Page->tgl->ViewAttributes() ?>><?php echo $Page->tgl->ListViewValue() ?></span></td>
 <?php } ?>
-<?php if ($Page->jurnal_kode->Visible) { ?>
-		<td data-field="jurnal_kode"<?php echo $Page->jurnal_kode->CellAttributes() ?>>
-<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_jurnal_kode"<?php echo $Page->jurnal_kode->ViewAttributes() ?>><?php echo $Page->jurnal_kode->ListViewValue() ?></span></td>
+<?php if ($Page->no_bukti->Visible) { ?>
+		<td data-field="no_bukti"<?php echo $Page->no_bukti->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_no_bukti"<?php echo $Page->no_bukti->ViewAttributes() ?>><?php echo $Page->no_bukti->ListViewValue() ?></span></td>
 <?php } ?>
-<?php if ($Page->no_akun->Visible) { ?>
-		<td data-field="no_akun"<?php echo $Page->no_akun->CellAttributes() ?>>
-<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_no_akun"<?php echo $Page->no_akun->ViewAttributes() ?>><?php echo $Page->no_akun->ListViewValue() ?></span></td>
+<?php if ($Page->ket->Visible) { ?>
+		<td data-field="ket"<?php echo $Page->ket->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_ket"<?php echo $Page->ket->ViewAttributes() ?>><?php echo $Page->ket->ListViewValue() ?></span></td>
 <?php } ?>
-<?php if ($Page->nama_akun->Visible) { ?>
-		<td data-field="nama_akun"<?php echo $Page->nama_akun->CellAttributes() ?>>
-<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_nama_akun"<?php echo $Page->nama_akun->ViewAttributes() ?>><?php echo $Page->nama_akun->ListViewValue() ?></span></td>
+<?php if ($Page->debet->Visible) { ?>
+		<td data-field="debet"<?php echo $Page->debet->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_debet"<?php echo $Page->debet->ViewAttributes() ?>><?php echo $Page->debet->ListViewValue() ?></span></td>
+<?php } ?>
+<?php if ($Page->kredit->Visible) { ?>
+		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->ListViewValue() ?></span></td>
 <?php } ?>
 	</tr>
 <?php
@@ -1530,7 +2687,109 @@ while ($rs && !$rs->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page->ShowH
 
 		// Get next record
 		$Page->GetRow(2);
+
+		// Show Footers
+?>
+<?php
+	} // End detail records loop
+?>
+<?php
+		if ($Page->no_nama_akun->Visible) {
+?>
+<?php
+			$Page->no_nama_akun->Count = $Page->GetSummaryCount(1, FALSE);
+			$Page->debet->Count = $Page->Cnt[1][4];
+			$Page->debet->SumValue = $Page->Smry[1][4]; // Load SUM
+			$Page->kredit->Count = $Page->Cnt[1][5];
+			$Page->kredit->SumValue = $Page->Smry[1][5]; // Load SUM
+			$Page->ResetAttrs();
+			$Page->RowType = EWR_ROWTYPE_TOTAL;
+			$Page->RowTotalType = EWR_ROWTOTAL_GROUP;
+			$Page->RowTotalSubType = EWR_ROWTOTAL_FOOTER;
+			$Page->RowGroupLevel = 1;
+			$Page->RenderRow();
+?>
+<?php if ($Page->no_nama_akun->ShowCompactSummaryFooter) { ?>
+	<tr<?php echo $Page->RowAttributes(); ?>>
+<?php if ($Page->no_nama_akun->Visible) { ?>
+		<td data-field="no_nama_akun"<?php echo $Page->no_nama_akun->CellAttributes() ?>>
+	<?php if ($Page->no_nama_akun->ShowGroupHeaderAsRow) { ?>
+		&nbsp;
+	<?php } elseif ($Page->RowGroupLevel <> 1) { ?>
+		&nbsp;
+	<?php } else { ?>
+		<span class="ewSummaryCount"><span class="ewAggregateCaption"><?php echo $ReportLanguage->Phrase("RptCnt") ?></span><?php echo $ReportLanguage->Phrase("AggregateEqual") ?><span class="ewAggregateValue"><?php echo ewr_FormatNumber($Page->no_nama_akun->Count,0,-2,-2,-2) ?></span></span>
+	<?php } ?>
+		</td>
+<?php } ?>
+<?php if ($Page->tgl->Visible) { ?>
+		<td data-field="tgl"<?php echo $Page->no_nama_akun->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->no_bukti->Visible) { ?>
+		<td data-field="no_bukti"<?php echo $Page->no_nama_akun->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->ket->Visible) { ?>
+		<td data-field="ket"<?php echo $Page->no_nama_akun->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->debet->Visible) { ?>
+		<td data-field="debet"<?php echo $Page->no_nama_akun->CellAttributes() ?>><span class="ewAggregateCaption"><?php echo $ReportLanguage->Phrase("RptSum") ?></span><?php echo $ReportLanguage->Phrase("AggregateEqual") ?><span class="ewAggregateValue"><span data-class="tpgs<?php echo $Page->GrpCount ?>_r_bukubesar_debet"<?php echo $Page->debet->ViewAttributes() ?>><?php echo $Page->debet->SumViewValue ?></span></span></td>
+<?php } ?>
+<?php if ($Page->kredit->Visible) { ?>
+		<td data-field="kredit"<?php echo $Page->no_nama_akun->CellAttributes() ?>><span class="ewAggregateCaption"><?php echo $ReportLanguage->Phrase("RptSum") ?></span><?php echo $ReportLanguage->Phrase("AggregateEqual") ?><span class="ewAggregateValue"><span data-class="tpgs<?php echo $Page->GrpCount ?>_r_bukubesar_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></span></td>
+<?php } ?>
+	</tr>
+<?php } else { ?>
+	<tr<?php echo $Page->RowAttributes(); ?>>
+<?php if ($Page->GrpColumnCount + $Page->DtlColumnCount > 0) { ?>
+		<td colspan="<?php echo ($Page->GrpColumnCount + $Page->DtlColumnCount) ?>"<?php echo $Page->kredit->CellAttributes() ?>><?php echo str_replace(array("%v", "%c"), array($Page->no_nama_akun->GroupViewValue, $Page->no_nama_akun->FldCaption()), $ReportLanguage->Phrase("RptSumHead")) ?> <span class="ewDirLtr">(<?php echo ewr_FormatNumber($Page->Cnt[1][0],0,-2,-2,-2) ?><?php echo $ReportLanguage->Phrase("RptDtlRec") ?>)</span></td>
+<?php } ?>
+	</tr>
+	<tr<?php echo $Page->RowAttributes(); ?>>
+<?php if ($Page->GrpColumnCount > 0) { ?>
+		<td colspan="<?php echo ($Page->GrpColumnCount - 0) ?>"<?php echo $Page->no_nama_akun->CellAttributes() ?>><?php echo $ReportLanguage->Phrase("RptSum") ?></td>
+<?php } ?>
+<?php if ($Page->tgl->Visible) { ?>
+		<td data-field="tgl"<?php echo $Page->no_nama_akun->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->no_bukti->Visible) { ?>
+		<td data-field="no_bukti"<?php echo $Page->no_nama_akun->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->ket->Visible) { ?>
+		<td data-field="ket"<?php echo $Page->no_nama_akun->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->debet->Visible) { ?>
+		<td data-field="debet"<?php echo $Page->kredit->CellAttributes() ?>>
+<span data-class="tpgs<?php echo $Page->GrpCount ?>_r_bukubesar_debet"<?php echo $Page->debet->ViewAttributes() ?>><?php echo $Page->debet->SumViewValue ?></span></td>
+<?php } ?>
+<?php if ($Page->kredit->Visible) { ?>
+		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>>
+<span data-class="tpgs<?php echo $Page->GrpCount ?>_r_bukubesar_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></td>
+<?php } ?>
+	</tr>
+<?php } ?>
+<?php
+
+			// Reset level 1 summary
+			$Page->ResetLevelSummary(1);
+		} // End show footer check
+?>
+<?php
+
+	// Next group
+	$Page->GetGrpRow(2);
+
+	// Show header if page break
+	if ($Page->Export <> "")
+		$Page->ShowHeader = ($Page->ExportPageBreakCount == 0) ? FALSE : ($Page->GrpCount % $Page->ExportPageBreakCount == 0);
+
+	// Page_Breaking server event
+	if ($Page->ShowHeader)
+		$Page->Page_Breaking($Page->ShowHeader, $Page->PageBreakContent);
 	$Page->GrpCount++;
+
+	// Handle EOF
+	if (!$rsgrp || $rsgrp->EOF)
+		$Page->ShowHeader = FALSE;
 } // End while
 ?>
 <?php if ($Page->TotalGrps > 0) { ?>
@@ -1538,6 +2797,10 @@ while ($rs && !$rs->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page->ShowH
 <tfoot>
 <?php if (($Page->StopGrp - $Page->StartGrp + 1) <> $Page->TotalGrps) { ?>
 <?php
+	$Page->debet->Count = $Page->Cnt[0][4];
+	$Page->debet->SumValue = $Page->Smry[0][4]; // Load SUM
+	$Page->kredit->Count = $Page->Cnt[0][5];
+	$Page->kredit->SumValue = $Page->Smry[0][5]; // Load SUM
 	$Page->ResetAttrs();
 	$Page->RowType = EWR_ROWTYPE_TOTAL;
 	$Page->RowTotalType = EWR_ROWTOTAL_PAGE;
@@ -1545,9 +2808,59 @@ while ($rs && !$rs->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page->ShowH
 	$Page->RowAttrs["class"] = "ewRptPageSummary";
 	$Page->RenderRow();
 ?>
+<?php if ($Page->no_nama_akun->ShowCompactSummaryFooter) { ?>
+	<tr<?php echo $Page->RowAttributes(); ?>><td colspan="<?php echo ($Page->GrpColumnCount + $Page->DtlColumnCount) ?>"><?php echo $ReportLanguage->Phrase("RptPageSummary") ?> (<span class="ewAggregateCaption"><?php echo $ReportLanguage->Phrase("RptCnt") ?></span><?php echo $ReportLanguage->Phrase("AggregateEqual") ?><span class="ewAggregateValue"><?php echo ewr_FormatNumber($Page->Cnt[0][0],0,-2,-2,-2) ?></span>)</td></tr>
+	<tr<?php echo $Page->RowAttributes(); ?>>
+<?php if ($Page->GrpColumnCount > 0) { ?>
+		<td colspan="<?php echo $Page->GrpColumnCount ?>" class="ewRptGrpAggregate">&nbsp;</td>
+<?php } ?>
+<?php if ($Page->tgl->Visible) { ?>
+		<td data-field="tgl"<?php echo $Page->tgl->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->no_bukti->Visible) { ?>
+		<td data-field="no_bukti"<?php echo $Page->no_bukti->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->ket->Visible) { ?>
+		<td data-field="ket"<?php echo $Page->ket->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->debet->Visible) { ?>
+		<td data-field="debet"<?php echo $Page->debet->CellAttributes() ?>><?php echo $ReportLanguage->Phrase("RptSum") ?>=<span data-class="tpps_r_bukubesar_debet"<?php echo $Page->debet->ViewAttributes() ?>><?php echo $Page->debet->SumViewValue ?></span></td>
+<?php } ?>
+<?php if ($Page->kredit->Visible) { ?>
+		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>><?php echo $ReportLanguage->Phrase("RptSum") ?>=<span data-class="tpps_r_bukubesar_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></td>
+<?php } ?>
+	</tr>
+<?php } else { ?>
 	<tr<?php echo $Page->RowAttributes(); ?>><td colspan="<?php echo ($Page->GrpColumnCount + $Page->DtlColumnCount) ?>"><?php echo $ReportLanguage->Phrase("RptPageSummary") ?> <span class="ewDirLtr">(<?php echo ewr_FormatNumber($Page->Cnt[0][0],0,-2,-2,-2); ?><?php echo $ReportLanguage->Phrase("RptDtlRec") ?>)</span></td></tr>
+	<tr<?php echo $Page->RowAttributes(); ?>>
+<?php if ($Page->GrpColumnCount > 0) { ?>
+		<td colspan="<?php echo $Page->GrpColumnCount ?>" class="ewRptGrpAggregate"><?php echo $ReportLanguage->Phrase("RptSum") ?></td>
+<?php } ?>
+<?php if ($Page->tgl->Visible) { ?>
+		<td data-field="tgl"<?php echo $Page->tgl->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->no_bukti->Visible) { ?>
+		<td data-field="no_bukti"<?php echo $Page->no_bukti->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->ket->Visible) { ?>
+		<td data-field="ket"<?php echo $Page->ket->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->debet->Visible) { ?>
+		<td data-field="debet"<?php echo $Page->debet->CellAttributes() ?>>
+<span data-class="tpps_r_bukubesar_debet"<?php echo $Page->debet->ViewAttributes() ?>><?php echo $Page->debet->SumViewValue ?></span></td>
+<?php } ?>
+<?php if ($Page->kredit->Visible) { ?>
+		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>>
+<span data-class="tpps_r_bukubesar_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></td>
+<?php } ?>
+	</tr>
+<?php } ?>
 <?php } ?>
 <?php
+	$Page->debet->Count = $Page->GrandCnt[4];
+	$Page->debet->SumValue = $Page->GrandSmry[4]; // Load SUM
+	$Page->kredit->Count = $Page->GrandCnt[5];
+	$Page->kredit->SumValue = $Page->GrandSmry[5]; // Load SUM
 	$Page->ResetAttrs();
 	$Page->RowType = EWR_ROWTYPE_TOTAL;
 	$Page->RowTotalType = EWR_ROWTOTAL_GRAND;
@@ -1555,46 +2868,116 @@ while ($rs && !$rs->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page->ShowH
 	$Page->RowAttrs["class"] = "ewRptGrandSummary";
 	$Page->RenderRow();
 ?>
+<?php if ($Page->no_nama_akun->ShowCompactSummaryFooter) { ?>
+	<tr<?php echo $Page->RowAttributes() ?>><td colspan="<?php echo ($Page->GrpColumnCount + $Page->DtlColumnCount) ?>"><?php echo $ReportLanguage->Phrase("RptGrandSummary") ?> (<span class="ewAggregateCaption"><?php echo $ReportLanguage->Phrase("RptCnt") ?></span><?php echo $ReportLanguage->Phrase("AggregateEqual") ?><span class="ewAggregateValue"><?php echo ewr_FormatNumber($Page->TotCount,0,-2,-2,-2) ?></span>)</td></tr>
+	<tr<?php echo $Page->RowAttributes() ?>>
+<?php if ($Page->GrpColumnCount > 0) { ?>
+		<td colspan="<?php echo $Page->GrpColumnCount ?>" class="ewRptGrpAggregate">&nbsp;</td>
+<?php } ?>
+<?php if ($Page->tgl->Visible) { ?>
+		<td data-field="tgl"<?php echo $Page->tgl->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->no_bukti->Visible) { ?>
+		<td data-field="no_bukti"<?php echo $Page->no_bukti->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->ket->Visible) { ?>
+		<td data-field="ket"<?php echo $Page->ket->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->debet->Visible) { ?>
+		<td data-field="debet"<?php echo $Page->debet->CellAttributes() ?>><?php echo $ReportLanguage->Phrase("RptSum") ?>=<span data-class="tpts_r_bukubesar_debet"<?php echo $Page->debet->ViewAttributes() ?>><?php echo $Page->debet->SumViewValue ?></span></td>
+<?php } ?>
+<?php if ($Page->kredit->Visible) { ?>
+		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>><?php echo $ReportLanguage->Phrase("RptSum") ?>=<span data-class="tpts_r_bukubesar_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></td>
+<?php } ?>
+	</tr>
+<?php } else { ?>
 	<tr<?php echo $Page->RowAttributes() ?>><td colspan="<?php echo ($Page->GrpColumnCount + $Page->DtlColumnCount) ?>"><?php echo $ReportLanguage->Phrase("RptGrandSummary") ?> <span class="ewDirLtr">(<?php echo ewr_FormatNumber($Page->TotCount,0,-2,-2,-2); ?><?php echo $ReportLanguage->Phrase("RptDtlRec") ?>)</span></td></tr>
+	<tr<?php echo $Page->RowAttributes() ?>>
+<?php if ($Page->GrpColumnCount > 0) { ?>
+		<td colspan="<?php echo $Page->GrpColumnCount ?>" class="ewRptGrpAggregate"><?php echo $ReportLanguage->Phrase("RptSum") ?></td>
+<?php } ?>
+<?php if ($Page->tgl->Visible) { ?>
+		<td data-field="tgl"<?php echo $Page->tgl->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->no_bukti->Visible) { ?>
+		<td data-field="no_bukti"<?php echo $Page->no_bukti->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->ket->Visible) { ?>
+		<td data-field="ket"<?php echo $Page->ket->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->debet->Visible) { ?>
+		<td data-field="debet"<?php echo $Page->debet->CellAttributes() ?>>
+<span data-class="tpts_r_bukubesar_debet"<?php echo $Page->debet->ViewAttributes() ?>><?php echo $Page->debet->SumViewValue ?></span></td>
+<?php } ?>
+<?php if ($Page->kredit->Visible) { ?>
+		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>>
+<span data-class="tpts_r_bukubesar_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></td>
+<?php } ?>
+	</tr>
+<?php } ?>
 	</tfoot>
-<?php } elseif (!$Page->ShowHeader && FALSE) { // No header displayed ?>
+<?php } elseif (!$Page->ShowHeader && TRUE) { // No header displayed ?>
+<?php if ($Page->Export <> "pdf") { ?>
 <?php if ($Page->Export == "word" || $Page->Export == "excel") { ?>
 <div class="ewGrid"<?php echo $Page->ReportTableStyle ?>>
 <?php } else { ?>
 <div class="panel panel-default ewGrid"<?php echo $Page->ReportTableStyle ?>>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->Export == "" && !($Page->DrillDown && $Page->TotalGrps > 0)) { ?>
+<div class="panel-heading ewGridUpperPanel">
+<?php include "r_bukubesarsmrypager.php" ?>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <!-- Report grid (begin) -->
+<?php if ($Page->Export <> "pdf") { ?>
 <div class="<?php if (ewr_IsResponsiveLayout()) { echo "table-responsive "; } ?>ewGridMiddlePanel">
+<?php } ?>
 <table class="<?php echo $Page->ReportTableClass ?>">
 <?php } ?>
-<?php if ($Page->TotalGrps > 0 || FALSE) { // Show footer ?>
+<?php if ($Page->TotalGrps > 0 || TRUE) { // Show footer ?>
 </table>
+<?php if ($Page->Export <> "pdf") { ?>
 </div>
-<?php if (!($Page->DrillDown && $Page->TotalGrps > 0)) { ?>
+<?php } ?>
+<?php if ($Page->TotalGrps > 0) { ?>
+<?php if ($Page->Export == "" && !($Page->DrillDown && $Page->TotalGrps > 0)) { ?>
 <div class="panel-footer ewGridLowerPanel">
 <?php include "r_bukubesarsmrypager.php" ?>
 <div class="clearfix"></div>
 </div>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->Export <> "pdf") { ?>
 </div>
 <?php } ?>
+<?php } ?>
+<?php if ($Page->Export <> "pdf") { ?>
 </div>
+<?php } ?>
 <!-- Summary Report Ends -->
+<?php if ($Page->Export == "") { ?>
 	</div>
 	<!-- center container - report (end) -->
 	<!-- right container (begin) -->
 	<div id="ewRight" class="ewRight">
+<?php } ?>
 	<!-- Right slot -->
+<?php if ($Page->Export == "") { ?>
 	</div>
 	<!-- right container (end) -->
 <div class="clearfix"></div>
 <!-- bottom container (begin) -->
 <div id="ewBottom" class="ewBottom">
+<?php } ?>
 	<!-- Bottom slot -->
+<?php if ($Page->Export == "") { ?>
 	</div>
 <!-- Bottom Container (End) -->
 </div>
 <!-- Table Container (End) -->
+<?php } ?>
 <?php $Page->ShowPageFooter(); ?>
 <?php if (EWR_DEBUG_ENABLED) echo ewr_DebugMsg(); ?>
 <?php
@@ -1603,7 +2986,7 @@ while ($rs && !$rs->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page->ShowH
 if ($rsgrp) $rsgrp->Close();
 if ($rs) $rs->Close();
 ?>
-<?php if (!$Page->DrillDown) { ?>
+<?php if ($Page->Export == "" && !$Page->DrillDown) { ?>
 <script type="text/javascript">
 
 // Write your table-specific startup script here

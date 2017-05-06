@@ -143,6 +143,15 @@ $t_detail_grid->ShowMessage();
 <?php if ($t_detail_grid->TotalRecs > 0 || $t_detail->CurrentAction <> "") { ?>
 <div class="panel panel-default ewGrid t_detail">
 <div id="ft_detailgrid" class="ewForm form-inline">
+<?php if ($t_detail_grid->ShowOtherOptions) { ?>
+<div class="panel-heading ewGridUpperPanel">
+<?php
+	foreach ($t_detail_grid->OtherOptions as &$option)
+		$option->Render("body");
+?>
+</div>
+<div class="clearfix"></div>
+<?php } ?>
 <div id="gmp_t_detail" class="<?php if (ew_IsResponsiveLayout()) { echo "table-responsive "; } ?>ewGridMiddlePanel">
 <table id="tbl_t_detailgrid" class="table ewTable">
 <?php echo $t_detail->TableCustomInnerHtml ?>

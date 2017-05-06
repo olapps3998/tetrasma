@@ -79,7 +79,7 @@ define("EWR_SESSION_TIMEOUT_COUNTDOWN", 60, TRUE); // Session timeout count down
 // General
 $EWR_ROOT_RELATIVE_PATH = "."; // Relative path of app root
 define("EWR_UNFORMAT_YEAR", 50, TRUE); // Unformat year
-define("EWR_RANDOM_KEY", 'vZIXowHY8BvFIkbw', TRUE); // Random key for encryption
+define("EWR_RANDOM_KEY", '8e0UGiQxY9n69XnR', TRUE); // Random key for encryption
 define("EWR_PROJECT_STYLESHEET_FILENAME", "phprptcss/tetrasma.css", TRUE); // Project stylesheet file name
 define("EWR_CHART_WIDTH", 550, TRUE);
 define("EWR_CHART_HEIGHT", 440, TRUE);
@@ -728,7 +728,7 @@ define("EWR_BASIC_SEARCH_IGNORE_PATTERN", "/[\?,\.\^\*\(\)\[\]\\\"]/", TRUE); //
 
 // Validate option
 define("EWR_CLIENT_VALIDATE", TRUE, TRUE);
-define("EWR_SERVER_VALIDATE", FALSE, TRUE);
+define("EWR_SERVER_VALIDATE", TRUE, TRUE);
 
 // Auto suggest max entries
 define("EWR_AUTO_SUGGEST_MAX_ENTRIES", 10, TRUE);
@@ -851,7 +851,14 @@ define("EWR_MENU_ROOT_GROUP_TITLE_AS_SUBMENU", FALSE, TRUE);
 define("EWR_SHOW_RIGHT_MENU", FALSE, TRUE);
 ?>
 <?php
-define("EWR_PDF_STYLESHEET_FILENAME", "", TRUE); // Export PDF CSS styles
+define("EWR_PDF_STYLESHEET_FILENAME", "./phprptcss/ewrpdf.css", TRUE); // Export PDF CSS styles
+define("EWR_PDF_MEMORY_LIMIT", "128M", TRUE); // Memory limit
+define("EWR_PDF_TIME_LIMIT", 120, TRUE); // Time limit
+
+// Include dompdf
+include_once "dompdf070/src/Autoloader.php";
+$DompdfAutoloader = new \Dompdf\Autoloader();
+$DompdfAutoloader->register();
 ?>
 <?php
 

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2017/3/5" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2017/5/6" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -583,8 +583,47 @@
   <project>
     <phrase id="bodytitle" value="Tetrasma" />
     <phrase id="footertext" value="&amp;copy;2017 TETRASMA. All rights reserved." />
+    <menu id="22">
+      <phrase id="menutext" value="Home" />
+    </menu>
+    <menu id="10065">
+      <phrase id="menutext" value="Setup" />
+    </menu>
+    <menu id="1">
+      <phrase id="menutext" value="Anggota" />
+    </menu>
+    <menu id="19">
+      <phrase id="menutext" value="Chart of Account" />
+    </menu>
+    <menu id="7">
+      <phrase id="menutext" value="Lv. 1" />
+    </menu>
+    <menu id="8">
+      <phrase id="menutext" value="Lv. 2" />
+    </menu>
+    <menu id="9">
+      <phrase id="menutext" value="Lv. 3" />
+    </menu>
+    <menu id="10">
+      <phrase id="menutext" value="Lv. 4" />
+    </menu>
+    <menu id="16">
+      <phrase id="menutext" value="User" />
+    </menu>
+    <menu id="10106">
+      <phrase id="menutext" value="Input" />
+    </menu>
+    <menu id="20">
+      <phrase id="menutext" value="Jurnal Kas &amp; Bank" />
+    </menu>
+    <menu id="27">
+      <phrase id="menutext" value="Jurnal Memorial" />
+    </menu>
+    <menu id="10128">
+      <phrase id="menutext" value="Laporan" />
+    </menu>
     <menu id="10021">
-      <phrase id="menutext" value="v bukubesar" />
+      <phrase id="menutext" value="Buku Besar" />
     </menu>
     <menu id="10022">
       <phrase id="menutext" value="v kasbank" />
@@ -609,44 +648,11 @@
       <phrase id="menutext" value="Detail Jurnal Memorial" />
     </menu>
     <menu id="23" />
-    <menu id="22">
-      <phrase id="menutext" value="Home" />
-    </menu>
     <menu id="21">
       <phrase id="menutext" value="Detail Jurnal Kas &amp; Bank" />
     </menu>
     <menu id="17">
       <phrase id="menutext" value="audittrail" />
-    </menu>
-    <menu id="1">
-      <phrase id="menutext" value="Manajemen Anggota" />
-    </menu>
-    <menu id="15">
-      <phrase id="menutext" value="Manajemen Akun" />
-    </menu>
-    <menu id="7">
-      <phrase id="menutext" value="Level 1" />
-    </menu>
-    <menu id="8">
-      <phrase id="menutext" value="Level 2" />
-    </menu>
-    <menu id="9">
-      <phrase id="menutext" value="Level 3" />
-    </menu>
-    <menu id="10">
-      <phrase id="menutext" value="Level 4" />
-    </menu>
-    <menu id="19">
-      <phrase id="menutext" value="View Akun" />
-    </menu>
-    <menu id="42">
-      <phrase id="menutext" value="Jurnal" />
-    </menu>
-    <menu id="20">
-      <phrase id="menutext" value="Kas &amp; Bank" />
-    </menu>
-    <menu id="27">
-      <phrase id="menutext" value="Memorial" />
     </menu>
     <menu id="10001">
       <phrase id="menutext" value="audittrail" />
@@ -702,17 +708,8 @@
     <menu id="10018">
       <phrase id="menutext" value="v memorial" />
     </menu>
-    <menu id="10020">
-      <phrase id="menutext" value="Laporan" />
-    </menu>
-    <menu id="10019">
-      <phrase id="menutext" value="Buku Besar" />
-    </menu>
-    <menu id="16">
-      <phrase id="menutext" value="Manajemen User" />
-    </menu>
     <table id="t_anggota">
-      <phrase id="tblcaption" value="Manajemen Anggota" />
+      <phrase id="tblcaption" value="Anggota" />
       <field id="anggota_id">
         <phrase id="fldcaption" value="Anggota ID" />
       </field>
@@ -778,85 +775,85 @@
       </field>
     </table>
     <table id="t_level1">
-      <phrase id="tblcaption" value="Level 1" />
+      <phrase id="tblcaption" value="Lv. 1" />
       <field id="level1_id">
         <phrase id="fldcaption" value="level 1 id" />
       </field>
       <field id="level1_no">
-        <phrase id="fldcaption" value="Kode Akun Level 1" />
+        <phrase id="fldcaption" value="Kode" />
       </field>
       <field id="level1_nama">
-        <phrase id="fldcaption" value="Nama Akun Level 1" />
+        <phrase id="fldcaption" value="Nama" />
       </field>
     </table>
     <table id="t_level2">
-      <phrase id="tblcaption" value="Level 2" />
+      <phrase id="tblcaption" value="Lv. 2" />
       <field id="level2_id">
         <phrase id="fldcaption" value="level 2 id" />
       </field>
       <field id="level1_id">
-        <phrase id="fldcaption" value="Kode, Nama Akun Level 1" />
+        <phrase id="fldcaption" value="Lv. 1" />
       </field>
       <field id="level2_no">
-        <phrase id="fldcaption" value="Kode Akun Level 2" />
+        <phrase id="fldcaption" value="Kode" />
       </field>
       <field id="level2_nama">
-        <phrase id="fldcaption" value="Nama Akun Level 2" />
+        <phrase id="fldcaption" value="Nama" />
       </field>
     </table>
     <table id="t_level3">
-      <phrase id="tblcaption" value="Level 3" />
+      <phrase id="tblcaption" value="Lv. 3" />
       <field id="level3_id">
         <phrase id="fldcaption" value="level 3 id" />
       </field>
       <field id="level1_id">
-        <phrase id="fldcaption" value="Kode, Nama Akun Level 1" />
+        <phrase id="fldcaption" value="Lv. 1" />
       </field>
       <field id="level2_id">
-        <phrase id="fldcaption" value="Kode, Nama Akun Level 2" />
+        <phrase id="fldcaption" value="Lv. 2" />
       </field>
       <field id="level3_no">
-        <phrase id="fldcaption" value="Kode Akun Level 3" />
+        <phrase id="fldcaption" value="Kode" />
       </field>
       <field id="level3_nama">
-        <phrase id="fldcaption" value="Nama Akun Level 3" />
+        <phrase id="fldcaption" value="Nama" />
       </field>
     </table>
     <table id="t_level4">
-      <phrase id="tblcaption" value="Level 4" />
+      <phrase id="tblcaption" value="Lv. 4" />
       <field id="level4_id">
         <phrase id="fldcaption" value="level 4 id" />
       </field>
       <field id="level1_id">
-        <phrase id="fldcaption" value="Kode, Nama Akun Level 1" />
+        <phrase id="fldcaption" value="Lv. 1" />
       </field>
       <field id="level2_id">
-        <phrase id="fldcaption" value="Kode, Nama Akun Level 2" />
+        <phrase id="fldcaption" value="Lv. 2" />
       </field>
       <field id="level3_id">
-        <phrase id="fldcaption" value="Kode, Nama Akun Level 3" />
+        <phrase id="fldcaption" value="Lv. 3" />
       </field>
       <field id="level4_no">
-        <phrase id="fldcaption" value="Kode Akun Level 4" />
+        <phrase id="fldcaption" value="Kode" />
       </field>
       <field id="level4_nama">
-        <phrase id="fldcaption" value="Nama Akun Level 4" />
+        <phrase id="fldcaption" value="Nama" />
       </field>
       <field id="saldo_awal">
         <phrase id="fldcaption" value="Saldo Awal" />
       </field>
       <field id="saldo">
-        <phrase id="fldcaption" value="Saldo" />
+        <phrase id="fldcaption" value="Saldo Akhir" />
       </field>
       <field id="jurnal">
-        <phrase id="fldcaption" value="Input Jurnal" />
+        <phrase id="fldcaption" value="Jurnal Kas / Bank" />
         <phrase id="fldtagvalue1" value="0" />
         <phrase id="fldtagcaption1" value="Tidak" />
         <phrase id="fldtagvalue2" value="1" />
         <phrase id="fldtagcaption2" value="Ya" />
       </field>
       <field id="jurnal_kode">
-        <phrase id="fldcaption" value="Kode Jurnal" />
+        <phrase id="fldcaption" value="Kode" />
         <phrase id="fldtagvalue1" value="K" />
         <phrase id="fldtagcaption1" value="K" />
         <phrase id="fldtagvalue2" value="B" />
@@ -864,7 +861,7 @@
       </field>
     </table>
     <table id="t_user">
-      <phrase id="tblcaption" value="Manajemen User" />
+      <phrase id="tblcaption" value="User" />
       <field id="user_id">
         <phrase id="fldcaption" value="user id" />
       </field>
@@ -885,7 +882,7 @@
       </field>
     </table>
     <table id="view_akun_php">
-      <phrase id="tblcaption" value="View Akun" />
+      <phrase id="tblcaption" value="Chart of Account" />
     </table>
     <table id="t_detail">
       <phrase id="tblcaption" value="Detail Jurnal Kas &amp; Bank" />
@@ -896,7 +893,7 @@
         <phrase id="fldcaption" value="jurnal id" />
       </field>
       <field id="akun_id">
-        <phrase id="fldcaption" value="Akun" />
+        <phrase id="fldcaption" value="Account" />
       </field>
       <field id="nilai">
         <phrase id="fldcaption" value="Nilai" />
@@ -909,12 +906,12 @@
       </field>
     </table>
     <table id="t_jurnal">
-      <phrase id="tblcaption" value="Kas &amp; Bank" />
+      <phrase id="tblcaption" value="Jurnal Kas &amp; Bank" />
       <field id="jurnal_id">
         <phrase id="fldcaption" value="ID" />
       </field>
       <field id="akun_id">
-        <phrase id="fldcaption" value="Akun" />
+        <phrase id="fldcaption" value="Account" />
       </field>
       <field id="jenis_jurnal">
         <phrase id="fldcaption" value="Jenis" />
@@ -950,7 +947,7 @@
         <phrase id="fldcaption" value="Jurnal ID" />
       </field>
       <field id="akunm_id">
-        <phrase id="fldcaption" value="Akun" />
+        <phrase id="fldcaption" value="Account" />
       </field>
       <field id="nilaim_debet">
         <phrase id="fldcaption" value="Debet" />
@@ -960,7 +957,7 @@
       </field>
     </table>
     <table id="t_jurnalm">
-      <phrase id="tblcaption" value="Memorial" />
+      <phrase id="tblcaption" value="Jurnal Memorial" />
       <field id="jurnalm_id">
         <phrase id="fldcaption" value="ID" />
       </field>

@@ -1035,9 +1035,18 @@ class crTableBase {
 		return $sAtt;
 	}
 
-	// Field object by fldvar
-	function &fields($fldvar) {
-		return $this->fields[$fldvar];
+	// Field object by fldname
+	function &fields($fldname) {
+		return $this->fields[$fldname];
+	}
+
+	// Field object by fldparm
+	function &FieldByParm($fldparm) {
+		foreach ($this->fields as $fld) {
+			if (substr($fld->FldVar, 2) == $fldparm)
+				return $fld;
+		}
+		return NULL;
 	}
 
 	// URL encode
@@ -1160,7 +1169,7 @@ class crTableCrosstab extends crTableBase {
 			for ($i = 0; $i < $cnt; $i++) {
 				$smry = &$this->SummaryFields[$i];
 				$st = $smry->SummaryCaption;
-				$fld = &$this->fields(substr($smry->FldVar, 2)); 
+				$fld = &$this->fields($smry->FldName);
 				$caption = $fld->FldCaption();
 				if ($caption <> "") $st = $caption . " (" . $st . ")";
 				if ($cnt > 0) {
@@ -4120,9 +4129,9 @@ function ewr_ConvertValue($FldOpr, $val) {
 // Dropdown display values
 function ewr_DropDownDisplayValue($v, $t, $fmt) {
 	global $ReportLanguage;
-	if ($v == EWR_NULL_VALUE) {
+	if (ewr_SameStr($v, EWR_NULL_VALUE)) {
 		return $ReportLanguage->Phrase("NullLabel");
-	} elseif ($v == EWR_EMPTY_VALUE) {
+	} elseif (ewr_SameStr($v, EWR_EMPTY_VALUE)) {
 		return $ReportLanguage->Phrase("EmptyLabel");
 	} elseif (strtolower($t) == "boolean") {
 		return ewr_BooleanName($v);
@@ -4148,13 +4157,13 @@ function ewr_DropDownDisplayValue($v, $t, $fmt) {
 }
 
 // Get filter value for dropdown
-function ewr_FilterDropDownValue($fld) {
+function ewr_FilterDropDownValue($fld, $sep = ", ") {
 	global $ReportLanguage;
 	$value = $fld->DropDownValue;
 	if (is_array($value))
-		$value = implode(", ", $value);
+		$value = implode($sep, $value);
 	if ($fld->DropDownValue == EWR_INIT_VALUE || is_null($fld->DropDownValue))
-		$value = $ReportLanguage->Phrase("PleaseSelect");
+		$value = ($sep == ",") ? "" : $ReportLanguage->Phrase("PleaseSelect"); // Output empty string as value for input tag
 	return $value;
 }
 
@@ -4988,10 +4997,10 @@ function ewr_ReverseSort($sorttype) {
 
 // Construct a crosstab field name
 function ewr_CrossTabField($smrytype, $smryfld, $colfld, $datetype, $val, $qc, $alias="", $dbid=0) {
-	if ($val == EWR_NULL_VALUE) {
+	if (ewr_SameStr($val, EWR_NULL_VALUE)) {
 		$wrkval = "NULL";
 		$wrkqc = "";
-	} elseif ($val == EWR_EMPTY_VALUE) {
+	} elseif (ewr_SameStr($val, EWR_EMPTY_VALUE)) {
 		$wrkval = "";
 		$wrkqc = $qc;
 	} else {
@@ -5220,7 +5229,7 @@ function ewr_IsSelectedValue(&$ar, $value, $ft) {
 		if ($af || substr($val, 0, 2) == "@@") { // Advanced filters
 			if ($val == $value)
 				return TRUE;
-		} elseif ($value == EWR_NULL_VALUE && $value == $val) {
+		} elseif (ewr_SameStr($value, EWR_NULL_VALUE) && $value == $val) {
 				return TRUE;
 		} else {
 			if (ewr_CompareValue($val, $value, $ft))
@@ -5270,7 +5279,7 @@ function ewr_SetupDistinctValues(&$ar, $val, $label, $dup, $dlm = "") {
 			continue;
 		if (!$isarray) {
 			$ar = array($v => $l);
-		} elseif ($v == EWR_EMPTY_VALUE || $v == EWR_NULL_VALUE) { // Null/Empty
+		} elseif (ewr_SameStr($v, EWR_EMPTY_VALUE) || ewr_SameStr($v, EWR_NULL_VALUE)) { // Null/Empty
 			$ar = array_reverse($ar, TRUE);
 			$ar[$v] = $l; // Insert at top
 			$ar = array_reverse($ar, TRUE);
@@ -5939,9 +5948,9 @@ function ewr_FilterSQL(&$fld, $fn, $ft, $dbid = 0) {
 		$sqlwrk = "";
 		$i = 0;
 		foreach ($ar as $value) {
-			if ($value == EWR_EMPTY_VALUE) { // Empty string
+			if (ewr_SameStr($value, EWR_EMPTY_VALUE)) { // Empty string
 				$sqlwrk .= "$fn = '' OR ";
-			} elseif ($value == EWR_NULL_VALUE) { // Null value
+			} elseif (ewr_SameStr($value, EWR_NULL_VALUE)) { // Null value
 				$sqlwrk .= "$fn IS NULL OR ";
 			} elseif (substr($value, 0, 2) == "@@") { // Advanced filter
 				if (is_array($af)) {
@@ -5949,12 +5958,12 @@ function ewr_FilterSQL(&$fld, $fn, $ft, $dbid = 0) {
 					if (!is_null($afsql))
 						$sqlwrk .= $afsql . " OR ";
 				}
-			} elseif ($sql <> "") {
-				$sqlwrk .= str_replace("%s", $fn, $sql) . " = '" . $value . "' OR ";
 			} elseif ($dlm <> "") {
 				$sql = ewr_GetMultiSearchSql($fn, trim($value), $dbid);
 				if ($sql <> "")
 					$sqlwrk .= $sql . " OR ";
+			} elseif ($sql <> "") {
+				$sqlwrk .= str_replace("%s", $fn, $sql) . " = '" . $value . "' OR ";
 			} else {
 				$sqlwrk .= "$fn IN (" . ewr_JoinArray($ar, ", ", $ft, $i, $dbid) . ") OR ";
 				break;
@@ -6064,7 +6073,7 @@ function ewr_CastDateFieldForLike($fld, $namedformat, $dbid = 0) {
 
 // Return multi-value search SQL
 function ewr_GetMultiSearchSql($fn, $val, $dbid) {
-	if ($val == EWR_INIT_VALUE || $val == EWR_ALL_VALUE) {
+	if (ewr_SameStr($val, EWR_INIT_VALUE) || ewr_SameStr($val, EWR_ALL_VALUE)) {
 		$sSql = "";
 	} elseif (ewr_GetConnectionType($dbid) == "MYSQL") {
 		$sSql = "FIND_IN_SET('" . ewr_AdjustSql($val, $dbid) . "', " . $fn . ")";
@@ -7306,7 +7315,7 @@ class crEmail {
 }
 
 // Include PHPMailer class
-include_once($EWR_RELATIVE_PATH . "phpmailer5221/PHPMailerAutoload.php");
+include_once($EWR_RELATIVE_PATH . "phpmailer5223/PHPMailerAutoload.php");
 
 // Function to send email
 function ewr_SendEmail($sFrEmail, $sToEmail, $sCcEmail, $sBccEmail, $sSubject, $sMail, $sFormat, $sCharset, $sSmtpSecure = "", $arAttachments = array(), $arImages = array(), $mail = NULL) {
@@ -7738,7 +7747,8 @@ function ewr_BtnCaption($Caption) {
 }
 
 // Include mobile_detect.php
-include_once("mobile_detect.php");
+if (!class_exists("Mobile_Detect"))
+	include_once("mobile_detect.php");
 
 // Check if mobile device
 function ewr_IsMobile() {
@@ -8005,7 +8015,7 @@ function ewr_LoadSelectionList(&$list, $val) {
 	}
 	$list = array();
 	foreach ($ar as $v) {
-		if ($v == EWR_ALL_VALUE) {
+		if (ewr_SameStr($v, EWR_ALL_VALUE)) {
 			$list = EWR_INIT_VALUE;
 			return;
 		} elseif ($v <> EWR_INIT_VALUE && $v <> "") {
@@ -8062,9 +8072,9 @@ function ewr_GetExtendedFilter(&$fld, $Default = FALSE, $dbid = 0) {
 	} else {
 
 		// Handle first value
-		if ($FldVal1 == EWR_NULL_VALUE || $FldOpr1 == "IS NULL") {
+		if (ewr_SameStr($FldVal1, EWR_NULL_VALUE) || $FldOpr1 == "IS NULL") {
 			$sWrk = $FldExpression . " IS NULL";
-		} elseif ($FldVal1 == EWR_NOT_NULL_VALUE || $FldOpr1 == "IS NOT NULL") {
+		} elseif (ewr_SameStr($FldVal1, EWR_NOT_NULL_VALUE) || $FldOpr1 == "IS NOT NULL") {
 			$sWrk = $FldExpression . " IS NOT NULL";
 		} else {
 			$IsValidValue = ($FldDataType <> EWR_DATATYPE_NUMBER ||
@@ -8075,9 +8085,9 @@ function ewr_GetExtendedFilter(&$fld, $Default = FALSE, $dbid = 0) {
 
 		// Handle second value
 		$sWrk2 = "";
-		if ($FldVal2 == EWR_NULL_VALUE || $FldOpr2 == "IS NULL") {
+		if (ewr_SameStr($FldVal2, EWR_NULL_VALUE) || $FldOpr2 == "IS NULL") {
 			$sWrk2 = $FldExpression . " IS NULL";
-		} elseif ($FldVal2 == EWR_NOT_NULL_VALUE || $FldOpr2 == "IS NOT NULL") {
+		} elseif (ewr_SameStr($FldVal2, EWR_NOT_NULL_VALUE) || $FldOpr2 == "IS NOT NULL") {
 			$sWrk2 = $FldExpression . " IS NOT NULL";
 		} else {
 			$IsValidValue = ($FldDataType <> EWR_DATATYPE_NUMBER ||
@@ -8099,9 +8109,9 @@ function ewr_GetExtendedFilter(&$fld, $Default = FALSE, $dbid = 0) {
 
 // Return search string
 function ewr_FilterString($FldOpr, $FldVal, $FldType, $dbid = 0) {
-	if ($FldVal == EWR_NULL_VALUE || $FldOpr == "IS NULL") {
+	if (ewr_SameStr($FldVal, EWR_NULL_VALUE) || $FldOpr == "IS NULL") {
 		return " IS NULL";
-	} elseif ($FldVal == EWR_NOT_NULL_VALUE || $FldOpr == "IS NOT NULL") {
+	} elseif (ewr_SameStr($FldVal, EWR_NOT_NULL_VALUE) || $FldOpr == "IS NOT NULL") {
 		return " IS NOT NULL";
 	} elseif ($FldOpr == "LIKE") {
 		return ewr_Like(ewr_QuotedValue("%$FldVal%", $FldType, $dbid), $dbid);

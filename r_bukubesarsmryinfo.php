@@ -7,14 +7,21 @@ $r_bukubesar = NULL;
 // Table class for r_bukubesar
 //
 class crr_bukubesar extends crTableBase {
-	var $ShowGroupHeaderAsRow = FALSE;
+	var $ShowGroupHeaderAsRow = TRUE;
 	var $ShowCompactSummaryFooter = TRUE;
-	var $level4_id;
-	var $no_nama_akun;
-	var $jurnal;
-	var $jurnal_kode;
+	var $detail_id;
+	var $jurnal_id;
+	var $akun_id;
 	var $no_akun;
 	var $nama_akun;
+	var $saldo_awal;
+	var $saldo;
+	var $no_nama_akun;
+	var $tgl;
+	var $no_bukti;
+	var $ket;
+	var $debet;
+	var $kredit;
 
 	//
 	// Table class constructor
@@ -28,39 +35,32 @@ class crr_bukubesar extends crTableBase {
 		$this->ExportAll = FALSE;
 		$this->ExportPageBreakCount = 0;
 
-		// level4_id
-		$this->level4_id = new crField('r_bukubesar', 'r_bukubesar', 'x_level4_id', 'level4_id', '`level4_id`', 3, EWR_DATATYPE_NUMBER, -1);
-		$this->level4_id->Sortable = TRUE; // Allow sort
-		$this->level4_id->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
-		$this->fields['level4_id'] = &$this->level4_id;
-		$this->level4_id->DateFilter = "";
-		$this->level4_id->SqlSelect = "";
-		$this->level4_id->SqlOrderBy = "";
+		// detail_id
+		$this->detail_id = new crField('r_bukubesar', 'r_bukubesar', 'x_detail_id', 'detail_id', '`detail_id`', 3, EWR_DATATYPE_NUMBER, -1);
+		$this->detail_id->Sortable = TRUE; // Allow sort
+		$this->detail_id->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
+		$this->fields['detail_id'] = &$this->detail_id;
+		$this->detail_id->DateFilter = "";
+		$this->detail_id->SqlSelect = "";
+		$this->detail_id->SqlOrderBy = "";
 
-		// no_nama_akun
-		$this->no_nama_akun = new crField('r_bukubesar', 'r_bukubesar', 'x_no_nama_akun', 'no_nama_akun', '`no_nama_akun`', 200, EWR_DATATYPE_STRING, -1);
-		$this->no_nama_akun->Sortable = TRUE; // Allow sort
-		$this->fields['no_nama_akun'] = &$this->no_nama_akun;
-		$this->no_nama_akun->DateFilter = "";
-		$this->no_nama_akun->SqlSelect = "";
-		$this->no_nama_akun->SqlOrderBy = "";
+		// jurnal_id
+		$this->jurnal_id = new crField('r_bukubesar', 'r_bukubesar', 'x_jurnal_id', 'jurnal_id', '`jurnal_id`', 3, EWR_DATATYPE_NUMBER, -1);
+		$this->jurnal_id->Sortable = TRUE; // Allow sort
+		$this->jurnal_id->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
+		$this->fields['jurnal_id'] = &$this->jurnal_id;
+		$this->jurnal_id->DateFilter = "";
+		$this->jurnal_id->SqlSelect = "";
+		$this->jurnal_id->SqlOrderBy = "";
 
-		// jurnal
-		$this->jurnal = new crField('r_bukubesar', 'r_bukubesar', 'x_jurnal', 'jurnal', '`jurnal`', 16, EWR_DATATYPE_NUMBER, -1);
-		$this->jurnal->Sortable = TRUE; // Allow sort
-		$this->jurnal->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
-		$this->fields['jurnal'] = &$this->jurnal;
-		$this->jurnal->DateFilter = "";
-		$this->jurnal->SqlSelect = "";
-		$this->jurnal->SqlOrderBy = "";
-
-		// jurnal_kode
-		$this->jurnal_kode = new crField('r_bukubesar', 'r_bukubesar', 'x_jurnal_kode', 'jurnal_kode', '`jurnal_kode`', 200, EWR_DATATYPE_STRING, -1);
-		$this->jurnal_kode->Sortable = TRUE; // Allow sort
-		$this->fields['jurnal_kode'] = &$this->jurnal_kode;
-		$this->jurnal_kode->DateFilter = "";
-		$this->jurnal_kode->SqlSelect = "";
-		$this->jurnal_kode->SqlOrderBy = "";
+		// akun_id
+		$this->akun_id = new crField('r_bukubesar', 'r_bukubesar', 'x_akun_id', 'akun_id', '`akun_id`', 3, EWR_DATATYPE_NUMBER, -1);
+		$this->akun_id->Sortable = TRUE; // Allow sort
+		$this->akun_id->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
+		$this->fields['akun_id'] = &$this->akun_id;
+		$this->akun_id->DateFilter = "";
+		$this->akun_id->SqlSelect = "";
+		$this->akun_id->SqlOrderBy = "";
 
 		// no_akun
 		$this->no_akun = new crField('r_bukubesar', 'r_bukubesar', 'x_no_akun', 'no_akun', '`no_akun`', 200, EWR_DATATYPE_STRING, -1);
@@ -77,6 +77,81 @@ class crr_bukubesar extends crTableBase {
 		$this->nama_akun->DateFilter = "";
 		$this->nama_akun->SqlSelect = "";
 		$this->nama_akun->SqlOrderBy = "";
+
+		// saldo_awal
+		$this->saldo_awal = new crField('r_bukubesar', 'r_bukubesar', 'x_saldo_awal', 'saldo_awal', '`saldo_awal`', 20, EWR_DATATYPE_NUMBER, -1);
+		$this->saldo_awal->Sortable = TRUE; // Allow sort
+		$this->saldo_awal->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
+		$this->fields['saldo_awal'] = &$this->saldo_awal;
+		$this->saldo_awal->DateFilter = "";
+		$this->saldo_awal->SqlSelect = "";
+		$this->saldo_awal->SqlOrderBy = "";
+
+		// saldo
+		$this->saldo = new crField('r_bukubesar', 'r_bukubesar', 'x_saldo', 'saldo', '`saldo`', 20, EWR_DATATYPE_NUMBER, -1);
+		$this->saldo->Sortable = TRUE; // Allow sort
+		$this->saldo->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
+		$this->fields['saldo'] = &$this->saldo;
+		$this->saldo->DateFilter = "";
+		$this->saldo->SqlSelect = "";
+		$this->saldo->SqlOrderBy = "";
+
+		// no_nama_akun
+		$this->no_nama_akun = new crField('r_bukubesar', 'r_bukubesar', 'x_no_nama_akun', 'no_nama_akun', '`no_nama_akun`', 200, EWR_DATATYPE_STRING, -1);
+		$this->no_nama_akun->Sortable = TRUE; // Allow sort
+		$this->no_nama_akun->GroupingFieldId = 1;
+		$this->no_nama_akun->ShowGroupHeaderAsRow = $this->ShowGroupHeaderAsRow;
+		$this->no_nama_akun->ShowCompactSummaryFooter = $this->ShowCompactSummaryFooter;
+		$this->fields['no_nama_akun'] = &$this->no_nama_akun;
+		$this->no_nama_akun->DateFilter = "";
+		$this->no_nama_akun->SqlSelect = "";
+		$this->no_nama_akun->SqlOrderBy = "";
+		$this->no_nama_akun->FldGroupByType = "";
+		$this->no_nama_akun->FldGroupInt = "0";
+		$this->no_nama_akun->FldGroupSql = "";
+
+		// tgl
+		$this->tgl = new crField('r_bukubesar', 'r_bukubesar', 'x_tgl', 'tgl', '`tgl`', 133, EWR_DATATYPE_DATE, 0);
+		$this->tgl->Sortable = TRUE; // Allow sort
+		$this->tgl->FldDefaultErrMsg = str_replace("%s", $GLOBALS["EWR_DATE_FORMAT"], $ReportLanguage->Phrase("IncorrectDate"));
+		$this->fields['tgl'] = &$this->tgl;
+		$this->tgl->DateFilter = "";
+		$this->tgl->SqlSelect = "SELECT DISTINCT `tgl`, `tgl` AS `DispFld` FROM " . $this->getSqlFrom();
+		$this->tgl->SqlOrderBy = "`tgl`";
+
+		// no_bukti
+		$this->no_bukti = new crField('r_bukubesar', 'r_bukubesar', 'x_no_bukti', 'no_bukti', '`no_bukti`', 200, EWR_DATATYPE_STRING, -1);
+		$this->no_bukti->Sortable = TRUE; // Allow sort
+		$this->fields['no_bukti'] = &$this->no_bukti;
+		$this->no_bukti->DateFilter = "";
+		$this->no_bukti->SqlSelect = "";
+		$this->no_bukti->SqlOrderBy = "";
+
+		// ket
+		$this->ket = new crField('r_bukubesar', 'r_bukubesar', 'x_ket', 'ket', '`ket`', 201, EWR_DATATYPE_MEMO, -1);
+		$this->ket->Sortable = TRUE; // Allow sort
+		$this->fields['ket'] = &$this->ket;
+		$this->ket->DateFilter = "";
+		$this->ket->SqlSelect = "";
+		$this->ket->SqlOrderBy = "";
+
+		// debet
+		$this->debet = new crField('r_bukubesar', 'r_bukubesar', 'x_debet', 'debet', '`debet`', 20, EWR_DATATYPE_NUMBER, -1);
+		$this->debet->Sortable = TRUE; // Allow sort
+		$this->debet->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
+		$this->fields['debet'] = &$this->debet;
+		$this->debet->DateFilter = "";
+		$this->debet->SqlSelect = "";
+		$this->debet->SqlOrderBy = "";
+
+		// kredit
+		$this->kredit = new crField('r_bukubesar', 'r_bukubesar', 'x_kredit', 'kredit', '`kredit`', 20, EWR_DATATYPE_NUMBER, -1);
+		$this->kredit->Sortable = TRUE; // Allow sort
+		$this->kredit->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
+		$this->fields['kredit'] = &$this->kredit;
+		$this->kredit->DateFilter = "";
+		$this->kredit->SqlSelect = "";
+		$this->kredit->SqlOrderBy = "";
 	}
 
 	// Set Field Visibility
@@ -85,8 +160,8 @@ class crr_bukubesar extends crTableBase {
 		return $this->$fldparm->Visible; // Returns original value
 	}
 
-	// Single column sort
-	function UpdateSort(&$ofld) {
+	// Multiple column sort
+	function UpdateSort(&$ofld, $ctrl) {
 		if ($this->CurrentOrder == $ofld->FldName) {
 			$sSortField = $ofld->FldExpression;
 			$sLastSort = $ofld->getSort();
@@ -96,10 +171,22 @@ class crr_bukubesar extends crTableBase {
 				$sThisSort = ($sLastSort == "ASC") ? "DESC" : "ASC";
 			}
 			$ofld->setSort($sThisSort);
-			if ($ofld->GroupingFieldId == 0)
-				$this->setDetailOrderBy($sSortField . " " . $sThisSort); // Save to Session
+			if ($ofld->GroupingFieldId == 0) {
+				if ($ctrl) {
+					$sOrderBy = $this->getDetailOrderBy();
+					if (strpos($sOrderBy, $sSortField . " " . $sLastSort) !== FALSE) {
+						$sOrderBy = str_replace($sSortField . " " . $sLastSort, $sSortField . " " . $sThisSort, $sOrderBy);
+					} else {
+						if ($sOrderBy <> "") $sOrderBy .= ", ";
+						$sOrderBy .= $sSortField . " " . $sThisSort;
+					}
+					$this->setDetailOrderBy($sOrderBy); // Save to Session
+				} else {
+					$this->setDetailOrderBy($sSortField . " " . $sThisSort); // Save to Session
+				}
+			}
 		} else {
-			if ($ofld->GroupingFieldId == 0) $ofld->setSort("");
+			if ($ofld->GroupingFieldId == 0 && !$ctrl) $ofld->setSort("");
 		}
 	}
 
@@ -136,7 +223,7 @@ class crr_bukubesar extends crTableBase {
 	var $_SqlFrom = "";
 
 	function getSqlFrom() {
-		return ($this->_SqlFrom <> "") ? $this->_SqlFrom : "`v_akun_jurnal`";
+		return ($this->_SqlFrom <> "") ? $this->_SqlFrom : "`v_bukubesar`";
 	}
 
 	function SqlFrom() { // For backward compatibility
@@ -212,7 +299,7 @@ class crr_bukubesar extends crTableBase {
 	var $_SqlOrderBy = "";
 
 	function getSqlOrderBy() {
-		return ($this->_SqlOrderBy <> "") ? $this->_SqlOrderBy : "";
+		return ($this->_SqlOrderBy <> "") ? $this->_SqlOrderBy : "`no_nama_akun` ASC";
 	}
 
 	function SqlOrderBy() { // For backward compatibility
@@ -229,7 +316,7 @@ class crr_bukubesar extends crTableBase {
 	var $_SqlFirstGroupField = "";
 
 	function getSqlFirstGroupField() {
-		return ($this->_SqlFirstGroupField <> "") ? $this->_SqlFirstGroupField : "";
+		return ($this->_SqlFirstGroupField <> "") ? $this->_SqlFirstGroupField : "`no_nama_akun`";
 	}
 
 	function SqlFirstGroupField() { // For backward compatibility
@@ -259,7 +346,7 @@ class crr_bukubesar extends crTableBase {
 	var $_SqlOrderByGroup = "";
 
 	function getSqlOrderByGroup() {
-		return ($this->_SqlOrderByGroup <> "") ? $this->_SqlOrderByGroup : "";
+		return ($this->_SqlOrderByGroup <> "") ? $this->_SqlOrderByGroup : "`no_nama_akun` ASC";
 	}
 
 	function SqlOrderByGroup() { // For backward compatibility
@@ -274,7 +361,7 @@ class crr_bukubesar extends crTableBase {
 	var $_SqlSelectAgg = "";
 
 	function getSqlSelectAgg() {
-		return ($this->_SqlSelectAgg <> "") ? $this->_SqlSelectAgg : "SELECT * FROM " . $this->getSqlFrom();
+		return ($this->_SqlSelectAgg <> "") ? $this->_SqlSelectAgg : "SELECT SUM(`debet`) AS `sum_debet`, SUM(`kredit`) AS `sum_kredit` FROM " . $this->getSqlFrom();
 	}
 
 	function SqlSelectAgg() { // For backward compatibility
@@ -332,7 +419,17 @@ class crr_bukubesar extends crTableBase {
 
 	// Sort URL
 	function SortUrl(&$fld) {
-		return "";
+		if ($this->Export <> "" ||
+			in_array($fld->FldType, array(128, 204, 205))) { // Unsortable data type
+				return "";
+		} elseif ($fld->Sortable) {
+
+			//$sUrlParm = "order=" . urlencode($fld->FldName) . "&ordertype=" . $fld->ReverseSort();
+			$sUrlParm = "order=" . urlencode($fld->FldName) . "&amp;ordertype=" . $fld->ReverseSort();
+			return ewr_CurrentPage() . "?" . $sUrlParm;
+		} else {
+			return "";
+		}
 	}
 
 	// Setup lookup filters of a field

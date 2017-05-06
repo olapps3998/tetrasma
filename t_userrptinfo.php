@@ -67,8 +67,8 @@ class crt_user extends crTableBase {
 		return $this->$fldparm->Visible; // Returns original value
 	}
 
-	// Single column sort
-	function UpdateSort(&$ofld) {
+	// Multiple column sort
+	function UpdateSort(&$ofld, $ctrl) {
 		if ($this->CurrentOrder == $ofld->FldName) {
 			$sSortField = $ofld->FldExpression;
 			$sLastSort = $ofld->getSort();
@@ -78,10 +78,22 @@ class crt_user extends crTableBase {
 				$sThisSort = ($sLastSort == "ASC") ? "DESC" : "ASC";
 			}
 			$ofld->setSort($sThisSort);
-			if ($ofld->GroupingFieldId == 0)
-				$this->setDetailOrderBy($sSortField . " " . $sThisSort); // Save to Session
+			if ($ofld->GroupingFieldId == 0) {
+				if ($ctrl) {
+					$sOrderBy = $this->getDetailOrderBy();
+					if (strpos($sOrderBy, $sSortField . " " . $sLastSort) !== FALSE) {
+						$sOrderBy = str_replace($sSortField . " " . $sLastSort, $sSortField . " " . $sThisSort, $sOrderBy);
+					} else {
+						if ($sOrderBy <> "") $sOrderBy .= ", ";
+						$sOrderBy .= $sSortField . " " . $sThisSort;
+					}
+					$this->setDetailOrderBy($sOrderBy); // Save to Session
+				} else {
+					$this->setDetailOrderBy($sSortField . " " . $sThisSort); // Save to Session
+				}
+			}
 		} else {
-			if ($ofld->GroupingFieldId == 0) $ofld->setSort("");
+			if ($ofld->GroupingFieldId == 0 && !$ctrl) $ofld->setSort("");
 		}
 	}
 
@@ -267,7 +279,17 @@ class crt_user extends crTableBase {
 
 	// Sort URL
 	function SortUrl(&$fld) {
-		return "";
+		if ($this->Export <> "" ||
+			in_array($fld->FldType, array(128, 204, 205))) { // Unsortable data type
+				return "";
+		} elseif ($fld->Sortable) {
+
+			//$sUrlParm = "order=" . urlencode($fld->FldName) . "&ordertype=" . $fld->ReverseSort();
+			$sUrlParm = "order=" . urlencode($fld->FldName) . "&amp;ordertype=" . $fld->ReverseSort();
+			return ewr_CurrentPage() . "?" . $sUrlParm;
+		} else {
+			return "";
+		}
 	}
 
 	// User ID filter

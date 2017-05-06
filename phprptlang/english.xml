@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2017/2/18" version="10.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2017/5/6" version="10.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -349,6 +349,9 @@
   </global>
   <project>
     <phrase id="footertext" value="&amp;copy;2017 e.World Technology Ltd. All rights reserved." />
+    <menu id="21">
+      <phrase id="menutext" value="Buku Besar" />
+    </menu>
     <menu id="1">
       <phrase id="menutext" value="audittrail" />
     </menu>
@@ -402,12 +405,6 @@
     </menu>
     <menu id="18">
       <phrase id="menutext" value="v memorial" />
-    </menu>
-    <menu id="20">
-      <phrase id="menutext" value="Laporan" />
-    </menu>
-    <menu id="19">
-      <phrase id="menutext" value="Buku Besar" />
     </menu>
     <table id="audittrail">
       <phrase id="tblcaption" value="audittrail" />
@@ -845,24 +842,45 @@
       </field>
     </table>
     <table id="r_bukubesar">
-      <phrase id="tblcaption" value="r bukubesar" />
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
+      <phrase id="tblcaption" value="Buku Besar" />
+      <field id="detail_id">
+        <phrase id="fldcaption" value="detail id" />
       </field>
-      <field id="no_nama_akun">
-        <phrase id="fldcaption" value="no nama akun" />
+      <field id="jurnal_id">
+        <phrase id="fldcaption" value="jurnal id" />
       </field>
-      <field id="jurnal">
-        <phrase id="fldcaption" value="jurnal" />
-      </field>
-      <field id="jurnal_kode">
-        <phrase id="fldcaption" value="jurnal kode" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
       </field>
       <field id="no_akun">
         <phrase id="fldcaption" value="no akun" />
       </field>
       <field id="nama_akun">
         <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_awal">
+        <phrase id="fldcaption" value="saldo awal" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+      <field id="no_nama_akun">
+        <phrase id="fldcaption" value="Account" />
+      </field>
+      <field id="tgl">
+        <phrase id="fldcaption" value="Tgl." />
+      </field>
+      <field id="no_bukti">
+        <phrase id="fldcaption" value="No. Bukti" />
+      </field>
+      <field id="ket">
+        <phrase id="fldcaption" value="Keterangan" />
+      </field>
+      <field id="debet">
+        <phrase id="fldcaption" value="Debet" />
+      </field>
+      <field id="kredit">
+        <phrase id="fldcaption" value="Kredit" />
       </field>
     </table>
   </project>
