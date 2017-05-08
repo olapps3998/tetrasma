@@ -88,6 +88,7 @@ var EWR_CHART_EXPORT_HANDLER = "<?php echo ewr_ConvertFullUrl("fcexporter10.php"
 <script type="text/javascript">if (!window.moment) ewr_GetScript("phprptjs/moment.min.js");</script>
 <script type="text/javascript">if (!window.Clipboard) ewr_GetScript("phprptjs/clipboard.min.js");</script>
 <script type="text/javascript">ewr_GetScript("phprptjs/ewr10.js");</script>
+<script type="text/javascript">if (window.jQuery && !window.jQuery.views) ewr_GetScript("phprptjs/jsrender.min.js");</script>
 <script type="text/javascript">
 if (window._jQuery) ewr_Extend(jQuery);
 if (window.jQuery && !jQuery.fn.alert) ewr_GetScript("bootstrap3/js/bootstrap.min.js");

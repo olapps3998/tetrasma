@@ -47,11 +47,11 @@ class crr_bukubesar_summary extends crr_bukubesar {
 	var $ReportTableStyle = "";
 
 	// Custom export
-	var $ExportPrintCustom = FALSE;
-	var $ExportExcelCustom = FALSE;
-	var $ExportWordCustom = FALSE;
-	var $ExportPdfCustom = FALSE;
-	var $ExportEmailCustom = FALSE;
+	var $ExportPrintCustom = TRUE;
+	var $ExportExcelCustom = TRUE;
+	var $ExportWordCustom = TRUE;
+	var $ExportPdfCustom = TRUE;
+	var $ExportEmailCustom = TRUE;
 
 	// Message
 	function getMessage() {
@@ -288,6 +288,21 @@ class crr_bukubesar_summary extends crr_bukubesar {
 			$this->Export = strtolower($_GET["export"]);
 		elseif (@$_POST["export"] <> "")
 			$this->Export = strtolower($_POST["export"]);
+
+		// Get custom export parameters
+		if ($this->Export <> "" && @$_GET["custom"] <> "") {
+			$this->CustomExport = $this->Export;
+			$this->Export = "print";
+		}
+		$gsCustomExport = $this->CustomExport;
+
+		// Custom export (post back from ewr_ApplyTemplate), export and terminate page
+		if (@$_POST["customexport"] <> "") {
+			$this->CustomExport = $_POST["customexport"];
+			$this->Export = $this->CustomExport;
+			$this->Page_Terminate();
+			exit();
+		}
 		$gsExport = $this->Export; // Get export parameter, used in header
 		$gsExportFile = $this->TableVar; // Get export file, used in header
 		$gsEmailContentType = @$_POST["contenttype"]; // Get email content type
@@ -321,21 +336,48 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		$exportid = session_id();
 		$ReportTypes = array();
 
+		// Update Export URLs
+		if ($this->ExportPrintCustom)
+			$this->ExportPrintUrl .= "&amp;custom=1";
+
+		//if (defined("EWR_USE_PHPEXCEL"))
+		//	$this->ExportExcelCustom = FALSE;
+
+		if ($this->ExportExcelCustom)
+			$this->ExportExcelUrl .= "&amp;custom=1";
+
+		//if (defined("EWR_USE_PHPWORD"))
+		//	$this->ExportWordCustom = FALSE;
+
+		if ($this->ExportWordCustom)
+			$this->ExportWordUrl .= "&amp;custom=1";
+		if ($this->ExportPdfCustom)
+			$this->ExportPdfUrl .= "&amp;custom=1";
+
 		// Printer friendly
 		$item = &$this->ExportOptions->Add("print");
-		$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("PrinterFriendly", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("PrinterFriendly", TRUE)) . "\" href=\"" . $this->ExportPrintUrl . "\">" . $ReportLanguage->Phrase("PrinterFriendly") . "</a>";
+		if ($this->ExportPrintCustom)
+			$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("PrinterFriendly", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("PrinterFriendly", TRUE)) . "\" href=\"javascript:void(0);\" onclick=\"ewr_ExportCharts(this, '" . $this->ExportPrintUrl . "', '" . $exportid . "');\">" . $ReportLanguage->Phrase("PrinterFriendly") . "</a>";
+		else
+			$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("PrinterFriendly"), TRUE) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("PrinterFriendly", TRUE)) . "\" href=\"" . $this->ExportPrintUrl . "\">" . $ReportLanguage->Phrase("PrinterFriendly") . "</a>";
 		$item->Visible = TRUE;
 		$ReportTypes["print"] = $item->Visible ? $ReportLanguage->Phrase("ReportFormPrint") : "";
 
 		// Export to Excel
 		$item = &$this->ExportOptions->Add("excel");
-		$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToExcel", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToExcel", TRUE)) . "\" href=\"" . $this->ExportExcelUrl . "\">" . $ReportLanguage->Phrase("ExportToExcel") . "</a>";
+		if ($this->ExportExcelCustom)
+			$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToExcel", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToExcel", TRUE)) . "\" href=\"javascript:void(0);\" onclick=\"ewr_ExportCharts(this, '" . $this->ExportExcelUrl . "', '" . $exportid . "');\">" . $ReportLanguage->Phrase("ExportToExcel") . "</a>";
+		else
+			$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToExcel", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToExcel", TRUE)) . "\" href=\"" . $this->ExportExcelUrl . "\">" . $ReportLanguage->Phrase("ExportToExcel") . "</a>";
 		$item->Visible = TRUE;
 		$ReportTypes["excel"] = $item->Visible ? $ReportLanguage->Phrase("ReportFormExcel") : "";
 
 		// Export to Word
 		$item = &$this->ExportOptions->Add("word");
-		$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToWord", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToWord", TRUE)) . "\" href=\"" . $this->ExportWordUrl . "\">" . $ReportLanguage->Phrase("ExportToWord") . "</a>";
+		if ($this->ExportWordCustom)
+			$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToWord", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToWord", TRUE)) . "\" href=\"javascript:void(0);\" onclick=\"ewr_ExportCharts(this, '" . $this->ExportWordUrl . "', '" . $exportid . "');\">" . $ReportLanguage->Phrase("ExportToWord") . "</a>";
+		else
+			$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToWord", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToWord", TRUE)) . "\" href=\"" . $this->ExportWordUrl . "\">" . $ReportLanguage->Phrase("ExportToWord") . "</a>";
 
 		//$item->Visible = TRUE;
 		$item->Visible = TRUE;
@@ -354,6 +396,8 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		// Export to Email
 		$item = &$this->ExportOptions->Add("email");
 		$url = $this->PageUrl() . "export=email";
+		if ($this->ExportEmailCustom)
+			$url .= "&amp;custom=1";
 		$item->Body = "<a title=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToEmail", TRUE)) . "\" data-caption=\"" . ewr_HtmlEncode($ReportLanguage->Phrase("ExportToEmail", TRUE)) . "\" id=\"emf_r_bukubesar\" href=\"javascript:void(0);\" onclick=\"ewr_EmailDialogShow({lnk:'emf_r_bukubesar',hdr:ewLanguage.Phrase('ExportToEmail'),url:'$url',exportid:'$exportid',el:this});\">" . $ReportLanguage->Phrase("ExportToEmail") . "</a>";
 		$item->Visible = TRUE;
 		$ReportTypes["email"] = $item->Visible ? $ReportLanguage->Phrase("ReportFormEmail") : "";
@@ -400,6 +444,10 @@ class crr_bukubesar_summary extends crr_bukubesar {
 			$this->ReportTableClass = "ewTable";
 		else
 			$this->ReportTableClass = "table ewTable";
+
+		// Hide main table for custom layout
+		if ($this->Export <> "" || $this->UseCustomTemplate)
+			$this->ReportTableStyle = " style=\"display: none;\"";
 	}
 
 	// Set up search options
@@ -435,16 +483,24 @@ class crr_bukubesar_summary extends crr_bukubesar {
 	//
 	function Page_Terminate($url = "") {
 		global $ReportLanguage, $EWR_EXPORT, $gsExportFile;
+		if (@$_POST["customexport"] == "") {
 
 		// Page Unload event
 		$this->Page_Unload();
 
 		// Global Page Unloaded event (in userfn*.php)
 		Page_Unloaded();
+		}
 
 		// Export
 		if ($this->Export <> "" && array_key_exists($this->Export, $EWR_EXPORT)) {
-			$sContent = ob_get_contents();
+			if (@$_POST["data"] <> "") {
+				$sContent = $_POST["data"];
+				$gsExportFile = @$_POST["filename"];
+				if ($gsExportFile == "") $gsExportFile = $this->TableVar;
+			} else {
+				$sContent = ob_get_contents();
+			}
 			if (ob_get_length())
 				ob_end_clean();
 
@@ -1802,8 +1858,8 @@ class crr_bukubesar_summary extends crr_bukubesar {
 			$sFilter .= "<span class=\"ewFilterValue\">$sWrk</span>";
 		if ($sFilter <> "")
 			$sFilterList .= "<div><span class=\"ewFilterCaption\">" . $this->tgl->FldCaption() . "</span>" . $sFilter . "</div>";
-		$divstyle = "";
-		$divdataclass = "";
+		$divstyle = ($this->Export <> "" || $this->UseCustomTemplate) ? " style=\"display: none;\"" : "";
+		$divdataclass = ($this->Export <> "" || $this->UseCustomTemplate) ? " data-class=\"tp_current_filters\"" : "";
 
 		// Show Filters
 		if ($sFilterList <> "" || $showDate) {
@@ -1815,6 +1871,8 @@ class crr_bukubesar_summary extends crr_bukubesar {
 			$sMessage .= "</div></div>";
 			$this->Message_Showing($sMessage, "");
 			echo $sMessage;
+		} else {
+			echo "<span" . $divdataclass . "></span>"; // Show dummy span
 		}
 	}
 
@@ -2022,6 +2080,50 @@ class crr_bukubesar_summary extends crr_bukubesar {
 			$sAttachmentContent = "";
 		} else {
 			$sEmailMessage .= $sAttachmentContent;
+
+			// Replace images in custom template
+			if (preg_match_all('/<img([^>]*)>/i', $sEmailMessage, $matches, PREG_SET_ORDER)) {
+				foreach ($matches as $match) {
+					if (preg_match('/\s+src\s*=\s*[\'"]([\s\S]*?)[\'"]/i', $match[1], $submatches)) { // Match src='src'
+						$src = $submatches[1];
+
+						// Add embedded temp image if not in gTmpImages
+						if (substr($src,0,4) == "cid:") {
+							$tmpimage = substr($src,4);
+							if (substr($tmpimage,0,3) == "tmp") {
+
+								// Add file extension
+								$addimage = FALSE;
+								if (file_exists(ewr_AppRoot() . EWR_UPLOAD_DEST_PATH . $tmpimage . ".gif")) {
+									$tmpimage .= ".gif";
+									$addimage = TRUE;
+								} elseif (file_exists(ewr_AppRoot() . EWR_UPLOAD_DEST_PATH . $tmpimage . ".jpg")) {
+									$tmpimage .= ".jpg";
+									$addimage = TRUE;
+								} elseif (file_exists(ewr_AppRoot() . EWR_UPLOAD_DEST_PATH . $tmpimage . ".png")) {
+									$tmpimage .= ".png";
+									$addimage = TRUE;
+								}
+
+								// Add to gTmpImages
+								if ($addimage) {
+									foreach ($gTmpImages as $tmpimage2)
+										if ($tmpimage == $tmpimage2)
+											$addimage = FALSE;
+									if ($addimage)
+										$gTmpImages[] = $tmpimage;
+								}
+							}
+
+						// Not embedded image, create temp image
+						} else {
+							$data = @file_get_contents($src);
+							if ($data <> "")
+								$sEmailMessage = str_replace($match[0], "<img src=\"" . ewr_TmpImage($data) . "\">", $sEmailMessage);
+						}
+					}
+				}
+			}
 			$sAttachmentFile = "";
 			$sAttachmentContent = "";
 		}
@@ -2094,6 +2196,16 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		$fileName = @$options["filename"];
 		$responseType = @$options["responsetype"];
 		$saveToFile = "";
+
+		// Replace images in custom template to hyperlinks
+		if (preg_match_all('/<img([^>]*)>/i', $html, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				if (preg_match('/\s+src\s*=\s*[\'"]([\s\S]*?)[\'"]/i', $match[1], $submatches)) { // Match src='src'
+					$src = $submatches[1];
+					$html = str_replace($match[0], "<a class=\"ewExportLink\" href=\"" . ewr_ConvertFullUrl($src) . "\">" . $src . "</a>", $html);
+				}
+			}
+		}
 		if ($folder <> "" && $fileName <> "" && ($responseType == "json" || $responseType == "file" && EWR_REPORT_SAVE_OUTPUT_ON_SERVER)) {
 		 	ewr_SaveFile(ewr_PathCombine(ewr_AppRoot(), $folder, TRUE), $fileName, $html);
 			$saveToFile = ewr_UploadPathEx(FALSE, $folder) . $fileName;
@@ -2113,6 +2225,16 @@ class crr_bukubesar_summary extends crr_bukubesar {
 		$fileName = @$options["filename"];
 		$responseType = @$options["responsetype"];
 		$saveToFile = "";
+
+		// Replace images in custom template to hyperlinks
+		if (preg_match_all('/<img([^>]*)>/i', $html, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				if (preg_match('/\s+src\s*=\s*[\'"]([\s\S]*?)[\'"]/i', $match[1], $submatches)) { // Match src='src'
+					$src = $submatches[1];
+					$html = str_replace($match[0], "<a class=\"ewExportLink\" href=\"" . ewr_ConvertFullUrl($src) . "\">" . $src . "</a>", $html);
+				}
+			}
+		}
 		if ($folder <> "" && $fileName <> "" && ($responseType == "json" || $responseType == "file" && EWR_REPORT_SAVE_OUTPUT_ON_SERVER)) {
 		 	ewr_SaveFile(ewr_PathCombine(ewr_AppRoot(), $folder, TRUE), $fileName, $html);
 			$saveToFile = ewr_UploadPathEx(FALSE, $folder) . $fileName;
@@ -2312,7 +2434,7 @@ fr_bukubesarsummary.ValidateRequired = false; // No JavaScript validation
 // Use Ajax
 </script>
 <?php } ?>
-<?php if ($Page->Export == "" && !$Page->DrillDown) { ?>
+<?php if ($Page->Export == "" && !$Page->DrillDown || $Page->Export <> "" && $Page->CustomExport <> "") { ?>
 <script type="text/javascript">
 
 // Write your client script here, no need to add script tags.
@@ -2956,6 +3078,54 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 <?php if ($Page->Export <> "pdf") { ?>
 </div>
 <?php } ?>
+<?php if ($Page->Export <> "" || $Page->UseCustomTemplate) { ?>
+<div id="tpd_r_bukubesarsummary"></div>
+<script id="tpm_r_bukubesarsummary" type="text/html">
+<div id="ct_r_bukubesar_summary"><table class="table ewTable">
+	<tr>
+		<th>Account</th>
+		<th>Tgl.</th>
+		<th>No. Bukti</th>
+		<th>Keterangan</th>
+		<th>Debet</th>
+		<th>Kredit</th>
+	</tr>
+<?php
+$cnt = count($Page->GrpIdx) - 1;
+for ($i = 1; $i <= $cnt; $i++) {
+?>
+<tr>
+	<td>{{include tmpl="#tpx<?php echo $i ?>_r_bukubesar_no_nama_akun"/}}</td>
+	<td colspan="5">&nbsp;</td>
+</tr>
+<?php
+for ($j = 1; $j <= @$Page->GrpIdx[$i]; $j++) {
+?>
+<tr>
+	<td>&nbsp;</td><td>{{include tmpl="#tpx<?php echo $i ?>_<?php echo $j ?>_r_bukubesar_tgl"/}}</td><td>{{include tmpl="#tpx<?php echo $i ?>_<?php echo $j ?>_r_bukubesar_no_bukti"/}}</td><td>{{include tmpl="#tpx<?php echo $i ?>_<?php echo $j ?>_r_bukubesar_ket"/}}</td><td>{{include tmpl="#tpx<?php echo $i ?>_<?php echo $j ?>_r_bukubesar_debet"/}}</td><td>{{include tmpl="#tpx<?php echo $i ?>_<?php echo $j ?>_r_bukubesar_kredit"/}}</td>
+</tr>
+<?php
+}
+?>
+<tr>
+	<td align="right" colspan="4">Saldo Akhir</td>
+	<td>{{include tmpl="#tpgs<?php echo $i ?>_r_bukubesar_debet"/}}</td>
+	<td>{{include tmpl="#tpgs<?php echo $i ?>_r_bukubesar_kredit"/}}</td>
+</tr>
+<?php
+if ($r_bukubesar->ExportPageBreakCount > 0) {
+if ($i % $r_bukubesar->ExportPageBreakCount == 0 && $i < $cnt) {
+?>
+{{include tmpl="#tpb<?php echo $i ?>_r_bukubesar"/}}
+<?php
+}
+}
+}
+?>
+</table>
+</div>
+</script>
+<?php } ?>
 <!-- Summary Report Ends -->
 <?php if ($Page->Export == "") { ?>
 	</div>
@@ -2986,12 +3156,17 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 if ($rsgrp) $rsgrp->Close();
 if ($rs) $rs->Close();
 ?>
-<?php if ($Page->Export == "" && !$Page->DrillDown) { ?>
+<?php if ($Page->Export == "" && !$Page->DrillDown || $Page->Export <> "" && $Page->CustomExport <> "") { ?>
 <script type="text/javascript">
 
 // Write your table-specific startup script here
 // document.write("page loaded");
 
+</script>
+<?php } ?>
+<?php if ($Page->Export <> "" || $Page->UseCustomTemplate) { ?>
+<script type="text/javascript">
+ewr_ApplyTemplate("tpd_r_bukubesarsummary", "tpm_r_bukubesarsummary", "r_bukubesarsummary", "<?php echo $Page->CustomExport ?>", <?php echo ewr_JsonEncode($Page->FirstRowData) ?>);
 </script>
 <?php } ?>
 <?php include_once "phprptinc/footer.php" ?>

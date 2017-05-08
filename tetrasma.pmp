@@ -1109,6 +1109,7 @@ function kredit_onfocus(event) {
 	return true;
 }
 ]]></CustomScript>
+  <Menu MenuID="10129" MenuText="v bukubesar" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_bukubesar" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="100" />
   <Menu MenuID="22" MenuText="Home" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="home.php" MenuCustomUrl="0" MenuLevel="0" MenuShow="1" MenuDisplayOrder="200" />
   <Menu MenuID="10065" MenuText="Setup" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="8" MenuSecurity="" MenuUrl="" MenuCustomUrl="1" MenuLevel="0" MenuShow="1" MenuDisplayOrder="300" />
   <Menu MenuID="1" MenuText="Anggota" MenuParentID="10065" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_anggota" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="100" />
@@ -1122,7 +1123,7 @@ function kredit_onfocus(event) {
   <Menu MenuID="20" MenuText="Jurnal Kas &amp; Bank" MenuParentID="10106" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_jurnal" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="100" />
   <Menu MenuID="27" MenuText="Jurnal Memorial" MenuParentID="10106" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_jurnalm" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="200" />
   <Menu MenuID="10128" MenuText="Laporan" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="8" MenuSecurity="" MenuUrl="" MenuCustomUrl="1" MenuLevel="0" MenuShow="1" MenuDisplayOrder="500" />
-  <Menu MenuID="10021" MenuText="Buku Besar" MenuParentID="10128" MenuGroup="0" MenuSource="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" MenuExtUrl="r_bukubesarsmry.php" MenuAnonymous="0" MenuSecurity="0,&quot;Default&quot;,0" MenuUrl="r_bukubesar" MenuCustomUrl="0" MenuLevel="0" MenuShow="1" MenuDisplayOrder="500" />
+  <Menu MenuID="10021" MenuText="Buku Besar" MenuParentID="10128" MenuGroup="0" MenuSource="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" MenuExtUrl="r_bukubesarsmry.php" MenuAnonymous="0" MenuSecurity="0,&quot;Default&quot;,0" MenuUrl="r_bukubesar" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="100" />
   <Menu MenuID="10022" MenuText="v kasbank" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="600" />
   <Menu MenuID="10023" MenuText="v kasbank detail" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank_detail" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="700" />
   <Menu MenuID="10024" MenuText="v kasbank jurnal" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank_jurnal" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="800" />
