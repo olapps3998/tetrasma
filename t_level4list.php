@@ -362,6 +362,9 @@ class ct_level4_list extends ct_level4 {
 			$Security->UserID_Loaded();
 		}
 
+		// Create form object
+		$objForm = new cFormObj();
+
 		// Get export parameters
 		$custom = "";
 		if (@$_GET["export"] <> "") {
@@ -580,6 +583,71 @@ class ct_level4_list extends ct_level4 {
 			if ($this->Export == "")
 				$this->SetupBreadcrumb();
 
+			// Check QueryString parameters
+			if (@$_GET["a"] <> "") {
+				$this->CurrentAction = $_GET["a"];
+
+				// Clear inline mode
+				if ($this->CurrentAction == "cancel")
+					$this->ClearInlineMode();
+
+				// Switch to grid edit mode
+				if ($this->CurrentAction == "gridedit")
+					$this->GridEditMode();
+
+				// Switch to inline edit mode
+				if ($this->CurrentAction == "edit")
+					$this->InlineEditMode();
+
+				// Switch to inline add mode
+				if ($this->CurrentAction == "add" || $this->CurrentAction == "copy")
+					$this->InlineAddMode();
+
+				// Switch to grid add mode
+				if ($this->CurrentAction == "gridadd")
+					$this->GridAddMode();
+			} else {
+				if (@$_POST["a_list"] <> "") {
+					$this->CurrentAction = $_POST["a_list"]; // Get action
+
+					// Grid Update
+					if (($this->CurrentAction == "gridupdate" || $this->CurrentAction == "gridoverwrite") && @$_SESSION[EW_SESSION_INLINE_MODE] == "gridedit") {
+						if ($this->ValidateGridForm()) {
+							$bGridUpdate = $this->GridUpdate();
+						} else {
+							$bGridUpdate = FALSE;
+							$this->setFailureMessage($gsFormError);
+						}
+						if (!$bGridUpdate) {
+							$this->EventCancelled = TRUE;
+							$this->CurrentAction = "gridedit"; // Stay in Grid Edit mode
+						}
+					}
+
+					// Inline Update
+					if (($this->CurrentAction == "update" || $this->CurrentAction == "overwrite") && @$_SESSION[EW_SESSION_INLINE_MODE] == "edit")
+						$this->InlineUpdate();
+
+					// Insert Inline
+					if ($this->CurrentAction == "insert" && @$_SESSION[EW_SESSION_INLINE_MODE] == "add")
+						$this->InlineInsert();
+
+					// Grid Insert
+					if ($this->CurrentAction == "gridinsert" && @$_SESSION[EW_SESSION_INLINE_MODE] == "gridadd") {
+						if ($this->ValidateGridForm()) {
+							$bGridInsert = $this->GridInsert();
+						} else {
+							$bGridInsert = FALSE;
+							$this->setFailureMessage($gsFormError);
+						}
+						if (!$bGridInsert) {
+							$this->EventCancelled = TRUE;
+							$this->CurrentAction = "gridadd"; // Stay in Grid Add mode
+						}
+					}
+				}
+			}
+
 			// Hide list options
 			if ($this->Export <> "") {
 				$this->ListOptions->HideAllOptions(array("sequence"));
@@ -601,6 +669,14 @@ class ct_level4_list extends ct_level4 {
 			if ($this->Export <> "") {
 				foreach ($this->OtherOptions as &$option)
 					$option->HideAllOptions();
+			}
+
+			// Show grid delete link for grid add / grid edit
+			if ($this->AllowAddDeleteRow) {
+				if ($this->CurrentAction == "gridadd" || $this->CurrentAction == "gridedit") {
+					$item = $this->ListOptions->GetItem("griddelete");
+					if ($item) $item->Visible = TRUE;
+				}
 			}
 
 			// Get default search criteria
@@ -716,6 +792,234 @@ class ct_level4_list extends ct_level4 {
 		}
 	}
 
+	//  Exit inline mode
+	function ClearInlineMode() {
+		$this->setKey("level4_id", ""); // Clear inline edit key
+		$this->LastAction = $this->CurrentAction; // Save last action
+		$this->CurrentAction = ""; // Clear action
+		$_SESSION[EW_SESSION_INLINE_MODE] = ""; // Clear inline mode
+	}
+
+	// Switch to Grid Add mode
+	function GridAddMode() {
+		$_SESSION[EW_SESSION_INLINE_MODE] = "gridadd"; // Enabled grid add
+	}
+
+	// Switch to Grid Edit mode
+	function GridEditMode() {
+		$_SESSION[EW_SESSION_INLINE_MODE] = "gridedit"; // Enable grid edit
+	}
+
+	// Switch to Inline Edit mode
+	function InlineEditMode() {
+		global $Security, $Language;
+		if (!$Security->CanEdit())
+			$this->Page_Terminate("login.php"); // Go to login page
+		$bInlineEdit = TRUE;
+		if (@$_GET["level4_id"] <> "") {
+			$this->level4_id->setQueryStringValue($_GET["level4_id"]);
+		} else {
+			$bInlineEdit = FALSE;
+		}
+		if ($bInlineEdit) {
+			if ($this->LoadRow()) {
+				$this->setKey("level4_id", $this->level4_id->CurrentValue); // Set up inline edit key
+				$_SESSION[EW_SESSION_INLINE_MODE] = "edit"; // Enable inline edit
+			}
+		}
+	}
+
+	// Perform update to Inline Edit record
+	function InlineUpdate() {
+		global $Language, $objForm, $gsFormError;
+		$objForm->Index = 1; 
+		$this->LoadFormValues(); // Get form values
+
+		// Validate form
+		$bInlineUpdate = TRUE;
+		if (!$this->ValidateForm()) {	
+			$bInlineUpdate = FALSE; // Form error, reset action
+			$this->setFailureMessage($gsFormError);
+		} else {
+			$bInlineUpdate = FALSE;
+			$rowkey = strval($objForm->GetValue($this->FormKeyName));
+			if ($this->SetupKeyValues($rowkey)) { // Set up key values
+				if ($this->CheckInlineEditKey()) { // Check key
+					$this->SendEmail = TRUE; // Send email on update success
+					$bInlineUpdate = $this->EditRow(); // Update record
+				} else {
+					$bInlineUpdate = FALSE;
+				}
+			}
+		}
+		if ($bInlineUpdate) { // Update success
+			if ($this->getSuccessMessage() == "")
+				$this->setSuccessMessage($Language->Phrase("UpdateSuccess")); // Set up success message
+			$this->ClearInlineMode(); // Clear inline edit mode
+		} else {
+			if ($this->getFailureMessage() == "")
+				$this->setFailureMessage($Language->Phrase("UpdateFailed")); // Set update failed message
+			$this->EventCancelled = TRUE; // Cancel event
+			$this->CurrentAction = "edit"; // Stay in edit mode
+		}
+	}
+
+	// Check Inline Edit key
+	function CheckInlineEditKey() {
+
+		//CheckInlineEditKey = True
+		if (strval($this->getKey("level4_id")) <> strval($this->level4_id->CurrentValue))
+			return FALSE;
+		return TRUE;
+	}
+
+	// Switch to Inline Add mode
+	function InlineAddMode() {
+		global $Security, $Language;
+		if (!$Security->CanAdd())
+			$this->Page_Terminate("login.php"); // Return to login page
+		if ($this->CurrentAction == "copy") {
+			if (@$_GET["level4_id"] <> "") {
+				$this->level4_id->setQueryStringValue($_GET["level4_id"]);
+				$this->setKey("level4_id", $this->level4_id->CurrentValue); // Set up key
+			} else {
+				$this->setKey("level4_id", ""); // Clear key
+				$this->CurrentAction = "add";
+			}
+		}
+		$_SESSION[EW_SESSION_INLINE_MODE] = "add"; // Enable inline add
+	}
+
+	// Perform update to Inline Add/Copy record
+	function InlineInsert() {
+		global $Language, $objForm, $gsFormError;
+		$this->LoadOldRecord(); // Load old recordset
+		$objForm->Index = 0;
+		$this->LoadFormValues(); // Get form values
+
+		// Validate form
+		if (!$this->ValidateForm()) {
+			$this->setFailureMessage($gsFormError); // Set validation error message
+			$this->EventCancelled = TRUE; // Set event cancelled
+			$this->CurrentAction = "add"; // Stay in add mode
+			return;
+		}
+		$this->SendEmail = TRUE; // Send email on add success
+		if ($this->AddRow($this->OldRecordset)) { // Add record
+			if ($this->getSuccessMessage() == "")
+				$this->setSuccessMessage($Language->Phrase("AddSuccess")); // Set up add success message
+			$this->ClearInlineMode(); // Clear inline add mode
+		} else { // Add failed
+			$this->EventCancelled = TRUE; // Set event cancelled
+			$this->CurrentAction = "add"; // Stay in add mode
+		}
+	}
+
+	// Perform update to grid
+	function GridUpdate() {
+		global $Language, $objForm, $gsFormError;
+		$bGridUpdate = TRUE;
+
+		// Get old recordset
+		$this->CurrentFilter = $this->BuildKeyFilter();
+		if ($this->CurrentFilter == "")
+			$this->CurrentFilter = "0=1";
+		$sSql = $this->SQL();
+		$conn = &$this->Connection();
+		if ($rs = $conn->Execute($sSql)) {
+			$rsold = $rs->GetRows();
+			$rs->Close();
+		}
+
+		// Call Grid Updating event
+		if (!$this->Grid_Updating($rsold)) {
+			if ($this->getFailureMessage() == "")
+				$this->setFailureMessage($Language->Phrase("GridEditCancelled")); // Set grid edit cancelled message
+			return FALSE;
+		}
+
+		// Begin transaction
+		$conn->BeginTrans();
+		if ($this->AuditTrailOnEdit) $this->WriteAuditTrailDummy($Language->Phrase("BatchUpdateBegin")); // Batch update begin
+		$sKey = "";
+
+		// Update row index and get row key
+		$objForm->Index = -1;
+		$rowcnt = strval($objForm->GetValue($this->FormKeyCountName));
+		if ($rowcnt == "" || !is_numeric($rowcnt))
+			$rowcnt = 0;
+
+		// Update all rows based on key
+		for ($rowindex = 1; $rowindex <= $rowcnt; $rowindex++) {
+			$objForm->Index = $rowindex;
+			$rowkey = strval($objForm->GetValue($this->FormKeyName));
+			$rowaction = strval($objForm->GetValue($this->FormActionName));
+
+			// Load all values and keys
+			if ($rowaction <> "insertdelete") { // Skip insert then deleted rows
+				$this->LoadFormValues(); // Get form values
+				if ($rowaction == "" || $rowaction == "edit" || $rowaction == "delete") {
+					$bGridUpdate = $this->SetupKeyValues($rowkey); // Set up key values
+				} else {
+					$bGridUpdate = TRUE;
+				}
+
+				// Skip empty row
+				if ($rowaction == "insert" && $this->EmptyRow()) {
+
+					// No action required
+				// Validate form and insert/update/delete record
+
+				} elseif ($bGridUpdate) {
+					if ($rowaction == "delete") {
+						$this->CurrentFilter = $this->KeyFilter();
+						$bGridUpdate = $this->DeleteRows(); // Delete this row
+					} else if (!$this->ValidateForm()) {
+						$bGridUpdate = FALSE; // Form error, reset action
+						$this->setFailureMessage($gsFormError);
+					} else {
+						if ($rowaction == "insert") {
+							$bGridUpdate = $this->AddRow(); // Insert this row
+						} else {
+							if ($rowkey <> "") {
+								$this->SendEmail = FALSE; // Do not send email on update success
+								$bGridUpdate = $this->EditRow(); // Update this row
+							}
+						} // End update
+					}
+				}
+				if ($bGridUpdate) {
+					if ($sKey <> "") $sKey .= ", ";
+					$sKey .= $rowkey;
+				} else {
+					break;
+				}
+			}
+		}
+		if ($bGridUpdate) {
+			$conn->CommitTrans(); // Commit transaction
+
+			// Get new recordset
+			if ($rs = $conn->Execute($sSql)) {
+				$rsnew = $rs->GetRows();
+				$rs->Close();
+			}
+
+			// Call Grid_Updated event
+			$this->Grid_Updated($rsold, $rsnew);
+			if ($this->AuditTrailOnEdit) $this->WriteAuditTrailDummy($Language->Phrase("BatchUpdateSuccess")); // Batch update success
+			if ($this->getSuccessMessage() == "")
+				$this->setSuccessMessage($Language->Phrase("UpdateSuccess")); // Set up update success message
+			$this->ClearInlineMode(); // Clear inline edit mode
+		} else {
+			$conn->RollbackTrans(); // Rollback transaction
+			if ($this->AuditTrailOnEdit) $this->WriteAuditTrailDummy($Language->Phrase("BatchUpdateRollback")); // Batch update rollback
+			if ($this->getFailureMessage() == "")
+				$this->setFailureMessage($Language->Phrase("UpdateFailed")); // Set update failed message
+		}
+		return $bGridUpdate;
+	}
+
 	// Build filter for all keys
 	function BuildKeyFilter() {
 		global $objForm;
@@ -752,6 +1056,190 @@ class ct_level4_list extends ct_level4 {
 				return FALSE;
 		}
 		return TRUE;
+	}
+
+	// Perform Grid Add
+	function GridInsert() {
+		global $Language, $objForm, $gsFormError;
+		$rowindex = 1;
+		$bGridInsert = FALSE;
+		$conn = &$this->Connection();
+
+		// Call Grid Inserting event
+		if (!$this->Grid_Inserting()) {
+			if ($this->getFailureMessage() == "") {
+				$this->setFailureMessage($Language->Phrase("GridAddCancelled")); // Set grid add cancelled message
+			}
+			return FALSE;
+		}
+
+		// Begin transaction
+		$conn->BeginTrans();
+
+		// Init key filter
+		$sWrkFilter = "";
+		$addcnt = 0;
+		if ($this->AuditTrailOnAdd) $this->WriteAuditTrailDummy($Language->Phrase("BatchInsertBegin")); // Batch insert begin
+		$sKey = "";
+
+		// Get row count
+		$objForm->Index = -1;
+		$rowcnt = strval($objForm->GetValue($this->FormKeyCountName));
+		if ($rowcnt == "" || !is_numeric($rowcnt))
+			$rowcnt = 0;
+
+		// Insert all rows
+		for ($rowindex = 1; $rowindex <= $rowcnt; $rowindex++) {
+
+			// Load current row values
+			$objForm->Index = $rowindex;
+			$rowaction = strval($objForm->GetValue($this->FormActionName));
+			if ($rowaction <> "" && $rowaction <> "insert")
+				continue; // Skip
+			$this->LoadFormValues(); // Get form values
+			if (!$this->EmptyRow()) {
+				$addcnt++;
+				$this->SendEmail = FALSE; // Do not send email on insert success
+
+				// Validate form
+				if (!$this->ValidateForm()) {
+					$bGridInsert = FALSE; // Form error, reset action
+					$this->setFailureMessage($gsFormError);
+				} else {
+					$bGridInsert = $this->AddRow($this->OldRecordset); // Insert this row
+				}
+				if ($bGridInsert) {
+					if ($sKey <> "") $sKey .= $GLOBALS["EW_COMPOSITE_KEY_SEPARATOR"];
+					$sKey .= $this->level4_id->CurrentValue;
+
+					// Add filter for this record
+					$sFilter = $this->KeyFilter();
+					if ($sWrkFilter <> "") $sWrkFilter .= " OR ";
+					$sWrkFilter .= $sFilter;
+				} else {
+					break;
+				}
+			}
+		}
+		if ($addcnt == 0) { // No record inserted
+			$this->setFailureMessage($Language->Phrase("NoAddRecord"));
+			$bGridInsert = FALSE;
+		}
+		if ($bGridInsert) {
+			$conn->CommitTrans(); // Commit transaction
+
+			// Get new recordset
+			$this->CurrentFilter = $sWrkFilter;
+			$sSql = $this->SQL();
+			if ($rs = $conn->Execute($sSql)) {
+				$rsnew = $rs->GetRows();
+				$rs->Close();
+			}
+
+			// Call Grid_Inserted event
+			$this->Grid_Inserted($rsnew);
+			if ($this->AuditTrailOnAdd) $this->WriteAuditTrailDummy($Language->Phrase("BatchInsertSuccess")); // Batch insert success
+			if ($this->getSuccessMessage() == "")
+				$this->setSuccessMessage($Language->Phrase("InsertSuccess")); // Set up insert success message
+			$this->ClearInlineMode(); // Clear grid add mode
+		} else {
+			$conn->RollbackTrans(); // Rollback transaction
+			if ($this->AuditTrailOnAdd) $this->WriteAuditTrailDummy($Language->Phrase("BatchInsertRollback")); // Batch insert rollback
+			if ($this->getFailureMessage() == "") {
+				$this->setFailureMessage($Language->Phrase("InsertFailed")); // Set insert failed message
+			}
+		}
+		return $bGridInsert;
+	}
+
+	// Check if empty row
+	function EmptyRow() {
+		global $objForm;
+		if ($objForm->HasValue("x_level1_id") && $objForm->HasValue("o_level1_id") && $this->level1_id->CurrentValue <> $this->level1_id->OldValue)
+			return FALSE;
+		if ($objForm->HasValue("x_level2_id") && $objForm->HasValue("o_level2_id") && $this->level2_id->CurrentValue <> $this->level2_id->OldValue)
+			return FALSE;
+		if ($objForm->HasValue("x_level3_id") && $objForm->HasValue("o_level3_id") && $this->level3_id->CurrentValue <> $this->level3_id->OldValue)
+			return FALSE;
+		if ($objForm->HasValue("x_level4_no") && $objForm->HasValue("o_level4_no") && $this->level4_no->CurrentValue <> $this->level4_no->OldValue)
+			return FALSE;
+		if ($objForm->HasValue("x_level4_nama") && $objForm->HasValue("o_level4_nama") && $this->level4_nama->CurrentValue <> $this->level4_nama->OldValue)
+			return FALSE;
+		if ($objForm->HasValue("x_saldo_awal") && $objForm->HasValue("o_saldo_awal") && $this->saldo_awal->CurrentValue <> $this->saldo_awal->OldValue)
+			return FALSE;
+		if ($objForm->HasValue("x_jurnal") && $objForm->HasValue("o_jurnal") && $this->jurnal->CurrentValue <> $this->jurnal->OldValue)
+			return FALSE;
+		if ($objForm->HasValue("x_jurnal_kode") && $objForm->HasValue("o_jurnal_kode") && $this->jurnal_kode->CurrentValue <> $this->jurnal_kode->OldValue)
+			return FALSE;
+		return TRUE;
+	}
+
+	// Validate grid form
+	function ValidateGridForm() {
+		global $objForm;
+
+		// Get row count
+		$objForm->Index = -1;
+		$rowcnt = strval($objForm->GetValue($this->FormKeyCountName));
+		if ($rowcnt == "" || !is_numeric($rowcnt))
+			$rowcnt = 0;
+
+		// Validate all records
+		for ($rowindex = 1; $rowindex <= $rowcnt; $rowindex++) {
+
+			// Load current row values
+			$objForm->Index = $rowindex;
+			$rowaction = strval($objForm->GetValue($this->FormActionName));
+			if ($rowaction <> "delete" && $rowaction <> "insertdelete") {
+				$this->LoadFormValues(); // Get form values
+				if ($rowaction == "insert" && $this->EmptyRow()) {
+
+					// Ignore
+				} else if (!$this->ValidateForm()) {
+					return FALSE;
+				}
+			}
+		}
+		return TRUE;
+	}
+
+	// Get all form values of the grid
+	function GetGridFormValues() {
+		global $objForm;
+
+		// Get row count
+		$objForm->Index = -1;
+		$rowcnt = strval($objForm->GetValue($this->FormKeyCountName));
+		if ($rowcnt == "" || !is_numeric($rowcnt))
+			$rowcnt = 0;
+		$rows = array();
+
+		// Loop through all records
+		for ($rowindex = 1; $rowindex <= $rowcnt; $rowindex++) {
+
+			// Load current row values
+			$objForm->Index = $rowindex;
+			$rowaction = strval($objForm->GetValue($this->FormActionName));
+			if ($rowaction <> "delete" && $rowaction <> "insertdelete") {
+				$this->LoadFormValues(); // Get form values
+				if ($rowaction == "insert" && $this->EmptyRow()) {
+
+					// Ignore
+				} else {
+					$rows[] = $this->GetFieldValues("FormValue"); // Return row as array
+				}
+			}
+		}
+		return $rows; // Return as array of array
+	}
+
+	// Restore form values for current row
+	function RestoreCurrentRowFormValues($idx) {
+		global $objForm;
+
+		// Get row based on current index
+		$objForm->Index = $idx;
+		$this->LoadFormValues(); // Load form values
 	}
 
 	// Get list of filters
@@ -1143,6 +1631,14 @@ class ct_level4_list extends ct_level4 {
 	function SetupListOptions() {
 		global $Security, $Language;
 
+		// "griddelete"
+		if ($this->AllowAddDeleteRow) {
+			$item = &$this->ListOptions->Add("griddelete");
+			$item->CssStyle = "white-space: nowrap;";
+			$item->OnLeft = TRUE;
+			$item->Visible = FALSE; // Default hidden
+		}
+
 		// Add group option item
 		$item = &$this->ListOptions->Add($this->ListOptions->GroupOptionName);
 		$item->Body = "";
@@ -1205,6 +1701,63 @@ class ct_level4_list extends ct_level4 {
 		global $Security, $Language, $objForm;
 		$this->ListOptions->LoadDefault();
 
+		// Set up row action and key
+		if (is_numeric($this->RowIndex) && $this->CurrentMode <> "view") {
+			$objForm->Index = $this->RowIndex;
+			$ActionName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormActionName);
+			$OldKeyName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormOldKeyName);
+			$KeyName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormKeyName);
+			$BlankRowName = str_replace("k_", "k" . $this->RowIndex . "_", $this->FormBlankRowName);
+			if ($this->RowAction <> "")
+				$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $ActionName . "\" id=\"" . $ActionName . "\" value=\"" . $this->RowAction . "\">";
+			if ($this->RowAction == "delete") {
+				$rowkey = $objForm->GetValue($this->FormKeyName);
+				$this->SetupKeyValues($rowkey);
+			}
+			if ($this->RowAction == "insert" && $this->CurrentAction == "F" && $this->EmptyRow())
+				$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $BlankRowName . "\" id=\"" . $BlankRowName . "\" value=\"1\">";
+		}
+
+		// "delete"
+		if ($this->AllowAddDeleteRow) {
+			if ($this->CurrentAction == "gridadd" || $this->CurrentAction == "gridedit") {
+				$option = &$this->ListOptions;
+				$option->UseButtonGroup = TRUE; // Use button group for grid delete button
+				$option->UseImageAndText = TRUE; // Use image and text for grid delete button
+				$oListOpt = &$option->Items["griddelete"];
+				if (!$Security->CanDelete() && is_numeric($this->RowIndex) && ($this->RowAction == "" || $this->RowAction == "edit")) { // Do not allow delete existing record
+					$oListOpt->Body = "&nbsp;";
+				} else {
+					$oListOpt->Body = "<a class=\"ewGridLink ewGridDelete\" title=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("DeleteLink")) . "\" onclick=\"return ew_DeleteGridRow(this, " . $this->RowIndex . ");\">" . $Language->Phrase("DeleteLink") . "</a>";
+				}
+			}
+		}
+
+		// "copy"
+		$oListOpt = &$this->ListOptions->Items["copy"];
+		if (($this->CurrentAction == "add" || $this->CurrentAction == "copy") && $this->RowType == EW_ROWTYPE_ADD) { // Inline Add/Copy
+			$this->ListOptions->CustomItem = "copy"; // Show copy column only
+			$cancelurl = $this->AddMasterUrl($this->PageUrl() . "a=cancel");
+			$oListOpt->Body = "<div" . (($oListOpt->OnLeft) ? " style=\"text-align: right\"" : "") . ">" .
+				"<a class=\"ewGridLink ewInlineInsert\" title=\"" . ew_HtmlTitle($Language->Phrase("InsertLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InsertLink")) . "\" href=\"\" onclick=\"return ewForms(this).Submit('" . $this->PageName() . "');\">" . $Language->Phrase("InsertLink") . "</a>&nbsp;" .
+				"<a class=\"ewGridLink ewInlineCancel\" title=\"" . ew_HtmlTitle($Language->Phrase("CancelLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("CancelLink")) . "\" href=\"" . $cancelurl . "\">" . $Language->Phrase("CancelLink") . "</a>" .
+				"<input type=\"hidden\" name=\"a_list\" id=\"a_list\" value=\"insert\"></div>";
+			return;
+		}
+
+		// "edit"
+		$oListOpt = &$this->ListOptions->Items["edit"];
+		if ($this->CurrentAction == "edit" && $this->RowType == EW_ROWTYPE_EDIT) { // Inline-Edit
+			$this->ListOptions->CustomItem = "edit"; // Show edit column only
+			$cancelurl = $this->AddMasterUrl($this->PageUrl() . "a=cancel");
+				$oListOpt->Body = "<div" . (($oListOpt->OnLeft) ? " style=\"text-align: right\"" : "") . ">" .
+					"<a class=\"ewGridLink ewInlineUpdate\" title=\"" . ew_HtmlTitle($Language->Phrase("UpdateLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("UpdateLink")) . "\" href=\"\" onclick=\"return ewForms(this).Submit('" . ew_GetHashUrl($this->PageName(), $this->PageObjName . "_row_" . $this->RowCnt) . "');\">" . $Language->Phrase("UpdateLink") . "</a>&nbsp;" .
+					"<a class=\"ewGridLink ewInlineCancel\" title=\"" . ew_HtmlTitle($Language->Phrase("CancelLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("CancelLink")) . "\" href=\"" . $cancelurl . "\">" . $Language->Phrase("CancelLink") . "</a>" .
+					"<input type=\"hidden\" name=\"a_list\" id=\"a_list\" value=\"update\"></div>";
+			$oListOpt->Body .= "<input type=\"hidden\" name=\"k" . $this->RowIndex . "_key\" id=\"k" . $this->RowIndex . "_key\" value=\"" . ew_HtmlEncode($this->level4_id->CurrentValue) . "\">";
+			return;
+		}
+
 		// "view"
 		$oListOpt = &$this->ListOptions->Items["view"];
 		$viewcaption = ew_HtmlTitle($Language->Phrase("ViewLink"));
@@ -1219,6 +1772,7 @@ class ct_level4_list extends ct_level4 {
 		$editcaption = ew_HtmlTitle($Language->Phrase("EditLink"));
 		if ($Security->CanEdit()) {
 			$oListOpt->Body = "<a class=\"ewRowLink ewEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("EditLink")) . "\" href=\"" . ew_HtmlEncode($this->EditUrl) . "\">" . $Language->Phrase("EditLink") . "</a>";
+			$oListOpt->Body .= "<a class=\"ewRowLink ewInlineEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InlineEditLink")) . "\" href=\"" . ew_HtmlEncode(ew_GetHashUrl($this->InlineEditUrl, $this->PageObjName . "_row_" . $this->RowCnt)) . "\">" . $Language->Phrase("InlineEditLink") . "</a>";
 		} else {
 			$oListOpt->Body = "";
 		}
@@ -1228,6 +1782,7 @@ class ct_level4_list extends ct_level4 {
 		$copycaption = ew_HtmlTitle($Language->Phrase("CopyLink"));
 		if ($Security->CanAdd()) {
 			$oListOpt->Body = "<a class=\"ewRowLink ewCopy\" title=\"" . $copycaption . "\" data-caption=\"" . $copycaption . "\" href=\"" . ew_HtmlEncode($this->CopyUrl) . "\">" . $Language->Phrase("CopyLink") . "</a>";
+			$oListOpt->Body .= "<a class=\"ewRowLink ewInlineCopy\" title=\"" . ew_HtmlTitle($Language->Phrase("InlineCopyLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InlineCopyLink")) . "\" href=\"" . ew_HtmlEncode($this->InlineCopyUrl) . "\">" . $Language->Phrase("InlineCopyLink") . "</a>";
 		} else {
 			$oListOpt->Body = "";
 		}
@@ -1264,6 +1819,9 @@ class ct_level4_list extends ct_level4 {
 		// "checkbox"
 		$oListOpt = &$this->ListOptions->Items["checkbox"];
 		$oListOpt->Body = "<input type=\"checkbox\" name=\"key_m[]\" value=\"" . ew_HtmlEncode($this->level4_id->CurrentValue) . "\" onclick='ew_ClickMultiCheckbox(event);'>";
+		if ($this->CurrentAction == "gridedit" && is_numeric($this->RowIndex)) {
+			$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $KeyName . "\" id=\"" . $KeyName . "\" value=\"" . $this->level4_id->CurrentValue . "\">";
+		}
 		$this->RenderListOptionsExt();
 
 		// Call ListOptions_Rendered event
@@ -1281,6 +1839,20 @@ class ct_level4_list extends ct_level4 {
 		$addcaption = ew_HtmlTitle($Language->Phrase("AddLink"));
 		$item->Body = "<a class=\"ewAddEdit ewAdd\" title=\"" . $addcaption . "\" data-caption=\"" . $addcaption . "\" href=\"" . ew_HtmlEncode($this->AddUrl) . "\">" . $Language->Phrase("AddLink") . "</a>";
 		$item->Visible = ($this->AddUrl <> "" && $Security->CanAdd());
+
+		// Inline Add
+		$item = &$option->Add("inlineadd");
+		$item->Body = "<a class=\"ewAddEdit ewInlineAdd\" title=\"" . ew_HtmlTitle($Language->Phrase("InlineAddLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("InlineAddLink")) . "\" href=\"" . ew_HtmlEncode($this->InlineAddUrl) . "\">" .$Language->Phrase("InlineAddLink") . "</a>";
+		$item->Visible = ($this->InlineAddUrl <> "" && $Security->CanAdd());
+		$item = &$option->Add("gridadd");
+		$item->Body = "<a class=\"ewAddEdit ewGridAdd\" title=\"" . ew_HtmlTitle($Language->Phrase("GridAddLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("GridAddLink")) . "\" href=\"" . ew_HtmlEncode($this->GridAddUrl) . "\">" . $Language->Phrase("GridAddLink") . "</a>";
+		$item->Visible = ($this->GridAddUrl <> "" && $Security->CanAdd());
+
+		// Add grid edit
+		$option = $options["addedit"];
+		$item = &$option->Add("gridedit");
+		$item->Body = "<a class=\"ewAddEdit ewGridEdit\" title=\"" . ew_HtmlTitle($Language->Phrase("GridEditLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("GridEditLink")) . "\" href=\"" . ew_HtmlEncode($this->GridEditUrl) . "\">" . $Language->Phrase("GridEditLink") . "</a>";
+		$item->Visible = ($this->GridEditUrl <> "" && $Security->CanEdit());
 		$option = $options["action"];
 
 		// Add multi delete
@@ -1323,6 +1895,7 @@ class ct_level4_list extends ct_level4 {
 	function RenderOtherOptions() {
 		global $Language, $Security;
 		$options = &$this->OtherOptions;
+		if ($this->CurrentAction <> "gridadd" && $this->CurrentAction <> "gridedit") { // Not grid add/edit mode
 			$option = &$options["action"];
 
 			// Set up list action buttons
@@ -1344,6 +1917,56 @@ class ct_level4_list extends ct_level4 {
 				$option = &$options["action"];
 				$option->HideAllOptions();
 			}
+		} else { // Grid add/edit mode
+
+			// Hide all options first
+			foreach ($options as &$option)
+				$option->HideAllOptions();
+			if ($this->CurrentAction == "gridadd") {
+				if ($this->AllowAddDeleteRow) {
+
+					// Add add blank row
+					$option = &$options["addedit"];
+					$option->UseDropDownButton = FALSE;
+					$option->UseImageAndText = TRUE;
+					$item = &$option->Add("addblankrow");
+					$item->Body = "<a class=\"ewAddEdit ewAddBlankRow\" title=\"" . ew_HtmlTitle($Language->Phrase("AddBlankRow")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("AddBlankRow")) . "\" href=\"javascript:void(0);\" onclick=\"ew_AddGridRow(this);\">" . $Language->Phrase("AddBlankRow") . "</a>";
+					$item->Visible = $Security->CanAdd();
+				}
+				$option = &$options["action"];
+				$option->UseDropDownButton = FALSE;
+				$option->UseImageAndText = TRUE;
+
+				// Add grid insert
+				$item = &$option->Add("gridinsert");
+				$item->Body = "<a class=\"ewAction ewGridInsert\" title=\"" . ew_HtmlTitle($Language->Phrase("GridInsertLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("GridInsertLink")) . "\" href=\"\" onclick=\"return ewForms(this).Submit('" . $this->PageName() . "');\">" . $Language->Phrase("GridInsertLink") . "</a>";
+
+				// Add grid cancel
+				$item = &$option->Add("gridcancel");
+				$cancelurl = $this->AddMasterUrl($this->PageUrl() . "a=cancel");
+				$item->Body = "<a class=\"ewAction ewGridCancel\" title=\"" . ew_HtmlTitle($Language->Phrase("GridCancelLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("GridCancelLink")) . "\" href=\"" . $cancelurl . "\">" . $Language->Phrase("GridCancelLink") . "</a>";
+			}
+			if ($this->CurrentAction == "gridedit") {
+				if ($this->AllowAddDeleteRow) {
+
+					// Add add blank row
+					$option = &$options["addedit"];
+					$option->UseDropDownButton = FALSE;
+					$option->UseImageAndText = TRUE;
+					$item = &$option->Add("addblankrow");
+					$item->Body = "<a class=\"ewAddEdit ewAddBlankRow\" title=\"" . ew_HtmlTitle($Language->Phrase("AddBlankRow")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("AddBlankRow")) . "\" href=\"javascript:void(0);\" onclick=\"ew_AddGridRow(this);\">" . $Language->Phrase("AddBlankRow") . "</a>";
+					$item->Visible = $Security->CanAdd();
+				}
+				$option = &$options["action"];
+				$option->UseDropDownButton = FALSE;
+				$option->UseImageAndText = TRUE;
+					$item = &$option->Add("gridsave");
+					$item->Body = "<a class=\"ewAction ewGridSave\" title=\"" . ew_HtmlTitle($Language->Phrase("GridSaveLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("GridSaveLink")) . "\" href=\"\" onclick=\"return ewForms(this).Submit('" . $this->PageName() . "');\">" . $Language->Phrase("GridSaveLink") . "</a>";
+					$item = &$option->Add("gridcancel");
+					$cancelurl = $this->AddMasterUrl($this->PageUrl() . "a=cancel");
+					$item->Body = "<a class=\"ewAction ewGridCancel\" title=\"" . ew_HtmlTitle($Language->Phrase("GridCancelLink")) . "\" data-caption=\"" . ew_HtmlTitle($Language->Phrase("GridCancelLink")) . "\" href=\"" . $cancelurl . "\">" . $Language->Phrase("GridCancelLink") . "</a>";
+			}
+		}
 	}
 
 	// Process list action
@@ -1508,11 +2131,87 @@ class ct_level4_list extends ct_level4 {
 		}
 	}
 
+	// Load default values
+	function LoadDefaultValues() {
+		$this->level1_id->CurrentValue = NULL;
+		$this->level1_id->OldValue = $this->level1_id->CurrentValue;
+		$this->level2_id->CurrentValue = NULL;
+		$this->level2_id->OldValue = $this->level2_id->CurrentValue;
+		$this->level3_id->CurrentValue = NULL;
+		$this->level3_id->OldValue = $this->level3_id->CurrentValue;
+		$this->level4_no->CurrentValue = NULL;
+		$this->level4_no->OldValue = $this->level4_no->CurrentValue;
+		$this->level4_nama->CurrentValue = NULL;
+		$this->level4_nama->OldValue = $this->level4_nama->CurrentValue;
+		$this->saldo_awal->CurrentValue = NULL;
+		$this->saldo_awal->OldValue = $this->saldo_awal->CurrentValue;
+		$this->jurnal->CurrentValue = 0;
+		$this->jurnal->OldValue = $this->jurnal->CurrentValue;
+		$this->jurnal_kode->CurrentValue = NULL;
+		$this->jurnal_kode->OldValue = $this->jurnal_kode->CurrentValue;
+	}
+
 	// Load basic search values
 	function LoadBasicSearchValues() {
 		$this->BasicSearch->Keyword = @$_GET[EW_TABLE_BASIC_SEARCH];
 		if ($this->BasicSearch->Keyword <> "") $this->Command = "search";
 		$this->BasicSearch->Type = @$_GET[EW_TABLE_BASIC_SEARCH_TYPE];
+	}
+
+	// Load form values
+	function LoadFormValues() {
+
+		// Load from form
+		global $objForm;
+		if (!$this->level1_id->FldIsDetailKey) {
+			$this->level1_id->setFormValue($objForm->GetValue("x_level1_id"));
+		}
+		$this->level1_id->setOldValue($objForm->GetValue("o_level1_id"));
+		if (!$this->level2_id->FldIsDetailKey) {
+			$this->level2_id->setFormValue($objForm->GetValue("x_level2_id"));
+		}
+		$this->level2_id->setOldValue($objForm->GetValue("o_level2_id"));
+		if (!$this->level3_id->FldIsDetailKey) {
+			$this->level3_id->setFormValue($objForm->GetValue("x_level3_id"));
+		}
+		$this->level3_id->setOldValue($objForm->GetValue("o_level3_id"));
+		if (!$this->level4_no->FldIsDetailKey) {
+			$this->level4_no->setFormValue($objForm->GetValue("x_level4_no"));
+		}
+		$this->level4_no->setOldValue($objForm->GetValue("o_level4_no"));
+		if (!$this->level4_nama->FldIsDetailKey) {
+			$this->level4_nama->setFormValue($objForm->GetValue("x_level4_nama"));
+		}
+		$this->level4_nama->setOldValue($objForm->GetValue("o_level4_nama"));
+		if (!$this->saldo_awal->FldIsDetailKey) {
+			$this->saldo_awal->setFormValue($objForm->GetValue("x_saldo_awal"));
+		}
+		$this->saldo_awal->setOldValue($objForm->GetValue("o_saldo_awal"));
+		if (!$this->jurnal->FldIsDetailKey) {
+			$this->jurnal->setFormValue($objForm->GetValue("x_jurnal"));
+		}
+		$this->jurnal->setOldValue($objForm->GetValue("o_jurnal"));
+		if (!$this->jurnal_kode->FldIsDetailKey) {
+			$this->jurnal_kode->setFormValue($objForm->GetValue("x_jurnal_kode"));
+		}
+		$this->jurnal_kode->setOldValue($objForm->GetValue("o_jurnal_kode"));
+		if (!$this->level4_id->FldIsDetailKey && $this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
+			$this->level4_id->setFormValue($objForm->GetValue("x_level4_id"));
+	}
+
+	// Restore form values
+	function RestoreFormValues() {
+		global $objForm;
+		if ($this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
+			$this->level4_id->CurrentValue = $this->level4_id->FormValue;
+		$this->level1_id->CurrentValue = $this->level1_id->FormValue;
+		$this->level2_id->CurrentValue = $this->level2_id->FormValue;
+		$this->level3_id->CurrentValue = $this->level3_id->FormValue;
+		$this->level4_no->CurrentValue = $this->level4_no->FormValue;
+		$this->level4_nama->CurrentValue = $this->level4_nama->FormValue;
+		$this->saldo_awal->CurrentValue = $this->saldo_awal->FormValue;
+		$this->jurnal->CurrentValue = $this->jurnal->FormValue;
+		$this->jurnal_kode->CurrentValue = $this->jurnal_kode->FormValue;
 	}
 
 	// Load recordset
@@ -1824,11 +2523,573 @@ class ct_level4_list extends ct_level4 {
 			$this->jurnal_kode->LinkCustomAttributes = "";
 			$this->jurnal_kode->HrefValue = "";
 			$this->jurnal_kode->TooltipValue = "";
+		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
+
+			// level1_id
+			$this->level1_id->EditAttrs["class"] = "form-control";
+			$this->level1_id->EditCustomAttributes = "";
+			$this->level1_id->EditValue = ew_HtmlEncode($this->level1_id->CurrentValue);
+			if (strval($this->level1_id->CurrentValue) <> "") {
+				$sFilterWrk = "`level1_id`" . ew_SearchString("=", $this->level1_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			$sSqlWrk = "SELECT `level1_id`, `level1_no` AS `DispFld`, `level1_nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t_level1`";
+			$sWhereWrk = "";
+			$this->level1_id->LookupFilters = array("dx1" => '`level1_no`', "dx2" => '`level1_nama`');
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->level1_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level1_no` ASC";
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
+					$arwrk[2] = ew_HtmlEncode($rswrk->fields('Disp2Fld'));
+					$this->level1_id->EditValue = $this->level1_id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->level1_id->EditValue = ew_HtmlEncode($this->level1_id->CurrentValue);
+				}
+			} else {
+				$this->level1_id->EditValue = NULL;
+			}
+			$this->level1_id->PlaceHolder = ew_RemoveHtml($this->level1_id->FldCaption());
+
+			// level2_id
+			$this->level2_id->EditAttrs["class"] = "form-control";
+			$this->level2_id->EditCustomAttributes = "";
+			$this->level2_id->EditValue = ew_HtmlEncode($this->level2_id->CurrentValue);
+			if (strval($this->level2_id->CurrentValue) <> "") {
+				$sFilterWrk = "`level2_id`" . ew_SearchString("=", $this->level2_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			$sSqlWrk = "SELECT `level2_id`, `level2_no` AS `DispFld`, `level2_nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t_level2`";
+			$sWhereWrk = "";
+			$this->level2_id->LookupFilters = array("dx1" => '`level2_no`', "dx2" => '`level2_nama`');
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->level2_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level2_no` ASC";
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
+					$arwrk[2] = ew_HtmlEncode($rswrk->fields('Disp2Fld'));
+					$this->level2_id->EditValue = $this->level2_id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->level2_id->EditValue = ew_HtmlEncode($this->level2_id->CurrentValue);
+				}
+			} else {
+				$this->level2_id->EditValue = NULL;
+			}
+			$this->level2_id->PlaceHolder = ew_RemoveHtml($this->level2_id->FldCaption());
+
+			// level3_id
+			$this->level3_id->EditAttrs["class"] = "form-control";
+			$this->level3_id->EditCustomAttributes = "";
+			$this->level3_id->EditValue = ew_HtmlEncode($this->level3_id->CurrentValue);
+			if (strval($this->level3_id->CurrentValue) <> "") {
+				$sFilterWrk = "`level3_id`" . ew_SearchString("=", $this->level3_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			$sSqlWrk = "SELECT `level3_id`, `level3_no` AS `DispFld`, `level3_nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t_level3`";
+			$sWhereWrk = "";
+			$this->level3_id->LookupFilters = array("dx1" => '`level3_no`', "dx2" => '`level3_nama`');
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->level3_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level3_no` ASC";
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
+					$arwrk[2] = ew_HtmlEncode($rswrk->fields('Disp2Fld'));
+					$this->level3_id->EditValue = $this->level3_id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->level3_id->EditValue = ew_HtmlEncode($this->level3_id->CurrentValue);
+				}
+			} else {
+				$this->level3_id->EditValue = NULL;
+			}
+			$this->level3_id->PlaceHolder = ew_RemoveHtml($this->level3_id->FldCaption());
+
+			// level4_no
+			$this->level4_no->EditAttrs["class"] = "form-control";
+			$this->level4_no->EditCustomAttributes = "";
+			$this->level4_no->EditValue = ew_HtmlEncode($this->level4_no->CurrentValue);
+			$this->level4_no->PlaceHolder = ew_RemoveHtml($this->level4_no->FldCaption());
+
+			// level4_nama
+			$this->level4_nama->EditAttrs["class"] = "form-control";
+			$this->level4_nama->EditCustomAttributes = "";
+			$this->level4_nama->EditValue = ew_HtmlEncode($this->level4_nama->CurrentValue);
+			$this->level4_nama->PlaceHolder = ew_RemoveHtml($this->level4_nama->FldCaption());
+
+			// saldo_awal
+			$this->saldo_awal->EditAttrs["class"] = "form-control";
+			$this->saldo_awal->EditCustomAttributes = "";
+			$this->saldo_awal->EditValue = ew_HtmlEncode($this->saldo_awal->CurrentValue);
+			$this->saldo_awal->PlaceHolder = ew_RemoveHtml($this->saldo_awal->FldCaption());
+
+			// jurnal
+			$this->jurnal->EditCustomAttributes = "";
+			$this->jurnal->EditValue = $this->jurnal->Options(FALSE);
+
+			// jurnal_kode
+			$this->jurnal_kode->EditCustomAttributes = "";
+			$this->jurnal_kode->EditValue = $this->jurnal_kode->Options(FALSE);
+
+			// Add refer script
+			// level1_id
+
+			$this->level1_id->LinkCustomAttributes = "";
+			$this->level1_id->HrefValue = "";
+
+			// level2_id
+			$this->level2_id->LinkCustomAttributes = "";
+			$this->level2_id->HrefValue = "";
+
+			// level3_id
+			$this->level3_id->LinkCustomAttributes = "";
+			$this->level3_id->HrefValue = "";
+
+			// level4_no
+			$this->level4_no->LinkCustomAttributes = "";
+			$this->level4_no->HrefValue = "";
+
+			// level4_nama
+			$this->level4_nama->LinkCustomAttributes = "";
+			$this->level4_nama->HrefValue = "";
+
+			// saldo_awal
+			$this->saldo_awal->LinkCustomAttributes = "";
+			$this->saldo_awal->HrefValue = "";
+
+			// jurnal
+			$this->jurnal->LinkCustomAttributes = "";
+			$this->jurnal->HrefValue = "";
+
+			// jurnal_kode
+			$this->jurnal_kode->LinkCustomAttributes = "";
+			$this->jurnal_kode->HrefValue = "";
+		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
+
+			// level1_id
+			$this->level1_id->EditAttrs["class"] = "form-control";
+			$this->level1_id->EditCustomAttributes = "";
+			$this->level1_id->EditValue = ew_HtmlEncode($this->level1_id->CurrentValue);
+			if (strval($this->level1_id->CurrentValue) <> "") {
+				$sFilterWrk = "`level1_id`" . ew_SearchString("=", $this->level1_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			$sSqlWrk = "SELECT `level1_id`, `level1_no` AS `DispFld`, `level1_nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t_level1`";
+			$sWhereWrk = "";
+			$this->level1_id->LookupFilters = array("dx1" => '`level1_no`', "dx2" => '`level1_nama`');
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->level1_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level1_no` ASC";
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
+					$arwrk[2] = ew_HtmlEncode($rswrk->fields('Disp2Fld'));
+					$this->level1_id->EditValue = $this->level1_id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->level1_id->EditValue = ew_HtmlEncode($this->level1_id->CurrentValue);
+				}
+			} else {
+				$this->level1_id->EditValue = NULL;
+			}
+			$this->level1_id->PlaceHolder = ew_RemoveHtml($this->level1_id->FldCaption());
+
+			// level2_id
+			$this->level2_id->EditAttrs["class"] = "form-control";
+			$this->level2_id->EditCustomAttributes = "";
+			$this->level2_id->EditValue = ew_HtmlEncode($this->level2_id->CurrentValue);
+			if (strval($this->level2_id->CurrentValue) <> "") {
+				$sFilterWrk = "`level2_id`" . ew_SearchString("=", $this->level2_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			$sSqlWrk = "SELECT `level2_id`, `level2_no` AS `DispFld`, `level2_nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t_level2`";
+			$sWhereWrk = "";
+			$this->level2_id->LookupFilters = array("dx1" => '`level2_no`', "dx2" => '`level2_nama`');
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->level2_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level2_no` ASC";
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
+					$arwrk[2] = ew_HtmlEncode($rswrk->fields('Disp2Fld'));
+					$this->level2_id->EditValue = $this->level2_id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->level2_id->EditValue = ew_HtmlEncode($this->level2_id->CurrentValue);
+				}
+			} else {
+				$this->level2_id->EditValue = NULL;
+			}
+			$this->level2_id->PlaceHolder = ew_RemoveHtml($this->level2_id->FldCaption());
+
+			// level3_id
+			$this->level3_id->EditAttrs["class"] = "form-control";
+			$this->level3_id->EditCustomAttributes = "";
+			$this->level3_id->EditValue = ew_HtmlEncode($this->level3_id->CurrentValue);
+			if (strval($this->level3_id->CurrentValue) <> "") {
+				$sFilterWrk = "`level3_id`" . ew_SearchString("=", $this->level3_id->CurrentValue, EW_DATATYPE_NUMBER, "");
+			$sSqlWrk = "SELECT `level3_id`, `level3_no` AS `DispFld`, `level3_nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t_level3`";
+			$sWhereWrk = "";
+			$this->level3_id->LookupFilters = array("dx1" => '`level3_no`', "dx2" => '`level3_nama`');
+			ew_AddFilter($sWhereWrk, $sFilterWrk);
+			$this->Lookup_Selecting($this->level3_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level3_no` ASC";
+				$rswrk = Conn()->Execute($sSqlWrk);
+				if ($rswrk && !$rswrk->EOF) { // Lookup values found
+					$arwrk = array();
+					$arwrk[1] = ew_HtmlEncode($rswrk->fields('DispFld'));
+					$arwrk[2] = ew_HtmlEncode($rswrk->fields('Disp2Fld'));
+					$this->level3_id->EditValue = $this->level3_id->DisplayValue($arwrk);
+					$rswrk->Close();
+				} else {
+					$this->level3_id->EditValue = ew_HtmlEncode($this->level3_id->CurrentValue);
+				}
+			} else {
+				$this->level3_id->EditValue = NULL;
+			}
+			$this->level3_id->PlaceHolder = ew_RemoveHtml($this->level3_id->FldCaption());
+
+			// level4_no
+			$this->level4_no->EditAttrs["class"] = "form-control";
+			$this->level4_no->EditCustomAttributes = "";
+			$this->level4_no->EditValue = ew_HtmlEncode($this->level4_no->CurrentValue);
+			$this->level4_no->PlaceHolder = ew_RemoveHtml($this->level4_no->FldCaption());
+
+			// level4_nama
+			$this->level4_nama->EditAttrs["class"] = "form-control";
+			$this->level4_nama->EditCustomAttributes = "";
+			$this->level4_nama->EditValue = ew_HtmlEncode($this->level4_nama->CurrentValue);
+			$this->level4_nama->PlaceHolder = ew_RemoveHtml($this->level4_nama->FldCaption());
+
+			// saldo_awal
+			$this->saldo_awal->EditAttrs["class"] = "form-control";
+			$this->saldo_awal->EditCustomAttributes = "";
+			$this->saldo_awal->EditValue = ew_HtmlEncode($this->saldo_awal->CurrentValue);
+			$this->saldo_awal->PlaceHolder = ew_RemoveHtml($this->saldo_awal->FldCaption());
+
+			// jurnal
+			$this->jurnal->EditCustomAttributes = "";
+			$this->jurnal->EditValue = $this->jurnal->Options(FALSE);
+
+			// jurnal_kode
+			$this->jurnal_kode->EditCustomAttributes = "";
+			$this->jurnal_kode->EditValue = $this->jurnal_kode->Options(FALSE);
+
+			// Edit refer script
+			// level1_id
+
+			$this->level1_id->LinkCustomAttributes = "";
+			$this->level1_id->HrefValue = "";
+
+			// level2_id
+			$this->level2_id->LinkCustomAttributes = "";
+			$this->level2_id->HrefValue = "";
+
+			// level3_id
+			$this->level3_id->LinkCustomAttributes = "";
+			$this->level3_id->HrefValue = "";
+
+			// level4_no
+			$this->level4_no->LinkCustomAttributes = "";
+			$this->level4_no->HrefValue = "";
+
+			// level4_nama
+			$this->level4_nama->LinkCustomAttributes = "";
+			$this->level4_nama->HrefValue = "";
+
+			// saldo_awal
+			$this->saldo_awal->LinkCustomAttributes = "";
+			$this->saldo_awal->HrefValue = "";
+
+			// jurnal
+			$this->jurnal->LinkCustomAttributes = "";
+			$this->jurnal->HrefValue = "";
+
+			// jurnal_kode
+			$this->jurnal_kode->LinkCustomAttributes = "";
+			$this->jurnal_kode->HrefValue = "";
+		}
+		if ($this->RowType == EW_ROWTYPE_ADD ||
+			$this->RowType == EW_ROWTYPE_EDIT ||
+			$this->RowType == EW_ROWTYPE_SEARCH) { // Add / Edit / Search row
+			$this->SetupFieldTitles();
 		}
 
 		// Call Row Rendered event
 		if ($this->RowType <> EW_ROWTYPE_AGGREGATEINIT)
 			$this->Row_Rendered();
+	}
+
+	// Validate form
+	function ValidateForm() {
+		global $Language, $gsFormError;
+
+		// Initialize form error message
+		$gsFormError = "";
+
+		// Check if validation required
+		if (!EW_SERVER_VALIDATE)
+			return ($gsFormError == "");
+		if (!$this->level1_id->FldIsDetailKey && !is_null($this->level1_id->FormValue) && $this->level1_id->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->level1_id->FldCaption(), $this->level1_id->ReqErrMsg));
+		}
+		if (!$this->level2_id->FldIsDetailKey && !is_null($this->level2_id->FormValue) && $this->level2_id->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->level2_id->FldCaption(), $this->level2_id->ReqErrMsg));
+		}
+		if (!$this->level3_id->FldIsDetailKey && !is_null($this->level3_id->FormValue) && $this->level3_id->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->level3_id->FldCaption(), $this->level3_id->ReqErrMsg));
+		}
+		if (!$this->level4_no->FldIsDetailKey && !is_null($this->level4_no->FormValue) && $this->level4_no->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->level4_no->FldCaption(), $this->level4_no->ReqErrMsg));
+		}
+		if (!$this->level4_nama->FldIsDetailKey && !is_null($this->level4_nama->FormValue) && $this->level4_nama->FormValue == "") {
+			ew_AddMessage($gsFormError, str_replace("%s", $this->level4_nama->FldCaption(), $this->level4_nama->ReqErrMsg));
+		}
+		if (!ew_CheckInteger($this->saldo_awal->FormValue)) {
+			ew_AddMessage($gsFormError, $this->saldo_awal->FldErrMsg());
+		}
+
+		// Return validate result
+		$ValidateForm = ($gsFormError == "");
+
+		// Call Form_CustomValidate event
+		$sFormCustomError = "";
+		$ValidateForm = $ValidateForm && $this->Form_CustomValidate($sFormCustomError);
+		if ($sFormCustomError <> "") {
+			ew_AddMessage($gsFormError, $sFormCustomError);
+		}
+		return $ValidateForm;
+	}
+
+	//
+	// Delete records based on current filter
+	//
+	function DeleteRows() {
+		global $Language, $Security;
+		if (!$Security->CanDelete()) {
+			$this->setFailureMessage($Language->Phrase("NoDeletePermission")); // No delete permission
+			return FALSE;
+		}
+		$DeleteRows = TRUE;
+		$sSql = $this->SQL();
+		$conn = &$this->Connection();
+		$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+		$rs = $conn->Execute($sSql);
+		$conn->raiseErrorFn = '';
+		if ($rs === FALSE) {
+			return FALSE;
+		} elseif ($rs->EOF) {
+			$this->setFailureMessage($Language->Phrase("NoRecord")); // No record found
+			$rs->Close();
+			return FALSE;
+
+		//} else {
+		//	$this->LoadRowValues($rs); // Load row values
+
+		}
+		$rows = ($rs) ? $rs->GetRows() : array();
+		if ($this->AuditTrailOnDelete) $this->WriteAuditTrailDummy($Language->Phrase("BatchDeleteBegin")); // Batch delete begin
+
+		// Clone old rows
+		$rsold = $rows;
+		if ($rs)
+			$rs->Close();
+
+		// Call row deleting event
+		if ($DeleteRows) {
+			foreach ($rsold as $row) {
+				$DeleteRows = $this->Row_Deleting($row);
+				if (!$DeleteRows) break;
+			}
+		}
+		if ($DeleteRows) {
+			$sKey = "";
+			foreach ($rsold as $row) {
+				$sThisKey = "";
+				if ($sThisKey <> "") $sThisKey .= $GLOBALS["EW_COMPOSITE_KEY_SEPARATOR"];
+				$sThisKey .= $row['level4_id'];
+				$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+				$DeleteRows = $this->Delete($row); // Delete
+				$conn->raiseErrorFn = '';
+				if ($DeleteRows === FALSE)
+					break;
+				if ($sKey <> "") $sKey .= ", ";
+				$sKey .= $sThisKey;
+			}
+		} else {
+
+			// Set up error message
+			if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
+
+				// Use the message, do nothing
+			} elseif ($this->CancelMessage <> "") {
+				$this->setFailureMessage($this->CancelMessage);
+				$this->CancelMessage = "";
+			} else {
+				$this->setFailureMessage($Language->Phrase("DeleteCancelled"));
+			}
+		}
+		if ($DeleteRows) {
+			if ($this->AuditTrailOnDelete) $this->WriteAuditTrailDummy($Language->Phrase("BatchDeleteSuccess")); // Batch delete success
+		} else {
+		}
+
+		// Call Row Deleted event
+		if ($DeleteRows) {
+			foreach ($rsold as $row) {
+				$this->Row_Deleted($row);
+			}
+		}
+		return $DeleteRows;
+	}
+
+	// Update record based on key values
+	function EditRow() {
+		global $Security, $Language;
+		$sFilter = $this->KeyFilter();
+		$sFilter = $this->ApplyUserIDFilters($sFilter);
+		$conn = &$this->Connection();
+		$this->CurrentFilter = $sFilter;
+		$sSql = $this->SQL();
+		$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+		$rs = $conn->Execute($sSql);
+		$conn->raiseErrorFn = '';
+		if ($rs === FALSE)
+			return FALSE;
+		if ($rs->EOF) {
+			$this->setFailureMessage($Language->Phrase("NoRecord")); // Set no record message
+			$EditRow = FALSE; // Update Failed
+		} else {
+
+			// Save old values
+			$rsold = &$rs->fields;
+			$this->LoadDbValues($rsold);
+			$rsnew = array();
+
+			// level1_id
+			$this->level1_id->SetDbValueDef($rsnew, $this->level1_id->CurrentValue, 0, $this->level1_id->ReadOnly);
+
+			// level2_id
+			$this->level2_id->SetDbValueDef($rsnew, $this->level2_id->CurrentValue, 0, $this->level2_id->ReadOnly);
+
+			// level3_id
+			$this->level3_id->SetDbValueDef($rsnew, $this->level3_id->CurrentValue, 0, $this->level3_id->ReadOnly);
+
+			// level4_no
+			$this->level4_no->SetDbValueDef($rsnew, $this->level4_no->CurrentValue, "", $this->level4_no->ReadOnly);
+
+			// level4_nama
+			$this->level4_nama->SetDbValueDef($rsnew, $this->level4_nama->CurrentValue, "", $this->level4_nama->ReadOnly);
+
+			// saldo_awal
+			$this->saldo_awal->SetDbValueDef($rsnew, $this->saldo_awal->CurrentValue, NULL, $this->saldo_awal->ReadOnly);
+
+			// jurnal
+			$this->jurnal->SetDbValueDef($rsnew, $this->jurnal->CurrentValue, NULL, $this->jurnal->ReadOnly);
+
+			// jurnal_kode
+			$this->jurnal_kode->SetDbValueDef($rsnew, $this->jurnal_kode->CurrentValue, NULL, $this->jurnal_kode->ReadOnly);
+
+			// Call Row Updating event
+			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
+			if ($bUpdateRow) {
+				$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+				if (count($rsnew) > 0)
+					$EditRow = $this->Update($rsnew, "", $rsold);
+				else
+					$EditRow = TRUE; // No field to update
+				$conn->raiseErrorFn = '';
+				if ($EditRow) {
+				}
+			} else {
+				if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
+
+					// Use the message, do nothing
+				} elseif ($this->CancelMessage <> "") {
+					$this->setFailureMessage($this->CancelMessage);
+					$this->CancelMessage = "";
+				} else {
+					$this->setFailureMessage($Language->Phrase("UpdateCancelled"));
+				}
+				$EditRow = FALSE;
+			}
+		}
+
+		// Call Row_Updated event
+		if ($EditRow)
+			$this->Row_Updated($rsold, $rsnew);
+		$rs->Close();
+		return $EditRow;
+	}
+
+	// Add record
+	function AddRow($rsold = NULL) {
+		global $Language, $Security;
+		$conn = &$this->Connection();
+
+		// Load db values from rsold
+		if ($rsold) {
+			$this->LoadDbValues($rsold);
+		}
+		$rsnew = array();
+
+		// level1_id
+		$this->level1_id->SetDbValueDef($rsnew, $this->level1_id->CurrentValue, 0, FALSE);
+
+		// level2_id
+		$this->level2_id->SetDbValueDef($rsnew, $this->level2_id->CurrentValue, 0, FALSE);
+
+		// level3_id
+		$this->level3_id->SetDbValueDef($rsnew, $this->level3_id->CurrentValue, 0, FALSE);
+
+		// level4_no
+		$this->level4_no->SetDbValueDef($rsnew, $this->level4_no->CurrentValue, "", FALSE);
+
+		// level4_nama
+		$this->level4_nama->SetDbValueDef($rsnew, $this->level4_nama->CurrentValue, "", FALSE);
+
+		// saldo_awal
+		$this->saldo_awal->SetDbValueDef($rsnew, $this->saldo_awal->CurrentValue, NULL, FALSE);
+
+		// jurnal
+		$this->jurnal->SetDbValueDef($rsnew, $this->jurnal->CurrentValue, NULL, strval($this->jurnal->CurrentValue) == "");
+
+		// jurnal_kode
+		$this->jurnal_kode->SetDbValueDef($rsnew, $this->jurnal_kode->CurrentValue, NULL, FALSE);
+
+		// Call Row Inserting event
+		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
+		$bInsertRow = $this->Row_Inserting($rs, $rsnew);
+		if ($bInsertRow) {
+			$conn->raiseErrorFn = $GLOBALS["EW_ERROR_FN"];
+			$AddRow = $this->Insert($rsnew);
+			$conn->raiseErrorFn = '';
+			if ($AddRow) {
+			}
+		} else {
+			if ($this->getSuccessMessage() <> "" || $this->getFailureMessage() <> "") {
+
+				// Use the message, do nothing
+			} elseif ($this->CancelMessage <> "") {
+				$this->setFailureMessage($this->CancelMessage);
+				$this->CancelMessage = "";
+			} else {
+				$this->setFailureMessage($Language->Phrase("InsertCancelled"));
+			}
+			$AddRow = FALSE;
+		}
+		if ($AddRow) {
+
+			// Call Row Inserted event
+			$rs = ($rsold == NULL) ? NULL : $rsold->fields;
+			$this->Row_Inserted($rs, $rsnew);
+		}
+		return $AddRow;
 	}
 
 	// Set up export options
@@ -2119,6 +3380,45 @@ class ct_level4_list extends ct_level4 {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
+		case "x_level1_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `level1_id` AS `LinkFld`, `level1_no` AS `DispFld`, `level1_nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t_level1`";
+			$sWhereWrk = "{filter}";
+			$this->level1_id->LookupFilters = array("dx1" => '`level1_no`', "dx2" => '`level1_nama`');
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`level1_id` = {filter_value}', "t0" => "3", "fn0" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->level1_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level1_no` ASC";
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_level2_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `level2_id` AS `LinkFld`, `level2_no` AS `DispFld`, `level2_nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t_level2`";
+			$sWhereWrk = "{filter}";
+			$this->level2_id->LookupFilters = array("dx1" => '`level2_no`', "dx2" => '`level2_nama`');
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`level2_id` = {filter_value}', "t0" => "3", "fn0" => "", "f1" => '`level1_id` IN ({filter_value})', "t1" => "3", "fn1" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->level2_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level2_no` ASC";
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_level3_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `level3_id` AS `LinkFld`, `level3_no` AS `DispFld`, `level3_nama` AS `Disp2Fld`, '' AS `Disp3Fld`, '' AS `Disp4Fld` FROM `t_level3`";
+			$sWhereWrk = "{filter}";
+			$this->level3_id->LookupFilters = array("dx1" => '`level3_no`', "dx2" => '`level3_nama`');
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f0" => '`level3_id` = {filter_value}', "t0" => "3", "fn0" => "", "f1" => '`level2_id` IN ({filter_value})', "t1" => "3", "fn1" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->level3_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level3_no` ASC";
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 		}
 	}
 
@@ -2127,6 +3427,48 @@ class ct_level4_list extends ct_level4 {
 		global $gsLanguage;
 		$pageId = $pageId ?: $this->PageID;
 		switch ($fld->FldVar) {
+		case "x_level1_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `level1_id`, `level1_no` AS `DispFld`, `level1_nama` AS `Disp2Fld` FROM `t_level1`";
+			$sWhereWrk = "`level1_no` LIKE '{query_value}%' OR CONCAT(`level1_no`,'" . ew_ValueSeparator(1, $this->level1_id) . "',`level1_nama`) LIKE '{query_value}%'";
+			$this->level1_id->LookupFilters = array("dx1" => '`level1_no`', "dx2" => '`level1_nama`');
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->level1_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level1_no` ASC";
+			$sSqlWrk .= " LIMIT " . EW_AUTO_SUGGEST_MAX_ENTRIES;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_level2_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `level2_id`, `level2_no` AS `DispFld`, `level2_nama` AS `Disp2Fld` FROM `t_level2`";
+			$sWhereWrk = "(`level2_no` LIKE '{query_value}%' OR CONCAT(`level2_no`,'" . ew_ValueSeparator(1, $this->level2_id) . "',`level2_nama`) LIKE '{query_value}%') AND ({filter})";
+			$this->level2_id->LookupFilters = array("dx1" => '`level2_no`', "dx2" => '`level2_nama`');
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f1" => "`level1_id` IN ({filter_value})", "t1" => "3", "fn1" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->level2_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level2_no` ASC";
+			$sSqlWrk .= " LIMIT " . EW_AUTO_SUGGEST_MAX_ENTRIES;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
+		case "x_level3_id":
+			$sSqlWrk = "";
+			$sSqlWrk = "SELECT `level3_id`, `level3_no` AS `DispFld`, `level3_nama` AS `Disp2Fld` FROM `t_level3`";
+			$sWhereWrk = "(`level3_no` LIKE '{query_value}%' OR CONCAT(`level3_no`,'" . ew_ValueSeparator(1, $this->level3_id) . "',`level3_nama`) LIKE '{query_value}%') AND ({filter})";
+			$this->level3_id->LookupFilters = array("dx1" => '`level3_no`', "dx2" => '`level3_nama`');
+			$fld->LookupFilters += array("s" => $sSqlWrk, "d" => "", "f1" => "`level2_id` IN ({filter_value})", "t1" => "3", "fn1" => "");
+			$sSqlWrk = "";
+			$this->Lookup_Selecting($this->level3_id, $sWhereWrk); // Call Lookup selecting
+			if ($sWhereWrk <> "") $sSqlWrk .= " WHERE " . $sWhereWrk;
+			$sSqlWrk .= " ORDER BY `level3_no` ASC";
+			$sSqlWrk .= " LIMIT " . EW_AUTO_SUGGEST_MAX_ENTRIES;
+			if ($sSqlWrk <> "")
+				$fld->LookupFilters["s"] .= $sSqlWrk;
+			break;
 		}
 	}
 
@@ -2277,6 +3619,69 @@ var CurrentPageID = EW_PAGE_ID = "list";
 var CurrentForm = ft_level4list = new ew_Form("ft_level4list", "list");
 ft_level4list.FormKeyCountName = '<?php echo $t_level4_list->FormKeyCountName ?>';
 
+// Validate form
+ft_level4list.Validate = function() {
+	if (!this.ValidateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.GetForm(), $fobj = $(fobj);
+	if ($fobj.find("#a_confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.FormKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = $fobj.find("#a_list").val() == "gridinsert";
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+		var checkrow = (gridinsert) ? !this.EmptyRow(infix) : true;
+		if (checkrow) {
+			addcnt++;
+			elm = this.GetElements("x" + infix + "_level1_id");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $t_level4->level1_id->FldCaption(), $t_level4->level1_id->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_level2_id");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $t_level4->level2_id->FldCaption(), $t_level4->level2_id->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_level3_id");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $t_level4->level3_id->FldCaption(), $t_level4->level3_id->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_level4_no");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $t_level4->level4_no->FldCaption(), $t_level4->level4_no->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_level4_nama");
+			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
+				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $t_level4->level4_nama->FldCaption(), $t_level4->level4_nama->ReqErrMsg)) ?>");
+			elm = this.GetElements("x" + infix + "_saldo_awal");
+			if (elm && !ew_CheckInteger(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($t_level4->saldo_awal->FldErrMsg()) ?>");
+
+			// Fire Form_CustomValidate event
+			if (!this.Form_CustomValidate(fobj))
+				return false;
+		} // End Grid Add checking
+	}
+	if (gridinsert && addcnt == 0) { // No row added
+		ew_Alert(ewLanguage.Phrase("NoAddRecord"));
+		return false;
+	}
+	return true;
+}
+
+// Check empty row
+ft_level4list.EmptyRow = function(infix) {
+	var fobj = this.Form;
+	if (ew_ValueChanged(fobj, infix, "level1_id", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "level2_id", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "level3_id", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "level4_no", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "level4_nama", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "saldo_awal", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "jurnal", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "jurnal_kode", false)) return false;
+	return true;
+}
+
 // Form_CustomValidate event
 ft_level4list.Form_CustomValidate = 
  function(fobj) { // DO NOT CHANGE THIS LINE!
@@ -2294,8 +3699,8 @@ ft_level4list.ValidateRequired = false;
 
 // Dynamic selection lists
 ft_level4list.Lists["x_level1_id"] = {"LinkField":"x_level1_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_level1_no","x_level1_nama","",""],"ParentFields":[],"ChildFields":["x_level2_id"],"FilterFields":[],"Options":[],"Template":"","LinkTable":"t_level1"};
-ft_level4list.Lists["x_level2_id"] = {"LinkField":"x_level2_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_level2_no","x_level2_nama","",""],"ParentFields":[],"ChildFields":["x_level3_id"],"FilterFields":[],"Options":[],"Template":"","LinkTable":"t_level2"};
-ft_level4list.Lists["x_level3_id"] = {"LinkField":"x_level3_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_level3_no","x_level3_nama","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":"","LinkTable":"t_level3"};
+ft_level4list.Lists["x_level2_id"] = {"LinkField":"x_level2_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_level2_no","x_level2_nama","",""],"ParentFields":["x_level1_id"],"ChildFields":["x_level3_id"],"FilterFields":["x_level1_id"],"Options":[],"Template":"","LinkTable":"t_level2"};
+ft_level4list.Lists["x_level3_id"] = {"LinkField":"x_level3_id","Ajax":true,"AutoFill":false,"DisplayFields":["x_level3_no","x_level3_nama","",""],"ParentFields":["x_level2_id"],"ChildFields":[],"FilterFields":["x_level2_id"],"Options":[],"Template":"","LinkTable":"t_level3"};
 ft_level4list.Lists["x_jurnal"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 ft_level4list.Lists["x_jurnal"].Options = <?php echo json_encode($t_level4->jurnal->Options()) ?>;
 ft_level4list.Lists["x_jurnal_kode"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
@@ -2330,6 +3735,13 @@ var CurrentSearchForm = ft_level4listsrch = new ew_Form("ft_level4listsrch");
 </div>
 <?php } ?>
 <?php
+if ($t_level4->CurrentAction == "gridadd") {
+	$t_level4->CurrentFilter = "0=1";
+	$t_level4_list->StartRec = 1;
+	$t_level4_list->DisplayRecs = $t_level4->GridAddRowCount;
+	$t_level4_list->TotalRecs = $t_level4_list->DisplayRecs;
+	$t_level4_list->StopRec = $t_level4_list->DisplayRecs;
+} else {
 	$bSelectLimit = $t_level4_list->UseSelectLimit;
 	if ($bSelectLimit) {
 		if ($t_level4_list->TotalRecs <= 0)
@@ -2362,6 +3774,7 @@ var CurrentSearchForm = ft_level4listsrch = new ew_Form("ft_level4listsrch");
 		$searchsql = $t_level4_list->getSessionWhere();
 		$t_level4_list->WriteAuditTrailOnSearch($searchparm, $searchsql);
 	}
+}
 $t_level4_list->RenderOtherOptions();
 ?>
 <?php if ($Security->CanSearch()) { ?>
@@ -2476,7 +3889,7 @@ $t_level4_list->ShowMessage();
 <?php } ?>
 <input type="hidden" name="t" value="t_level4">
 <div id="gmp_t_level4" class="<?php if (ew_IsResponsiveLayout()) { echo "table-responsive "; } ?>ewGridMiddlePanel">
-<?php if ($t_level4_list->TotalRecs > 0 || $t_level4->CurrentAction == "gridedit") { ?>
+<?php if ($t_level4_list->TotalRecs > 0 || $t_level4->CurrentAction == "add" || $t_level4->CurrentAction == "copy" || $t_level4->CurrentAction == "gridedit") { ?>
 <table id="tbl_t_level4list" class="table ewTable">
 <?php echo $t_level4->TableCustomInnerHtml ?>
 <thead><!-- Table header -->
@@ -2573,6 +3986,159 @@ $t_level4_list->ListOptions->Render("header", "right");
 </thead>
 <tbody>
 <?php
+	if ($t_level4->CurrentAction == "add" || $t_level4->CurrentAction == "copy") {
+		$t_level4_list->RowIndex = 0;
+		$t_level4_list->KeyCount = $t_level4_list->RowIndex;
+		if ($t_level4->CurrentAction == "copy" && !$t_level4_list->LoadRow())
+				$t_level4->CurrentAction = "add";
+		if ($t_level4->CurrentAction == "add")
+			$t_level4_list->LoadDefaultValues();
+		if ($t_level4->EventCancelled) // Insert failed
+			$t_level4_list->RestoreFormValues(); // Restore form values
+
+		// Set row properties
+		$t_level4->ResetAttrs();
+		$t_level4->RowAttrs = array_merge($t_level4->RowAttrs, array('data-rowindex'=>0, 'id'=>'r0_t_level4', 'data-rowtype'=>EW_ROWTYPE_ADD));
+		$t_level4->RowType = EW_ROWTYPE_ADD;
+
+		// Render row
+		$t_level4_list->RenderRow();
+
+		// Render list options
+		$t_level4_list->RenderListOptions();
+		$t_level4_list->StartRowCnt = 0;
+?>
+	<tr<?php echo $t_level4->RowAttributes() ?>>
+<?php
+
+// Render list options (body, left)
+$t_level4_list->ListOptions->Render("body", "left", $t_level4_list->RowCnt);
+?>
+	<?php if ($t_level4->level1_id->Visible) { // level1_id ?>
+		<td data-name="level1_id">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level1_id" class="form-group t_level4_level1_id">
+<?php
+$wrkonchange = trim("ew_UpdateOpt.call(this); " . @$t_level4->level1_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level1_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level1_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level1_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level1_id->getPlaceHolder()) ?>"<?php echo $t_level4->level1_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level1_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level1_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo ew_HtmlEncode($t_level4->level1_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level1_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level1_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level1_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->LookupFilterQuery(false) ?>">
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level1_id" name="o<?php echo $t_level4_list->RowIndex ?>_level1_id" id="o<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo ew_HtmlEncode($t_level4->level1_id->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->level2_id->Visible) { // level2_id ?>
+		<td data-name="level2_id">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level2_id" class="form-group t_level4_level2_id">
+<?php
+$wrkonchange = trim("ew_UpdateOpt.call(this); " . @$t_level4->level2_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level2_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level2_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level2_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level2_id->getPlaceHolder()) ?>"<?php echo $t_level4->level2_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level2_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level2_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo ew_HtmlEncode($t_level4->level2_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level2_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level2_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level2_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->LookupFilterQuery(false) ?>">
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level2_id" name="o<?php echo $t_level4_list->RowIndex ?>_level2_id" id="o<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo ew_HtmlEncode($t_level4->level2_id->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->level3_id->Visible) { // level3_id ?>
+		<td data-name="level3_id">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level3_id" class="form-group t_level4_level3_id">
+<?php
+$wrkonchange = trim(" " . @$t_level4->level3_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level3_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level3_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level3_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level3_id->getPlaceHolder()) ?>"<?php echo $t_level4->level3_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level3_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level3_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo ew_HtmlEncode($t_level4->level3_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level3_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level3_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level3_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->LookupFilterQuery(false) ?>">
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level3_id" name="o<?php echo $t_level4_list->RowIndex ?>_level3_id" id="o<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo ew_HtmlEncode($t_level4->level3_id->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->level4_no->Visible) { // level4_no ?>
+		<td data-name="level4_no">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level4_no" class="form-group t_level4_level4_no">
+<input type="text" data-table="t_level4" data-field="x_level4_no" name="x<?php echo $t_level4_list->RowIndex ?>_level4_no" id="x<?php echo $t_level4_list->RowIndex ?>_level4_no" size="30" maxlength="2" placeholder="<?php echo ew_HtmlEncode($t_level4->level4_no->getPlaceHolder()) ?>" value="<?php echo $t_level4->level4_no->EditValue ?>"<?php echo $t_level4->level4_no->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level4_no" name="o<?php echo $t_level4_list->RowIndex ?>_level4_no" id="o<?php echo $t_level4_list->RowIndex ?>_level4_no" value="<?php echo ew_HtmlEncode($t_level4->level4_no->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->level4_nama->Visible) { // level4_nama ?>
+		<td data-name="level4_nama">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level4_nama" class="form-group t_level4_level4_nama">
+<input type="text" data-table="t_level4" data-field="x_level4_nama" name="x<?php echo $t_level4_list->RowIndex ?>_level4_nama" id="x<?php echo $t_level4_list->RowIndex ?>_level4_nama" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($t_level4->level4_nama->getPlaceHolder()) ?>" value="<?php echo $t_level4->level4_nama->EditValue ?>"<?php echo $t_level4->level4_nama->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level4_nama" name="o<?php echo $t_level4_list->RowIndex ?>_level4_nama" id="o<?php echo $t_level4_list->RowIndex ?>_level4_nama" value="<?php echo ew_HtmlEncode($t_level4->level4_nama->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->saldo_awal->Visible) { // saldo_awal ?>
+		<td data-name="saldo_awal">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_saldo_awal" class="form-group t_level4_saldo_awal">
+<input type="text" data-table="t_level4" data-field="x_saldo_awal" name="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->saldo_awal->getPlaceHolder()) ?>" value="<?php echo $t_level4->saldo_awal->EditValue ?>"<?php echo $t_level4->saldo_awal->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_saldo_awal" name="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" value="<?php echo ew_HtmlEncode($t_level4->saldo_awal->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->jurnal->Visible) { // jurnal ?>
+		<td data-name="jurnal">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_jurnal" class="form-group t_level4_jurnal">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_jurnal" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_jurnal" data-value-separator="<?php echo $t_level4->jurnal->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_jurnal" id="x<?php echo $t_level4_list->RowIndex ?>_jurnal" value="{value}"<?php echo $t_level4->jurnal->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_jurnal" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->jurnal->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_jurnal") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_jurnal" name="o<?php echo $t_level4_list->RowIndex ?>_jurnal" id="o<?php echo $t_level4_list->RowIndex ?>_jurnal" value="<?php echo ew_HtmlEncode($t_level4->jurnal->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->jurnal_kode->Visible) { // jurnal_kode ?>
+		<td data-name="jurnal_kode">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_jurnal_kode" class="form-group t_level4_jurnal_kode">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_jurnal_kode" data-value-separator="<?php echo $t_level4->jurnal_kode->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" id="x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" value="{value}"<?php echo $t_level4->jurnal_kode->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->jurnal_kode->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_jurnal_kode") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_jurnal_kode" name="o<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" id="o<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" value="<?php echo ew_HtmlEncode($t_level4->jurnal_kode->OldValue) ?>">
+</td>
+	<?php } ?>
+<?php
+
+// Render list options (body, right)
+$t_level4_list->ListOptions->Render("body", "right", $t_level4_list->RowCnt);
+?>
+<script type="text/javascript">
+ft_level4list.UpdateOpts(<?php echo $t_level4_list->RowIndex ?>);
+</script>
+	</tr>
+<?php
+}
+?>
+<?php
 if ($t_level4->ExportAll && $t_level4->Export <> "") {
 	$t_level4_list->StopRec = $t_level4_list->TotalRecs;
 } else {
@@ -2582,6 +4148,15 @@ if ($t_level4->ExportAll && $t_level4->Export <> "") {
 		$t_level4_list->StopRec = $t_level4_list->StartRec + $t_level4_list->DisplayRecs - 1;
 	else
 		$t_level4_list->StopRec = $t_level4_list->TotalRecs;
+}
+
+// Restore number of post back records
+if ($objForm) {
+	$objForm->Index = -1;
+	if ($objForm->HasValue($t_level4_list->FormKeyCountName) && ($t_level4->CurrentAction == "gridadd" || $t_level4->CurrentAction == "gridedit" || $t_level4->CurrentAction == "F")) {
+		$t_level4_list->KeyCount = $objForm->GetValue($t_level4_list->FormKeyCountName);
+		$t_level4_list->StopRec = $t_level4_list->StartRec + $t_level4_list->KeyCount - 1;
+	}
 }
 $t_level4_list->RecCnt = $t_level4_list->StartRec - 1;
 if ($t_level4_list->Recordset && !$t_level4_list->Recordset->EOF) {
@@ -2597,10 +4172,27 @@ if ($t_level4_list->Recordset && !$t_level4_list->Recordset->EOF) {
 $t_level4->RowType = EW_ROWTYPE_AGGREGATEINIT;
 $t_level4->ResetAttrs();
 $t_level4_list->RenderRow();
+$t_level4_list->EditRowCnt = 0;
+if ($t_level4->CurrentAction == "edit")
+	$t_level4_list->RowIndex = 1;
+if ($t_level4->CurrentAction == "gridadd")
+	$t_level4_list->RowIndex = 0;
+if ($t_level4->CurrentAction == "gridedit")
+	$t_level4_list->RowIndex = 0;
 while ($t_level4_list->RecCnt < $t_level4_list->StopRec) {
 	$t_level4_list->RecCnt++;
 	if (intval($t_level4_list->RecCnt) >= intval($t_level4_list->StartRec)) {
 		$t_level4_list->RowCnt++;
+		if ($t_level4->CurrentAction == "gridadd" || $t_level4->CurrentAction == "gridedit" || $t_level4->CurrentAction == "F") {
+			$t_level4_list->RowIndex++;
+			$objForm->Index = $t_level4_list->RowIndex;
+			if ($objForm->HasValue($t_level4_list->FormActionName))
+				$t_level4_list->RowAction = strval($objForm->GetValue($t_level4_list->FormActionName));
+			elseif ($t_level4->CurrentAction == "gridadd")
+				$t_level4_list->RowAction = "insert";
+			else
+				$t_level4_list->RowAction = "";
+		}
 
 		// Set up key count
 		$t_level4_list->KeyCount = $t_level4_list->RowIndex;
@@ -2609,10 +4201,37 @@ while ($t_level4_list->RecCnt < $t_level4_list->StopRec) {
 		$t_level4->ResetAttrs();
 		$t_level4->CssClass = "";
 		if ($t_level4->CurrentAction == "gridadd") {
+			$t_level4_list->LoadDefaultValues(); // Load default values
 		} else {
 			$t_level4_list->LoadRowValues($t_level4_list->Recordset); // Load row values
 		}
 		$t_level4->RowType = EW_ROWTYPE_VIEW; // Render view
+		if ($t_level4->CurrentAction == "gridadd") // Grid add
+			$t_level4->RowType = EW_ROWTYPE_ADD; // Render add
+		if ($t_level4->CurrentAction == "gridadd" && $t_level4->EventCancelled && !$objForm->HasValue("k_blankrow")) // Insert failed
+			$t_level4_list->RestoreCurrentRowFormValues($t_level4_list->RowIndex); // Restore form values
+		if ($t_level4->CurrentAction == "edit") {
+			if ($t_level4_list->CheckInlineEditKey() && $t_level4_list->EditRowCnt == 0) { // Inline edit
+				$t_level4->RowType = EW_ROWTYPE_EDIT; // Render edit
+			}
+		}
+		if ($t_level4->CurrentAction == "gridedit") { // Grid edit
+			if ($t_level4->EventCancelled) {
+				$t_level4_list->RestoreCurrentRowFormValues($t_level4_list->RowIndex); // Restore form values
+			}
+			if ($t_level4_list->RowAction == "insert")
+				$t_level4->RowType = EW_ROWTYPE_ADD; // Render add
+			else
+				$t_level4->RowType = EW_ROWTYPE_EDIT; // Render edit
+		}
+		if ($t_level4->CurrentAction == "edit" && $t_level4->RowType == EW_ROWTYPE_EDIT && $t_level4->EventCancelled) { // Update failed
+			$objForm->Index = 1;
+			$t_level4_list->RestoreFormValues(); // Restore form values
+		}
+		if ($t_level4->CurrentAction == "gridedit" && ($t_level4->RowType == EW_ROWTYPE_EDIT || $t_level4->RowType == EW_ROWTYPE_ADD) && $t_level4->EventCancelled) // Update failed
+			$t_level4_list->RestoreCurrentRowFormValues($t_level4_list->RowIndex); // Restore form values
+		if ($t_level4->RowType == EW_ROWTYPE_EDIT) // Edit row
+			$t_level4_list->EditRowCnt++;
 
 		// Set up row id / data-rowindex
 		$t_level4->RowAttrs = array_merge($t_level4->RowAttrs, array('data-rowindex'=>$t_level4_list->RowCnt, 'id'=>'r' . $t_level4_list->RowCnt . '_t_level4', 'data-rowtype'=>$t_level4->RowType));
@@ -2622,6 +4241,9 @@ while ($t_level4_list->RecCnt < $t_level4_list->StopRec) {
 
 		// Render list options
 		$t_level4_list->RenderListOptions();
+
+		// Skip delete row / empty row for confirm page
+		if ($t_level4_list->RowAction <> "delete" && $t_level4_list->RowAction <> "insertdelete" && !($t_level4_list->RowAction == "insert" && $t_level4->CurrentAction == "F" && $t_level4_list->EmptyRow())) {
 ?>
 	<tr<?php echo $t_level4->RowAttributes() ?>>
 <?php
@@ -2631,66 +4253,273 @@ $t_level4_list->ListOptions->Render("body", "left", $t_level4_list->RowCnt);
 ?>
 	<?php if ($t_level4->level1_id->Visible) { // level1_id ?>
 		<td data-name="level1_id"<?php echo $t_level4->level1_id->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level1_id" class="form-group t_level4_level1_id">
+<?php
+$wrkonchange = trim("ew_UpdateOpt.call(this); " . @$t_level4->level1_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level1_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level1_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level1_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level1_id->getPlaceHolder()) ?>"<?php echo $t_level4->level1_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level1_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level1_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo ew_HtmlEncode($t_level4->level1_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level1_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level1_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level1_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->LookupFilterQuery(false) ?>">
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level1_id" name="o<?php echo $t_level4_list->RowIndex ?>_level1_id" id="o<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo ew_HtmlEncode($t_level4->level1_id->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level1_id" class="form-group t_level4_level1_id">
+<?php
+$wrkonchange = trim("ew_UpdateOpt.call(this); " . @$t_level4->level1_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level1_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level1_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level1_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level1_id->getPlaceHolder()) ?>"<?php echo $t_level4->level1_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level1_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level1_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo ew_HtmlEncode($t_level4->level1_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level1_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level1_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level1_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->LookupFilterQuery(false) ?>">
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level1_id" class="t_level4_level1_id">
 <span<?php echo $t_level4->level1_id->ViewAttributes() ?>>
 <?php echo $t_level4->level1_id->ListViewValue() ?></span>
 </span>
+<?php } ?>
 <a id="<?php echo $t_level4_list->PageObjName . "_row_" . $t_level4_list->RowCnt ?>"></a></td>
 	<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<input type="hidden" data-table="t_level4" data-field="x_level4_id" name="x<?php echo $t_level4_list->RowIndex ?>_level4_id" id="x<?php echo $t_level4_list->RowIndex ?>_level4_id" value="<?php echo ew_HtmlEncode($t_level4->level4_id->CurrentValue) ?>">
+<input type="hidden" data-table="t_level4" data-field="x_level4_id" name="o<?php echo $t_level4_list->RowIndex ?>_level4_id" id="o<?php echo $t_level4_list->RowIndex ?>_level4_id" value="<?php echo ew_HtmlEncode($t_level4->level4_id->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT || $t_level4->CurrentMode == "edit") { ?>
+<input type="hidden" data-table="t_level4" data-field="x_level4_id" name="x<?php echo $t_level4_list->RowIndex ?>_level4_id" id="x<?php echo $t_level4_list->RowIndex ?>_level4_id" value="<?php echo ew_HtmlEncode($t_level4->level4_id->CurrentValue) ?>">
+<?php } ?>
 	<?php if ($t_level4->level2_id->Visible) { // level2_id ?>
 		<td data-name="level2_id"<?php echo $t_level4->level2_id->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level2_id" class="form-group t_level4_level2_id">
+<?php
+$wrkonchange = trim("ew_UpdateOpt.call(this); " . @$t_level4->level2_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level2_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level2_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level2_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level2_id->getPlaceHolder()) ?>"<?php echo $t_level4->level2_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level2_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level2_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo ew_HtmlEncode($t_level4->level2_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level2_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level2_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level2_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->LookupFilterQuery(false) ?>">
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level2_id" name="o<?php echo $t_level4_list->RowIndex ?>_level2_id" id="o<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo ew_HtmlEncode($t_level4->level2_id->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level2_id" class="form-group t_level4_level2_id">
+<?php
+$wrkonchange = trim("ew_UpdateOpt.call(this); " . @$t_level4->level2_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level2_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level2_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level2_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level2_id->getPlaceHolder()) ?>"<?php echo $t_level4->level2_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level2_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level2_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo ew_HtmlEncode($t_level4->level2_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level2_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level2_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level2_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->LookupFilterQuery(false) ?>">
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level2_id" class="t_level4_level2_id">
 <span<?php echo $t_level4->level2_id->ViewAttributes() ?>>
 <?php echo $t_level4->level2_id->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($t_level4->level3_id->Visible) { // level3_id ?>
 		<td data-name="level3_id"<?php echo $t_level4->level3_id->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level3_id" class="form-group t_level4_level3_id">
+<?php
+$wrkonchange = trim(" " . @$t_level4->level3_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level3_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level3_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level3_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level3_id->getPlaceHolder()) ?>"<?php echo $t_level4->level3_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level3_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level3_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo ew_HtmlEncode($t_level4->level3_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level3_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level3_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level3_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->LookupFilterQuery(false) ?>">
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level3_id" name="o<?php echo $t_level4_list->RowIndex ?>_level3_id" id="o<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo ew_HtmlEncode($t_level4->level3_id->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level3_id" class="form-group t_level4_level3_id">
+<?php
+$wrkonchange = trim(" " . @$t_level4->level3_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level3_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level3_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level3_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level3_id->getPlaceHolder()) ?>"<?php echo $t_level4->level3_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level3_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level3_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo ew_HtmlEncode($t_level4->level3_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level3_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level3_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level3_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->LookupFilterQuery(false) ?>">
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level3_id" class="t_level4_level3_id">
 <span<?php echo $t_level4->level3_id->ViewAttributes() ?>>
 <?php echo $t_level4->level3_id->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($t_level4->level4_no->Visible) { // level4_no ?>
 		<td data-name="level4_no"<?php echo $t_level4->level4_no->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level4_no" class="form-group t_level4_level4_no">
+<input type="text" data-table="t_level4" data-field="x_level4_no" name="x<?php echo $t_level4_list->RowIndex ?>_level4_no" id="x<?php echo $t_level4_list->RowIndex ?>_level4_no" size="30" maxlength="2" placeholder="<?php echo ew_HtmlEncode($t_level4->level4_no->getPlaceHolder()) ?>" value="<?php echo $t_level4->level4_no->EditValue ?>"<?php echo $t_level4->level4_no->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level4_no" name="o<?php echo $t_level4_list->RowIndex ?>_level4_no" id="o<?php echo $t_level4_list->RowIndex ?>_level4_no" value="<?php echo ew_HtmlEncode($t_level4->level4_no->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level4_no" class="form-group t_level4_level4_no">
+<input type="text" data-table="t_level4" data-field="x_level4_no" name="x<?php echo $t_level4_list->RowIndex ?>_level4_no" id="x<?php echo $t_level4_list->RowIndex ?>_level4_no" size="30" maxlength="2" placeholder="<?php echo ew_HtmlEncode($t_level4->level4_no->getPlaceHolder()) ?>" value="<?php echo $t_level4->level4_no->EditValue ?>"<?php echo $t_level4->level4_no->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level4_no" class="t_level4_level4_no">
 <span<?php echo $t_level4->level4_no->ViewAttributes() ?>>
 <?php echo $t_level4->level4_no->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($t_level4->level4_nama->Visible) { // level4_nama ?>
 		<td data-name="level4_nama"<?php echo $t_level4->level4_nama->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level4_nama" class="form-group t_level4_level4_nama">
+<input type="text" data-table="t_level4" data-field="x_level4_nama" name="x<?php echo $t_level4_list->RowIndex ?>_level4_nama" id="x<?php echo $t_level4_list->RowIndex ?>_level4_nama" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($t_level4->level4_nama->getPlaceHolder()) ?>" value="<?php echo $t_level4->level4_nama->EditValue ?>"<?php echo $t_level4->level4_nama->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level4_nama" name="o<?php echo $t_level4_list->RowIndex ?>_level4_nama" id="o<?php echo $t_level4_list->RowIndex ?>_level4_nama" value="<?php echo ew_HtmlEncode($t_level4->level4_nama->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level4_nama" class="form-group t_level4_level4_nama">
+<input type="text" data-table="t_level4" data-field="x_level4_nama" name="x<?php echo $t_level4_list->RowIndex ?>_level4_nama" id="x<?php echo $t_level4_list->RowIndex ?>_level4_nama" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($t_level4->level4_nama->getPlaceHolder()) ?>" value="<?php echo $t_level4->level4_nama->EditValue ?>"<?php echo $t_level4->level4_nama->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_level4_nama" class="t_level4_level4_nama">
 <span<?php echo $t_level4->level4_nama->ViewAttributes() ?>>
 <?php echo $t_level4->level4_nama->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($t_level4->saldo_awal->Visible) { // saldo_awal ?>
 		<td data-name="saldo_awal"<?php echo $t_level4->saldo_awal->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_saldo_awal" class="form-group t_level4_saldo_awal">
+<input type="text" data-table="t_level4" data-field="x_saldo_awal" name="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->saldo_awal->getPlaceHolder()) ?>" value="<?php echo $t_level4->saldo_awal->EditValue ?>"<?php echo $t_level4->saldo_awal->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_saldo_awal" name="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" value="<?php echo ew_HtmlEncode($t_level4->saldo_awal->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_saldo_awal" class="form-group t_level4_saldo_awal">
+<input type="text" data-table="t_level4" data-field="x_saldo_awal" name="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->saldo_awal->getPlaceHolder()) ?>" value="<?php echo $t_level4->saldo_awal->EditValue ?>"<?php echo $t_level4->saldo_awal->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_saldo_awal" class="t_level4_saldo_awal">
 <span<?php echo $t_level4->saldo_awal->ViewAttributes() ?>>
 <?php echo $t_level4->saldo_awal->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($t_level4->jurnal->Visible) { // jurnal ?>
 		<td data-name="jurnal"<?php echo $t_level4->jurnal->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_jurnal" class="form-group t_level4_jurnal">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_jurnal" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_jurnal" data-value-separator="<?php echo $t_level4->jurnal->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_jurnal" id="x<?php echo $t_level4_list->RowIndex ?>_jurnal" value="{value}"<?php echo $t_level4->jurnal->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_jurnal" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->jurnal->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_jurnal") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_jurnal" name="o<?php echo $t_level4_list->RowIndex ?>_jurnal" id="o<?php echo $t_level4_list->RowIndex ?>_jurnal" value="<?php echo ew_HtmlEncode($t_level4->jurnal->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_jurnal" class="form-group t_level4_jurnal">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_jurnal" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_jurnal" data-value-separator="<?php echo $t_level4->jurnal->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_jurnal" id="x<?php echo $t_level4_list->RowIndex ?>_jurnal" value="{value}"<?php echo $t_level4->jurnal->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_jurnal" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->jurnal->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_jurnal") ?>
+</div></div>
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_jurnal" class="t_level4_jurnal">
 <span<?php echo $t_level4->jurnal->ViewAttributes() ?>>
 <?php echo $t_level4->jurnal->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 	<?php if ($t_level4->jurnal_kode->Visible) { // jurnal_kode ?>
 		<td data-name="jurnal_kode"<?php echo $t_level4->jurnal_kode->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_jurnal_kode" class="form-group t_level4_jurnal_kode">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_jurnal_kode" data-value-separator="<?php echo $t_level4->jurnal_kode->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" id="x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" value="{value}"<?php echo $t_level4->jurnal_kode->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->jurnal_kode->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_jurnal_kode") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_jurnal_kode" name="o<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" id="o<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" value="<?php echo ew_HtmlEncode($t_level4->jurnal_kode->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_jurnal_kode" class="form-group t_level4_jurnal_kode">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_jurnal_kode" data-value-separator="<?php echo $t_level4->jurnal_kode->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" id="x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" value="{value}"<?php echo $t_level4->jurnal_kode->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->jurnal_kode->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_jurnal_kode") ?>
+</div></div>
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
 <span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_jurnal_kode" class="t_level4_jurnal_kode">
 <span<?php echo $t_level4->jurnal_kode->ViewAttributes() ?>>
 <?php echo $t_level4->jurnal_kode->ListViewValue() ?></span>
 </span>
+<?php } ?>
 </td>
 	<?php } ?>
 <?php
@@ -2699,14 +4528,184 @@ $t_level4_list->ListOptions->Render("body", "left", $t_level4_list->RowCnt);
 $t_level4_list->ListOptions->Render("body", "right", $t_level4_list->RowCnt);
 ?>
 	</tr>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD || $t_level4->RowType == EW_ROWTYPE_EDIT) { ?>
+<script type="text/javascript">
+ft_level4list.UpdateOpts(<?php echo $t_level4_list->RowIndex ?>);
+</script>
+<?php } ?>
 <?php
 	}
+	} // End delete row checking
 	if ($t_level4->CurrentAction <> "gridadd")
-		$t_level4_list->Recordset->MoveNext();
+		if (!$t_level4_list->Recordset->EOF) $t_level4_list->Recordset->MoveNext();
+}
+?>
+<?php
+	if ($t_level4->CurrentAction == "gridadd" || $t_level4->CurrentAction == "gridedit") {
+		$t_level4_list->RowIndex = '$rowindex$';
+		$t_level4_list->LoadDefaultValues();
+
+		// Set row properties
+		$t_level4->ResetAttrs();
+		$t_level4->RowAttrs = array_merge($t_level4->RowAttrs, array('data-rowindex'=>$t_level4_list->RowIndex, 'id'=>'r0_t_level4', 'data-rowtype'=>EW_ROWTYPE_ADD));
+		ew_AppendClass($t_level4->RowAttrs["class"], "ewTemplate");
+		$t_level4->RowType = EW_ROWTYPE_ADD;
+
+		// Render row
+		$t_level4_list->RenderRow();
+
+		// Render list options
+		$t_level4_list->RenderListOptions();
+		$t_level4_list->StartRowCnt = 0;
+?>
+	<tr<?php echo $t_level4->RowAttributes() ?>>
+<?php
+
+// Render list options (body, left)
+$t_level4_list->ListOptions->Render("body", "left", $t_level4_list->RowIndex);
+?>
+	<?php if ($t_level4->level1_id->Visible) { // level1_id ?>
+		<td data-name="level1_id">
+<span id="el$rowindex$_t_level4_level1_id" class="form-group t_level4_level1_id">
+<?php
+$wrkonchange = trim("ew_UpdateOpt.call(this); " . @$t_level4->level1_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level1_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level1_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level1_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level1_id->getPlaceHolder()) ?>"<?php echo $t_level4->level1_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level1_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level1_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo ew_HtmlEncode($t_level4->level1_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level1_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level1_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level1_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level1_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo $t_level4->level1_id->LookupFilterQuery(false) ?>">
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level1_id" name="o<?php echo $t_level4_list->RowIndex ?>_level1_id" id="o<?php echo $t_level4_list->RowIndex ?>_level1_id" value="<?php echo ew_HtmlEncode($t_level4->level1_id->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->level2_id->Visible) { // level2_id ?>
+		<td data-name="level2_id">
+<span id="el$rowindex$_t_level4_level2_id" class="form-group t_level4_level2_id">
+<?php
+$wrkonchange = trim("ew_UpdateOpt.call(this); " . @$t_level4->level2_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level2_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level2_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level2_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level2_id->getPlaceHolder()) ?>"<?php echo $t_level4->level2_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level2_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level2_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo ew_HtmlEncode($t_level4->level2_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level2_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level2_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level2_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level2_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo $t_level4->level2_id->LookupFilterQuery(false) ?>">
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level2_id" name="o<?php echo $t_level4_list->RowIndex ?>_level2_id" id="o<?php echo $t_level4_list->RowIndex ?>_level2_id" value="<?php echo ew_HtmlEncode($t_level4->level2_id->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->level3_id->Visible) { // level3_id ?>
+		<td data-name="level3_id">
+<span id="el$rowindex$_t_level4_level3_id" class="form-group t_level4_level3_id">
+<?php
+$wrkonchange = trim(" " . @$t_level4->level3_id->EditAttrs["onchange"]);
+if ($wrkonchange <> "") $wrkonchange = " onchange=\"" . ew_JsEncode2($wrkonchange) . "\"";
+$t_level4->level3_id->EditAttrs["onchange"] = "";
+?>
+<span id="as_x<?php echo $t_level4_list->RowIndex ?>_level3_id" style="white-space: nowrap; z-index: <?php echo (9000 - $t_level4_list->RowCnt * 10) ?>">
+	<input type="text" name="sv_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="sv_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->EditValue ?>" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->level3_id->getPlaceHolder()) ?>" data-placeholder="<?php echo ew_HtmlEncode($t_level4->level3_id->getPlaceHolder()) ?>"<?php echo $t_level4->level3_id->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level3_id" data-multiple="0" data-lookup="1" data-value-separator="<?php echo $t_level4->level3_id->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo ew_HtmlEncode($t_level4->level3_id->CurrentValue) ?>"<?php echo $wrkonchange ?>>
+<input type="hidden" name="q_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="q_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->LookupFilterQuery(true) ?>">
+<script type="text/javascript">
+ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_level3_id","forceSelect":true});
+</script>
+<button type="button" title="<?php echo ew_HtmlEncode(str_replace("%s", ew_RemoveHtml($t_level4->level3_id->FldCaption()), $Language->Phrase("LookupLink", TRUE))) ?>" onclick="ew_ModalLookupShow({lnk:this,el:'x<?php echo $t_level4_list->RowIndex ?>_level3_id',m:0,n:10,srch:false});" class="ewLookupBtn btn btn-default btn-sm"><span class="glyphicon glyphicon-search ewIcon"></span></button>
+<input type="hidden" name="s_x<?php echo $t_level4_list->RowIndex ?>_level3_id" id="s_x<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo $t_level4->level3_id->LookupFilterQuery(false) ?>">
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level3_id" name="o<?php echo $t_level4_list->RowIndex ?>_level3_id" id="o<?php echo $t_level4_list->RowIndex ?>_level3_id" value="<?php echo ew_HtmlEncode($t_level4->level3_id->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->level4_no->Visible) { // level4_no ?>
+		<td data-name="level4_no">
+<span id="el$rowindex$_t_level4_level4_no" class="form-group t_level4_level4_no">
+<input type="text" data-table="t_level4" data-field="x_level4_no" name="x<?php echo $t_level4_list->RowIndex ?>_level4_no" id="x<?php echo $t_level4_list->RowIndex ?>_level4_no" size="30" maxlength="2" placeholder="<?php echo ew_HtmlEncode($t_level4->level4_no->getPlaceHolder()) ?>" value="<?php echo $t_level4->level4_no->EditValue ?>"<?php echo $t_level4->level4_no->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level4_no" name="o<?php echo $t_level4_list->RowIndex ?>_level4_no" id="o<?php echo $t_level4_list->RowIndex ?>_level4_no" value="<?php echo ew_HtmlEncode($t_level4->level4_no->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->level4_nama->Visible) { // level4_nama ?>
+		<td data-name="level4_nama">
+<span id="el$rowindex$_t_level4_level4_nama" class="form-group t_level4_level4_nama">
+<input type="text" data-table="t_level4" data-field="x_level4_nama" name="x<?php echo $t_level4_list->RowIndex ?>_level4_nama" id="x<?php echo $t_level4_list->RowIndex ?>_level4_nama" size="30" maxlength="50" placeholder="<?php echo ew_HtmlEncode($t_level4->level4_nama->getPlaceHolder()) ?>" value="<?php echo $t_level4->level4_nama->EditValue ?>"<?php echo $t_level4->level4_nama->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_level4_nama" name="o<?php echo $t_level4_list->RowIndex ?>_level4_nama" id="o<?php echo $t_level4_list->RowIndex ?>_level4_nama" value="<?php echo ew_HtmlEncode($t_level4->level4_nama->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->saldo_awal->Visible) { // saldo_awal ?>
+		<td data-name="saldo_awal">
+<span id="el$rowindex$_t_level4_saldo_awal" class="form-group t_level4_saldo_awal">
+<input type="text" data-table="t_level4" data-field="x_saldo_awal" name="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->saldo_awal->getPlaceHolder()) ?>" value="<?php echo $t_level4->saldo_awal->EditValue ?>"<?php echo $t_level4->saldo_awal->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_saldo_awal" name="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" value="<?php echo ew_HtmlEncode($t_level4->saldo_awal->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->jurnal->Visible) { // jurnal ?>
+		<td data-name="jurnal">
+<span id="el$rowindex$_t_level4_jurnal" class="form-group t_level4_jurnal">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_jurnal" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_jurnal" data-value-separator="<?php echo $t_level4->jurnal->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_jurnal" id="x<?php echo $t_level4_list->RowIndex ?>_jurnal" value="{value}"<?php echo $t_level4->jurnal->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_jurnal" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->jurnal->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_jurnal") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_jurnal" name="o<?php echo $t_level4_list->RowIndex ?>_jurnal" id="o<?php echo $t_level4_list->RowIndex ?>_jurnal" value="<?php echo ew_HtmlEncode($t_level4->jurnal->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->jurnal_kode->Visible) { // jurnal_kode ?>
+		<td data-name="jurnal_kode">
+<span id="el$rowindex$_t_level4_jurnal_kode" class="form-group t_level4_jurnal_kode">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_jurnal_kode" data-value-separator="<?php echo $t_level4->jurnal_kode->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" id="x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" value="{value}"<?php echo $t_level4->jurnal_kode->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->jurnal_kode->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_jurnal_kode") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_jurnal_kode" name="o<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" id="o<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" value="<?php echo ew_HtmlEncode($t_level4->jurnal_kode->OldValue) ?>">
+</td>
+	<?php } ?>
+<?php
+
+// Render list options (body, right)
+$t_level4_list->ListOptions->Render("body", "right", $t_level4_list->RowCnt);
+?>
+<script type="text/javascript">
+ft_level4list.UpdateOpts(<?php echo $t_level4_list->RowIndex ?>);
+</script>
+	</tr>
+<?php
 }
 ?>
 </tbody>
 </table>
+<?php } ?>
+<?php if ($t_level4->CurrentAction == "add" || $t_level4->CurrentAction == "copy") { ?>
+<input type="hidden" name="<?php echo $t_level4_list->FormKeyCountName ?>" id="<?php echo $t_level4_list->FormKeyCountName ?>" value="<?php echo $t_level4_list->KeyCount ?>">
+<?php } ?>
+<?php if ($t_level4->CurrentAction == "gridadd") { ?>
+<input type="hidden" name="a_list" id="a_list" value="gridinsert">
+<input type="hidden" name="<?php echo $t_level4_list->FormKeyCountName ?>" id="<?php echo $t_level4_list->FormKeyCountName ?>" value="<?php echo $t_level4_list->KeyCount ?>">
+<?php echo $t_level4_list->MultiSelectKey ?>
+<?php } ?>
+<?php if ($t_level4->CurrentAction == "edit") { ?>
+<input type="hidden" name="<?php echo $t_level4_list->FormKeyCountName ?>" id="<?php echo $t_level4_list->FormKeyCountName ?>" value="<?php echo $t_level4_list->KeyCount ?>">
+<?php } ?>
+<?php if ($t_level4->CurrentAction == "gridedit") { ?>
+<input type="hidden" name="a_list" id="a_list" value="gridupdate">
+<input type="hidden" name="<?php echo $t_level4_list->FormKeyCountName ?>" id="<?php echo $t_level4_list->FormKeyCountName ?>" value="<?php echo $t_level4_list->KeyCount ?>">
+<?php echo $t_level4_list->MultiSelectKey ?>
 <?php } ?>
 <?php if ($t_level4->CurrentAction == "") { ?>
 <input type="hidden" name="a_list" id="a_list" value="">
