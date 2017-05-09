@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <configuration date="2017/05/08" author="e.World Technology Ltd.">
-  <project id="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" file="D:\xampp\htdocs\tetrasma\tetrasma.prp" name="tetrasma" product="PHPReportMaker" version="10.0" datetime="2017/05/08 16:34:59" languagefolder="phprptlang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
+  <project id="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" file="D:\xampp\htdocs\tetrasma\tetrasma.prp" name="tetrasma" product="PHPReportMaker" version="10.0" datetime="2017/05/08 17:34:26" languagefolder="phprptlang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
     <table id="audittrail" name="audittrail" caption="audittrail" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_anggota" name="t_anggota" caption="t anggota" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_detail" name="t_detail" caption="t detail" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
@@ -20,5 +20,6 @@
     <table id="v_kasbank_memorial" name="v_kasbank_memorial" caption="v kasbank memorial" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_memorial" name="v_memorial" caption="v memorial" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="r_bukubesar" name="r_bukubesar" caption="Buku Besar" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="r_bukubesar2" name="r_bukubesar2" caption="r bukubesar 2" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
   </project>
 </configuration>
