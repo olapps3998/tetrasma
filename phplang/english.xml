@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2017/5/8" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2017/5/27" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -583,11 +583,47 @@
   <project>
     <phrase id="bodytitle" value="Tetrasma" />
     <phrase id="footertext" value="&amp;copy;2017 TETRASMA. All rights reserved." />
-    <menu id="10129">
-      <phrase id="menutext" value="v bukubesar" />
+    <menu id="10137">
+      <phrase id="menutext" value="v kasbank detail" />
+    </menu>
+    <menu id="10138">
+      <phrase id="menutext" value="v kasbank jurnal" />
+    </menu>
+    <menu id="10139">
+      <phrase id="menutext" value="v kasbank memorial" />
+    </menu>
+    <menu id="10140">
+      <phrase id="menutext" value="v memorial" />
+    </menu>
+    <menu id="10141">
+      <phrase id="menutext" value="Buku Besar" />
+    </menu>
+    <menu id="10131">
+      <phrase id="menutext" value="v saldo mutasi" />
+    </menu>
+    <menu id="10132">
+      <phrase id="menutext" value="v summary bukubesar" />
+    </menu>
+    <menu id="10133">
+      <phrase id="menutext" value="v summary bukubesar 1" />
+    </menu>
+    <menu id="10134">
+      <phrase id="menutext" value="v summary bukubesar 3" />
+    </menu>
+    <menu id="10135">
+      <phrase id="menutext" value="v summary bukubesar 4" />
+    </menu>
+    <menu id="10136">
+      <phrase id="menutext" value="v summary bukubesar 6" />
+    </menu>
+    <menu id="10130">
+      <phrase id="menutext" value="v kasbank" />
     </menu>
     <menu id="22">
       <phrase id="menutext" value="Home" />
+    </menu>
+    <menu id="10129">
+      <phrase id="menutext" value="v bukubesar" />
     </menu>
     <menu id="10065">
       <phrase id="menutext" value="Setup" />
@@ -631,31 +667,38 @@
     <menu id="10022">
       <phrase id="menutext" value="r bukubesar 2" />
     </menu>
-    <menu id="10023">
-      <phrase id="menutext" value="v kasbank detail" />
-    </menu>
-    <menu id="10024">
-      <phrase id="menutext" value="v kasbank jurnal" />
-    </menu>
-    <menu id="10025">
-      <phrase id="menutext" value="v kasbank memorial" />
-    </menu>
-    <menu id="10026">
-      <phrase id="menutext" value="v memorial" />
+    <menu id="10029">
+      <phrase id="menutext" value="Buku Besar" />
     </menu>
     <menu id="43">
       <phrase id="menutext" value="v akun jurnal" />
     </menu>
-    <menu id="25" />
     <menu id="26">
       <phrase id="menutext" value="Detail Jurnal Memorial" />
     </menu>
-    <menu id="23" />
     <menu id="21">
       <phrase id="menutext" value="Detail Jurnal Kas &amp; Bank" />
     </menu>
     <menu id="17">
       <phrase id="menutext" value="audittrail" />
+    </menu>
+    <menu id="10027">
+      <phrase id="menutext" value="v summary bukubesar 4" />
+    </menu>
+    <menu id="10028">
+      <phrase id="menutext" value="v summary bukubesar 6" />
+    </menu>
+    <menu id="10023">
+      <phrase id="menutext" value="v summary bukubesar 1" />
+    </menu>
+    <menu id="10024">
+      <phrase id="menutext" value="v saldo mutasi" />
+    </menu>
+    <menu id="10025">
+      <phrase id="menutext" value="v summary bukubesar" />
+    </menu>
+    <menu id="10026">
+      <phrase id="menutext" value="v summary bukubesar 3" />
     </menu>
     <menu id="10001">
       <phrase id="menutext" value="audittrail" />
@@ -939,8 +982,6 @@
     <table id="home_php">
       <phrase id="tblcaption" value="Home" />
     </table>
-    <table id="ambildata_php" />
-    <table id="ambiljurnalkode_php" />
     <table id="t_detailm">
       <phrase id="tblcaption" value="Detail Jurnal Memorial" />
       <field id="detailm_id">
@@ -1179,6 +1220,93 @@
       <field id="nilaim_kredit">
         <phrase id="fldcaption" value="nilaim kredit" />
       </field>
+    </table>
+    <table id="v_saldo_mutasi">
+      <phrase id="tblcaption" value="v saldo mutasi" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+    </table>
+    <table id="v_summary_bukubesar">
+      <phrase id="tblcaption" value="v summary bukubesar" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+    </table>
+    <table id="v_summary_bukubesar_1">
+      <phrase id="tblcaption" value="v summary bukubesar 1" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+    </table>
+    <table id="v_summary_bukubesar_3">
+      <phrase id="tblcaption" value="v summary bukubesar 3" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+    </table>
+    <table id="v_summary_bukubesar_4">
+      <phrase id="tblcaption" value="v summary bukubesar 4" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+    </table>
+    <table id="v_summary_bukubesar_6">
+      <phrase id="tblcaption" value="v summary bukubesar 6" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+    </table>
+    <table id="r_bukubesar_php">
+      <phrase id="tblcaption" value="Buku Besar" />
     </table>
   </project>
 </ew-language>

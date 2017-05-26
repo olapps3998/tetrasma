@@ -1,3 +1,4 @@
+-- untuk keperluan view akun keseluruhan
 CREATE VIEW `v_akun_jurnal` AS
 Select t_level4.level4_id As level4_id,
   Concat(t_level1.level1_no, '.', t_level2.level2_no, '.', t_level3.level3_no,
@@ -12,6 +13,7 @@ From ((t_level4
   Join t_level2 On t_level4.level2_id = t_level2.level2_id)
   Join t_level3 On t_level4.level3_id = t_level3.level3_id;
 
+-- untuk data jurnal kas dan bank
 CREATE VIEW `v_kasbank_jurnal` AS  
 Select Null As detail_id,
   t_jurnal.jurnal_id As jurnal_id,
@@ -58,6 +60,7 @@ Select v_kasbank_detail.detail_id As detail_id,
   v_kasbank_detail.kredit As kredit
 From v_kasbank_detail;
 
+-- untuk detail data jurnal memorial
 CREATE VIEW `v_memorial` AS
 Select a.detailm_id As detailm_id,
   a.jurnalm_id As jurnalm_id,
@@ -69,7 +72,9 @@ Select a.detailm_id As detailm_id,
   a.nilaim_kredit As nilaim_kredit
 From t_detailm a
   Left Join t_jurnalm b On a.jurnalm_id = b.jurnalm_id;
+
   
+-- untuk semua data jurnal, gabungan antara jurnal kas & bank dan jurnal memorial
 CREATE VIEW `v_kasbank_memorial` AS
 Select v_kasbank.detail_id As detail_id,
   v_kasbank.jurnal_id As jurnal_id,
@@ -91,6 +96,7 @@ Select v_memorial.detailm_id As detailm_id,
   v_memorial.nilaim_kredit As nilaim_kredit
 From v_memorial;
 
+-- untuk laporan buku besar, tapi keliatannya masih salah
 CREATE VIEW `v_bukubesar` AS
 Select a.detail_id As detail_id,
   a.jurnal_id As jurnal_id,
@@ -108,3 +114,76 @@ Select a.detail_id As detail_id,
 From (v_kasbank_memorial a
   Left Join t_level4 b On a.akun_id = b.level4_id)
   Left Join v_akun_jurnal c On a.akun_id = c.level4_id;
+
+create view v_summary_bukubesar_1 as
+Select c.level1_nama As level1_nama,
+  a.nama_akun As nama_akun,
+  (Case When isnull(b.saldo_mutasi) Then 0 Else b.saldo_mutasi
+  End) As saldo_mutasi,
+  b.akun_id
+From (v_akun_jurnal a
+  Left Join v_saldo_mutasi b On a.level4_id = b.akun_id)
+  Left Join t_level1 c On c.level1_id = Left(a.no_akun, 1)
+Where Left(a.no_akun, 1) = '1'
+Order By a.no_akun;
+
+create view v_summary_bukubesar_6 as
+Select c.level1_nama As level1_nama,
+  a.nama_akun As nama_akun,
+  (Case When isnull(b.saldo_mutasi) Then 0 Else b.saldo_mutasi
+  End) As saldo_mutasi,
+  b.akun_id
+From (v_akun_jurnal a
+  Left Join v_saldo_mutasi b On a.level4_id = b.akun_id)
+  Left Join t_level1 c On c.level1_id = Left(a.no_akun, 1)
+Where Left(a.no_akun, 1) = '6'
+Order By a.no_akun;
+
+create view v_summary_bukubesar_3 as
+Select c.level1_nama As level1_nama,
+  a.nama_akun As nama_akun,
+  (Case When isnull(b.saldo_mutasi) Then 0 Else b.saldo_mutasi
+  End) As saldo_mutasi,
+  b.akun_id
+From (v_akun_jurnal a
+  Left Join v_saldo_mutasi b On a.level4_id = b.akun_id)
+  Left Join t_level1 c On c.level1_id = Left(a.no_akun, 1)
+Where Left(a.no_akun, 1) = '3'
+Order By a.no_akun;
+
+create view v_summary_bukubesar_4 as
+Select c.level1_nama As level1_nama,
+  a.nama_akun As nama_akun,
+  (Case When isnull(b.saldo_mutasi) Then 0 Else b.saldo_mutasi
+  End) As saldo_mutasi,
+  b.akun_id
+From (v_akun_jurnal a
+  Left Join v_saldo_mutasi b On a.level4_id = b.akun_id)
+  Left Join t_level1 c On c.level1_id = Left(a.no_akun, 1)
+Where Left(a.no_akun, 1) = '4'
+Order By a.no_akun;
+
+create view v_summary_bukubesar as
+Select v_summary_bukubesar_1.level1_nama As level1_nama,
+  v_summary_bukubesar_1.nama_akun As nama_akun,
+  v_summary_bukubesar_1.saldo_mutasi As saldo_mutasi,
+  v_summary_bukubesar_1.akun_id As akun_id
+From v_summary_bukubesar_1
+union
+Select v_summary_bukubesar_6.level1_nama As level1_nama,
+  v_summary_bukubesar_6.nama_akun As nama_akun,
+  v_summary_bukubesar_6.saldo_mutasi As saldo_mutasi,
+  v_summary_bukubesar_6.akun_id As akun_id
+From v_summary_bukubesar_6
+union
+Select v_summary_bukubesar_3.level1_nama As level1_nama,
+  v_summary_bukubesar_3.nama_akun As nama_akun,
+  v_summary_bukubesar_3.saldo_mutasi As saldo_mutasi,
+  v_summary_bukubesar_3.akun_id As akun_id
+From v_summary_bukubesar_3
+union
+Select v_summary_bukubesar_4.level1_nama As level1_nama,
+  v_summary_bukubesar_4.nama_akun As nama_akun,
+  v_summary_bukubesar_4.saldo_mutasi As saldo_mutasi,
+  v_summary_bukubesar_4.akun_id As akun_id
+From v_summary_bukubesar_4;

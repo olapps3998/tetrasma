@@ -18,6 +18,3 @@ if ($akun_id) {
 echo $hasil;
 
 ?>
-
-
-

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2017/5/8" version="10.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2017/5/27" version="10.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -349,6 +349,27 @@
   </global>
   <project>
     <phrase id="footertext" value="&amp;copy;2017 e.World Technology Ltd. All rights reserved." />
+    <menu id="23">
+      <phrase id="menutext" value="v summary bukubesar 1" />
+    </menu>
+    <menu id="24">
+      <phrase id="menutext" value="v saldo mutasi" />
+    </menu>
+    <menu id="25">
+      <phrase id="menutext" value="v summary bukubesar" />
+    </menu>
+    <menu id="26">
+      <phrase id="menutext" value="v summary bukubesar 3" />
+    </menu>
+    <menu id="27">
+      <phrase id="menutext" value="v summary bukubesar 4" />
+    </menu>
+    <menu id="28">
+      <phrase id="menutext" value="v summary bukubesar 6" />
+    </menu>
+    <menu id="29">
+      <phrase id="menutext" value="Summary Buku Besar" />
+    </menu>
     <menu id="22">
       <phrase id="menutext" value="r bukubesar 2" />
     </menu>
@@ -926,6 +947,105 @@
       </field>
       <field id="saldo">
         <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi">
+      <phrase id="tblcaption" value="v saldo mutasi" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+    </table>
+    <table id="v_summary_bukubesar">
+      <phrase id="tblcaption" value="v summary bukubesar" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+    </table>
+    <table id="v_summary_bukubesar_1">
+      <phrase id="tblcaption" value="v summary bukubesar 1" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+    </table>
+    <table id="v_summary_bukubesar_3">
+      <phrase id="tblcaption" value="v summary bukubesar 3" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+    </table>
+    <table id="v_summary_bukubesar_4">
+      <phrase id="tblcaption" value="v summary bukubesar 4" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+    </table>
+    <table id="v_summary_bukubesar_6">
+      <phrase id="tblcaption" value="v summary bukubesar 6" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+    </table>
+    <table id="r_summary_bukubesar">
+      <phrase id="tblcaption" value="Summary Buku Besar" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="Akun" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="Akun" />
+      </field>
+      <field id="saldo_mutasi">
+        <phrase id="fldcaption" value="Saldo" />
+      </field>
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
       </field>
     </table>
   </project>

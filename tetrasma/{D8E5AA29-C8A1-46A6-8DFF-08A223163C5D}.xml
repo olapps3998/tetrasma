@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<configuration date="2017/05/08" author="e.World Technology Ltd.">
-  <project id="{D8E5AA29-C8A1-46A6-8DFF-08A223163C5D}" file="D:\xampp\htdocs\tetrasma\tetrasma.pmp" name="tetrasma" product="PHPMaker" version="13.0" datetime="2017/05/08 17:31:16" languagefolder="phplang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
+<configuration date="2017/05/27" author="e.World Technology Ltd.">
+  <project id="{D8E5AA29-C8A1-46A6-8DFF-08A223163C5D}" file="D:\xampp\htdocs\tetrasma\tetrasma.pmp" name="tetrasma" product="PHPMaker" version="13.0" datetime="2017/05/27 04:34:58" languagefolder="phplang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
     <table id="t_anggota" name="t_anggota" caption="Anggota" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="audittrail" name="audittrail" caption="audittrail" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_level1" name="t_level1" caption="Lv. 1" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
@@ -12,8 +12,6 @@
     <table id="t_detail" name="t_detail" caption="Detail Jurnal Kas &amp; Bank" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_jurnal" name="t_jurnal" caption="Jurnal Kas &amp; Bank" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="home_php" name="home.php" caption="Home" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="ambildata_php" name="ambildata.php" caption="" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="ambiljurnalkode_php" name="ambiljurnalkode.php" caption="" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_detailm" name="t_detailm" caption="Detail Jurnal Memorial" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_jurnalm" name="t_jurnalm" caption="Jurnal Memorial" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_akun_jurnal" name="v_akun_jurnal" caption="v akun jurnal" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
@@ -23,5 +21,12 @@
     <table id="v_kasbank_jurnal" name="v_kasbank_jurnal" caption="v kasbank jurnal" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_kasbank_memorial" name="v_kasbank_memorial" caption="v kasbank memorial" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_memorial" name="v_memorial" caption="v memorial" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_saldo_mutasi" name="v_saldo_mutasi" caption="v saldo mutasi" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_bukubesar" name="v_summary_bukubesar" caption="v summary bukubesar" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_bukubesar_1" name="v_summary_bukubesar_1" caption="v summary bukubesar 1" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_bukubesar_3" name="v_summary_bukubesar_3" caption="v summary bukubesar 3" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_bukubesar_4" name="v_summary_bukubesar_4" caption="v summary bukubesar 4" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_bukubesar_6" name="v_summary_bukubesar_6" caption="v summary bukubesar 6" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="r_bukubesar_php" name="r_bukubesar.php" caption="Buku Besar" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
   </project>
 </configuration>

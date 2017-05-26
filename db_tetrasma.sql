@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 06, 2017 at 10:53 PM
+-- Generation Time: May 27, 2017 at 05:38 AM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `audittrail` (
   `oldvalue` longtext,
   `newvalue` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=434 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=439 ;
 
 --
 -- Dumping data for table `audittrail`
@@ -476,7 +476,12 @@ INSERT INTO `audittrail` (`id`, `datetime`, `script`, `user`, `action`, `table`,
 (430, '2017-05-06 13:33:22', '/tetrasma/t_jurnalmadd.php', '1', 'A', 't_detailm', 'nilaim_kredit', '2', '', '15000'),
 (431, '2017-05-06 13:33:22', '/tetrasma/t_jurnalmadd.php', '1', 'A', 't_detailm', 'jurnalm_id', '2', '', '1'),
 (432, '2017-05-06 13:33:22', '/tetrasma/t_jurnalmadd.php', '1', 'A', 't_detailm', 'detailm_id', '2', '', '2'),
-(433, '2017-05-06 13:33:22', '/tetrasma/t_jurnalmadd.php', '1', '*** Batch insert successful ***', 't_detailm', '', '', '', '');
+(433, '2017-05-06 13:33:22', '/tetrasma/t_jurnalmadd.php', '1', '*** Batch insert successful ***', 't_detailm', '', '', '', ''),
+(434, '2017-05-08 09:59:29', '/tetrasma/login.php', 'admin', 'login', '::1', '', '', '', ''),
+(435, '2017-05-24 15:33:03', '/tetrasma/login.php', 'admin', 'login', '::1', '', '', '', ''),
+(436, '2017-05-26 06:55:14', '/tetrasma/login.php', 'admin', 'login', '::1', '', '', '', ''),
+(437, '2017-05-26 12:48:35', '/tetrasma/login.php', 'admin', 'login', '::1', '', '', '', ''),
+(438, '2017-05-26 21:21:29', '/tetrasma/t_level4list.php', '1', 'U', 't_level4', 'saldo_awal', '1', '1500000', NULL);
 
 -- --------------------------------------------------------
 
@@ -961,7 +966,7 @@ CREATE TABLE IF NOT EXISTS `t_level4` (
 --
 
 INSERT INTO `t_level4` (`level4_id`, `level1_id`, `level2_id`, `level3_id`, `level4_no`, `level4_nama`, `saldo_awal`, `saldo`, `jurnal`, `jurnal_kode`) VALUES
-(1, 1, 1, 1, '01', 'Kas', NULL, NULL, 1, 'K'),
+(1, 1, 1, 1, '01', 'Kas', 1500000, NULL, 1, 'K'),
 (2, 1, 1, 15, '01', 'Bank BCA', NULL, NULL, 1, 'B'),
 (3, 1, 1, 15, '02', 'Bank Mandiri', NULL, NULL, 1, 'B'),
 (4, 1, 1, 2, '01', 'Pinjaman yang diberikan', NULL, NULL, 0, NULL),

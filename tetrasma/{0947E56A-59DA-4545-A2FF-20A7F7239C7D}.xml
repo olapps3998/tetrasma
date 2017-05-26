@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<configuration date="2017/05/08" author="e.World Technology Ltd.">
-  <project id="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" file="D:\xampp\htdocs\tetrasma\tetrasma.prp" name="tetrasma" product="PHPReportMaker" version="10.0" datetime="2017/05/08 17:34:26" languagefolder="phprptlang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
+<configuration date="2017/05/27" author="e.World Technology Ltd.">
+  <project id="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" file="D:\xampp\htdocs\tetrasma\tetrasma.prp" name="tetrasma" product="PHPReportMaker" version="10.0" datetime="2017/05/27 04:04:55" languagefolder="phprptlang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
     <table id="audittrail" name="audittrail" caption="audittrail" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_anggota" name="t_anggota" caption="t anggota" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_detail" name="t_detail" caption="t detail" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
@@ -21,5 +21,12 @@
     <table id="v_memorial" name="v_memorial" caption="v memorial" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="r_bukubesar" name="r_bukubesar" caption="Buku Besar" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="r_bukubesar2" name="r_bukubesar2" caption="r bukubesar 2" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_saldo_mutasi" name="v_saldo_mutasi" caption="v saldo mutasi" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_bukubesar" name="v_summary_bukubesar" caption="v summary bukubesar" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_bukubesar_1" name="v_summary_bukubesar_1" caption="v summary bukubesar 1" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_bukubesar_3" name="v_summary_bukubesar_3" caption="v summary bukubesar 3" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_bukubesar_4" name="v_summary_bukubesar_4" caption="v summary bukubesar 4" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_bukubesar_6" name="v_summary_bukubesar_6" caption="v summary bukubesar 6" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="r_summary_bukubesar" name="r_summary_bukubesar" caption="Summary Buku Besar" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
   </project>
 </configuration>
