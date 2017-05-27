@@ -114,6 +114,15 @@ Select a.detail_id As detail_id,
 From (v_kasbank_memorial a
   Left Join t_level4 b On a.akun_id = b.level4_id)
   Left Join v_akun_jurnal c On a.akun_id = c.level4_id;
+  
+create view v_saldo_mutasi as
+select
+	akun_id
+    , sum(debet) - sum(kredit) as saldo_mutasi
+from
+	v_kasbank_memorial
+group by
+	akun_id;
 
 create view v_summary_bukubesar_1 as
 Select c.level1_nama As level1_nama,
