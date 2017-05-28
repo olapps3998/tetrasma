@@ -325,7 +325,7 @@ else {
 }*/
 
 $q = "select sa_debet, sa_kredit from t_level4 where level4_id = '".$_GET["akun_id"]."'";
-$rs = $conn->Execute($q);
+$rs = $conn->Execute($q); echo $rs->fields["sa_debet"]." - ".$rs->fields["sa_kredit"];
 
 $sa_debet  = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_debet"]  != null ? $rs->fields["sa_debet"]  : 0);
 $sa_kredit = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_kredit"] != null ? $rs->fields["sa_kredit"] : 0);
