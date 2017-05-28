@@ -949,18 +949,19 @@ function kredit_onfocus(event) {
 }
 ]]></CustomScript>
   <CustomScript ScriptType="Template" ScriptCodeType="Table" ScriptName="Content" ScriptCtrlID="custom" ScriptL1Key="r_bukubesar.php" ScriptL2Key=""><![CDATA[<?php
-$q = "select sa_debet, sa_kredit from t_level4 where level4_id = '".$_GET["akun_id"]."'";
+$q = "select sa_debet, sa_kredit, level4_nama from t_level4 where level4_id = '".$_GET["akun_id"]."'";
 $rs = Conn()->Execute($q);
-
-$sa_debet  = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_debet"]  != null ? $rs->fields["sa_debet"]  : 0);
-$sa_kredit = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_kredit"] != null ? $rs->fields["sa_kredit"] : 0);
-$s_debet  = $sa_debet;
-$s_kredit = $sa_kredit;
+$sa_debet    = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_debet"]  != null ? $rs->fields["sa_debet"]  : 0);
+$sa_kredit   = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_kredit"] != null ? $rs->fields["sa_kredit"] : 0);
+$level4_nama = ($rs && $rs->RecordCount() > 0 && $rs->fields["level4_nama"] != null ? $rs->fields["level4_nama"] : "-");
+//$s_debet  = $sa_debet;
+//$s_kredit = $sa_kredit;
+$saldo = $sa_debet - $sa_kredit;
 
 $q = "select * from v_kasbank_memorial where akun_id = '".$_GET["akun_id"]."'";
 $rs = Conn()->Execute($q);
 ?>
-
+<p><?php echo "<b>Akun : ".$level4_nama."</b>";?></p>
 <table border="1" class="table ewTableSeparate">
 	<tr>
 		<th rowspan="2">Tanggal</th>
@@ -978,8 +979,14 @@ $rs = Conn()->Execute($q);
 		<td>Saldo Awal</td>
 		<td align="right"><?php echo number_format($sa_debet);?></td>
 		<td align="right"><?php echo number_format($sa_kredit);?></td>
-		<td align="right"><?php echo number_format($s_debet);?></td>
-		<td align="right"><?php echo number_format($s_kredit);?></td>
+		<?php if ($saldo >= 0) { ?>
+			<td align="right"><?php echo number_format($saldo);?></td>
+			<td align="right"><?php echo number_format(0);?></td>
+		<?php }
+		else { ?>
+			<td align="right"><?php echo number_format(0);?></td>
+			<td align="right"><?php echo number_format(abs($saldo));?></td>
+		<?php } ?>
 	</tr>
 <?php
 while (!$rs->EOF) {
@@ -989,10 +996,15 @@ while (!$rs->EOF) {
 		<td><?php echo $rs->fields["ket"];?></td>
 		<td align="right"><?php echo number_format($rs->fields["debet"]);?></td>
 		<td align="right"><?php echo number_format($rs->fields["kredit"]);?></td>
-		<?php $s_debet  += $rs->fields["debet"];?>
-		<?php $s_kredit += $rs->fields["kredit"];?>
-		<td align="right"><?php echo number_format($s_debet);?></td>
-		<td align="right"><?php echo number_format($s_kredit);?></td>
+		<?php $saldo += $rs->fields["debet"] - $rs->fields["kredit"];?>
+		<?php if ($saldo >= 0) { ?>
+			<td align="right"><?php echo number_format($saldo);?></td>
+			<td align="right"><?php echo number_format(0);?></td>
+		<?php }
+		else { ?>
+			<td align="right"><?php echo number_format(0);?></td>
+			<td align="right"><?php echo number_format(abs($saldo));?></td>
+		<?php } ?>
 	</tr>
 	<?php
 	$rs->MoveNext();
