@@ -98,79 +98,85 @@ From v_memorial;
 
 -- untuk laporan buku besar, tapi keliatannya masih salah
 CREATE VIEW `v_bukubesar` AS
-Select a.detail_id As detail_id,
-  a.jurnal_id As jurnal_id,
-  a.no_bukti As no_bukti,
-  a.tgl As tgl,
-  a.ket As ket,
-  a.akun_id As akun_id,
-  a.debet As debet,
-  a.kredit As kredit,
-  c.no_akun As no_akun,
-  c.nama_akun As nama_akun,
-  c.no_nama_akun As no_nama_akun,
-  b.saldo_awal As saldo_awal,
-  b.saldo As saldo
-From (v_kasbank_memorial a
-  Left Join t_level4 b On a.akun_id = b.level4_id)
-  Left Join v_akun_jurnal c On a.akun_id = c.level4_id;
+SELECT a.detail_id AS detail_id,
+  a.jurnal_id AS jurnal_id,
+  a.no_bukti AS no_bukti,
+  a.tgl AS tgl,
+  a.ket AS ket,
+  a.akun_id AS akun_id,
+  a.debet AS debet,
+  a.kredit AS kredit,
+  c.no_akun AS no_akun,
+  c.nama_akun AS nama_akun,
+  c.no_nama_akun AS no_nama_akun,
+  b.sa_debet AS sa_debet,
+  b.sa_kredit AS sa_kredit,
+  b.sm_debet AS sm_debet,
+  b.sm_kredit AS sm_kredit
+FROM (v_kasbank_memorial a
+  LEFT JOIN t_level4 b ON a.akun_id = b.level4_id)
+  LEFT JOIN v_akun_jurnal c ON a.akun_id = c.level4_id;
   
 create view v_saldo_mutasi as
-select
-	akun_id
-    , sum(debet) - sum(kredit) as saldo_mutasi
-from
-	v_kasbank_memorial
-group by
-	akun_id;
+SELECT v_kasbank_memorial.akun_id AS akun_id,
+  (CASE
+    WHEN ((Sum(v_kasbank_memorial.debet) - Sum(v_kasbank_memorial.kredit)) >=
+    0) THEN (Sum(v_kasbank_memorial.debet) - Sum(v_kasbank_memorial.kredit))
+    ELSE 0 END) AS sm_debet,
+  (CASE
+    WHEN ((Sum(v_kasbank_memorial.debet) - Sum(v_kasbank_memorial.kredit)) <
+    0) THEN abs((Sum(v_kasbank_memorial.debet) -
+    Sum(v_kasbank_memorial.kredit))) ELSE 0 END) AS sm_kredit
+FROM v_kasbank_memorial
+GROUP BY v_kasbank_memorial.akun_id;
 
 create view v_summary_bukubesar_1 as
-Select c.level1_nama As level1_nama,
-  a.nama_akun As nama_akun,
-  (Case When isnull(b.saldo_mutasi) Then 0 Else b.saldo_mutasi
-  End) As saldo_mutasi,
-  b.akun_id
-From (v_akun_jurnal a
-  Left Join v_saldo_mutasi b On a.level4_id = b.akun_id)
-  Left Join t_level1 c On c.level1_id = Left(a.no_akun, 1)
-Where Left(a.no_akun, 1) = '1'
-Order By a.no_akun;
+SELECT c.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  (CASE WHEN isnull(b.sm_debet) THEN 0 ELSE b.sm_debet END) AS sm_debet,
+  (CASE WHEN isnull(b.sm_kredit) THEN 0 ELSE b.sm_kredit END) AS sm_kredit,
+  b.akun_id AS akun_id
+FROM (v_akun_jurnal a
+  LEFT JOIN v_saldo_mutasi b ON a.level4_id = b.akun_id)
+  LEFT JOIN t_level1 c ON c.level1_id = Left(a.no_akun, 1)
+WHERE Left(a.no_akun, 1) = '1'
+ORDER BY a.no_akun;
 
 create view v_summary_bukubesar_6 as
-Select c.level1_nama As level1_nama,
-  a.nama_akun As nama_akun,
-  (Case When isnull(b.saldo_mutasi) Then 0 Else b.saldo_mutasi
-  End) As saldo_mutasi,
-  b.akun_id
-From (v_akun_jurnal a
-  Left Join v_saldo_mutasi b On a.level4_id = b.akun_id)
-  Left Join t_level1 c On c.level1_id = Left(a.no_akun, 1)
-Where Left(a.no_akun, 1) = '6'
-Order By a.no_akun;
+SELECT c.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  (CASE WHEN isnull(b.sm_debet) THEN 0 ELSE b.sm_debet END) AS sm_debet,
+  (CASE WHEN isnull(b.sm_kredit) THEN 0 ELSE b.sm_kredit END) AS sm_kredit,
+  b.akun_id AS akun_id
+FROM (v_akun_jurnal a
+  LEFT JOIN v_saldo_mutasi b ON a.level4_id = b.akun_id)
+  LEFT JOIN t_level1 c ON c.level1_id = Left(a.no_akun, 1)
+WHERE Left(a.no_akun, 1) = '6'
+ORDER BY a.no_akun;
 
 create view v_summary_bukubesar_3 as
-Select c.level1_nama As level1_nama,
-  a.nama_akun As nama_akun,
-  (Case When isnull(b.saldo_mutasi) Then 0 Else b.saldo_mutasi
-  End) As saldo_mutasi,
-  b.akun_id
-From (v_akun_jurnal a
-  Left Join v_saldo_mutasi b On a.level4_id = b.akun_id)
-  Left Join t_level1 c On c.level1_id = Left(a.no_akun, 1)
-Where Left(a.no_akun, 1) = '3'
-Order By a.no_akun;
+SELECT c.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  (CASE WHEN isnull(b.sm_debet) THEN 0 ELSE b.sm_debet END) AS sm_debet,
+  (CASE WHEN isnull(b.sm_kredit) THEN 0 ELSE b.sm_kredit END) AS sm_kredit,
+  b.akun_id AS akun_id
+FROM (v_akun_jurnal a
+  LEFT JOIN v_saldo_mutasi b ON a.level4_id = b.akun_id)
+  LEFT JOIN t_level1 c ON c.level1_id = Left(a.no_akun, 1)
+WHERE Left(a.no_akun, 1) = '3'
+ORDER BY a.no_akun;
 
 create view v_summary_bukubesar_4 as
-Select c.level1_nama As level1_nama,
-  a.nama_akun As nama_akun,
-  (Case When isnull(b.saldo_mutasi) Then 0 Else b.saldo_mutasi
-  End) As saldo_mutasi,
-  b.akun_id
-From (v_akun_jurnal a
-  Left Join v_saldo_mutasi b On a.level4_id = b.akun_id)
-  Left Join t_level1 c On c.level1_id = Left(a.no_akun, 1)
-Where Left(a.no_akun, 1) = '4'
-Order By a.no_akun;
+SELECT c.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  (CASE WHEN isnull(b.sm_debet) THEN 0 ELSE b.sm_debet END) AS sm_debet,
+  (CASE WHEN isnull(b.sm_kredit) THEN 0 ELSE b.sm_kredit END) AS sm_kredit,
+  b.akun_id AS akun_id
+FROM (v_akun_jurnal a
+  LEFT JOIN v_saldo_mutasi b ON a.level4_id = b.akun_id)
+  LEFT JOIN t_level1 c ON c.level1_id = Left(a.no_akun, 1)
+WHERE Left(a.no_akun, 1) = '4'
+ORDER BY a.no_akun;
 
 create view v_summary_bukubesar as
 Select *
