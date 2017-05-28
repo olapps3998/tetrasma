@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2017/5/27" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2017/5/29" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -885,11 +885,11 @@
       <field id="level4_nama">
         <phrase id="fldcaption" value="Nama" />
       </field>
-      <field id="saldo_awal">
-        <phrase id="fldcaption" value="Saldo Awal" />
+      <field id="sa_debet">
+        <phrase id="fldcaption" value="Saldo Awal Debet" />
       </field>
-      <field id="saldo">
-        <phrase id="fldcaption" value="Saldo Akhir" />
+      <field id="sa_kredit">
+        <phrase id="fldcaption" value="Saldo Awal Kredit" />
       </field>
       <field id="jurnal">
         <phrase id="fldcaption" value="Jurnal Kas / Bank" />
@@ -904,6 +904,12 @@
         <phrase id="fldtagcaption1" value="K" />
         <phrase id="fldtagvalue2" value="B" />
         <phrase id="fldtagcaption2" value="B" />
+      </field>
+      <field id="sm_debet">
+        <phrase id="fldcaption" value="Saldo Mutasi Debet" />
+      </field>
+      <field id="sm_kredit">
+        <phrase id="fldcaption" value="Saldo Mutasi Kredit" />
       </field>
     </table>
     <table id="t_user">
@@ -1079,11 +1085,17 @@
       <field id="no_nama_akun">
         <phrase id="fldcaption" value="no nama akun" />
       </field>
-      <field id="saldo_awal">
+      <field id="sa_debet">
         <phrase id="fldcaption" value="saldo awal" />
       </field>
-      <field id="saldo">
+      <field id="sm_debet">
         <phrase id="fldcaption" value="saldo" />
+      </field>
+      <field id="sa_kredit">
+        <phrase id="fldcaption" value="sa kredit" />
+      </field>
+      <field id="sm_kredit">
+        <phrase id="fldcaption" value="sm kredit" />
       </field>
     </table>
     <table id="v_kasbank">
@@ -1226,8 +1238,11 @@
       <field id="akun_id">
         <phrase id="fldcaption" value="akun id" />
       </field>
-      <field id="saldo_mutasi">
+      <field id="sm_debet">
         <phrase id="fldcaption" value="saldo mutasi" />
+      </field>
+      <field id="sm_kredit">
+        <phrase id="fldcaption" value="sm kredit" />
       </field>
     </table>
     <table id="v_summary_bukubesar">
@@ -1238,11 +1253,14 @@
       <field id="nama_akun">
         <phrase id="fldcaption" value="nama akun" />
       </field>
-      <field id="saldo_mutasi">
+      <field id="sm_debet">
         <phrase id="fldcaption" value="saldo mutasi" />
       </field>
       <field id="akun_id">
         <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="sm_kredit">
+        <phrase id="fldcaption" value="sm kredit" />
       </field>
     </table>
     <table id="v_summary_bukubesar_1">
@@ -1253,11 +1271,14 @@
       <field id="nama_akun">
         <phrase id="fldcaption" value="nama akun" />
       </field>
-      <field id="saldo_mutasi">
+      <field id="sm_debet">
         <phrase id="fldcaption" value="saldo mutasi" />
       </field>
       <field id="akun_id">
         <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="sm_kredit">
+        <phrase id="fldcaption" value="sm kredit" />
       </field>
     </table>
     <table id="v_summary_bukubesar_3">
@@ -1268,11 +1289,14 @@
       <field id="nama_akun">
         <phrase id="fldcaption" value="nama akun" />
       </field>
-      <field id="saldo_mutasi">
+      <field id="sm_debet">
         <phrase id="fldcaption" value="saldo mutasi" />
       </field>
       <field id="akun_id">
         <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="sm_kredit">
+        <phrase id="fldcaption" value="sm kredit" />
       </field>
     </table>
     <table id="v_summary_bukubesar_4">
@@ -1283,11 +1307,14 @@
       <field id="nama_akun">
         <phrase id="fldcaption" value="nama akun" />
       </field>
-      <field id="saldo_mutasi">
+      <field id="sm_debet">
         <phrase id="fldcaption" value="saldo mutasi" />
       </field>
       <field id="akun_id">
         <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="sm_kredit">
+        <phrase id="fldcaption" value="sm kredit" />
       </field>
     </table>
     <table id="v_summary_bukubesar_6">
@@ -1298,11 +1325,14 @@
       <field id="nama_akun">
         <phrase id="fldcaption" value="nama akun" />
       </field>
-      <field id="saldo_mutasi">
+      <field id="sm_debet">
         <phrase id="fldcaption" value="saldo mutasi" />
       </field>
       <field id="akun_id">
         <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="sm_kredit">
+        <phrase id="fldcaption" value="sm kredit" />
       </field>
     </table>
     <table id="r_bukubesar_php">

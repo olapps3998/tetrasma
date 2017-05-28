@@ -314,29 +314,36 @@ Page_Rendering();
 <?php
 $conn =& DbHelper();
 
-$q = "select saldo_awal from t_level4 where level4_id = '".$_GET["akun_id"]."'";
+$q = "select sa_debet, sa_kredit from t_level4 where level4_id = '".$_GET["akun_id"]."'";
 $rs = $conn->Execute($q);
 
-$saldo_awal = ($rs && $rs->RecordCount() > 0 && $rs->fields["saldo_awal"] != null ? $rs->fields["saldo_awal"] : 0);
-$saldo = $saldo_awal;
+$sa_debet  = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_debet"]  != null ? $rs->fields["sa_debet"]  : 0);
+$sa_kredit = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_kredit"] != null ? $rs->fields["sa_kredit"] : 0);
+$s_debet  = $sa_debet;
+$s_kredit = $sa_kredit;
 
 $q = "select * from v_kasbank_memorial where akun_id = '".$_GET["akun_id"]."'";
 $rs = $conn->Execute($q);
 ?>
-<table>
+<table class="table ewTableSeparate">
 	<tr>
-		<th>Tanggal</th>
-		<th>Keterangan</th>
-		<th>Debet</th>
-		<th>Kredit</th>
-		<th>Saldo</th>
+		<th rowspan="2">Tanggal</th>
+		<th rowspan="2">Keterangan</th>
+		<th align="right" rowspan="2">Debet</th>
+		<th align="right" rowspan="2">Kredit</th>
+		<th align="center" colspan="2">Saldo</th>
+	</tr>
+	<tr>
+		<th align="right">Debet</th>
+		<th align="right">Kredit</th>
 	</tr>
 	<tr>
 		<td>&nbsp;</td>
 		<td>Saldo Awal</td>
-		<td><?php echo $saldo_awal;?></td>
-		<td>&nbsp;</td>
-		<td><?php echo $saldo;?></td>
+		<td align="right"><?php echo number_format($sa_debet);?></td>
+		<td align="right"><?php echo number_format($sa_kredit);?></td>
+		<td align="right"><?php echo number_format($s_debet);?></td>
+		<td align="right"><?php echo number_format($s_kredit);?></td>
 	</tr>
 <?php
 while (!$rs->EOF) {
@@ -344,10 +351,12 @@ while (!$rs->EOF) {
 	<tr>
 		<td><?php echo $rs->fields["tgl"];?></td>
 		<td><?php echo $rs->fields["ket"];?></td>
-		<td><?php echo $rs->fields["debet"];?></td>
-		<td><?php echo $rs->fields["kredit"];?></td>
-		<?php $saldo += $rs->fields["debet"] - $rs->fields["kredit"];?>
-		<td><?php echo $saldo;?></td>
+		<td align="right"><?php echo number_format($rs->fields["debet"]);?></td>
+		<td align="right"><?php echo number_format($rs->fields["kredit"]);?></td>
+		<?php $s_debet  += $rs->fields["debet"];?>
+		<?php $s_kredit += $rs->fields["kredit"];?>
+		<td align="right"><?php echo number_format($s_debet);?></td>
+		<td align="right"><?php echo number_format($s_kredit);?></td>
 	</tr>
 	<?php
 	$rs->MoveNext();

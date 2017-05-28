@@ -164,26 +164,14 @@ Where Left(a.no_akun, 1) = '4'
 Order By a.no_akun;
 
 create view v_summary_bukubesar as
-Select v_summary_bukubesar_1.level1_nama As level1_nama,
-  v_summary_bukubesar_1.nama_akun As nama_akun,
-  v_summary_bukubesar_1.saldo_mutasi As saldo_mutasi,
-  v_summary_bukubesar_1.akun_id As akun_id
+Select *
 From v_summary_bukubesar_1
 union
-Select v_summary_bukubesar_6.level1_nama As level1_nama,
-  v_summary_bukubesar_6.nama_akun As nama_akun,
-  v_summary_bukubesar_6.saldo_mutasi As saldo_mutasi,
-  v_summary_bukubesar_6.akun_id As akun_id
+Select *
 From v_summary_bukubesar_6
 union
-Select v_summary_bukubesar_3.level1_nama As level1_nama,
-  v_summary_bukubesar_3.nama_akun As nama_akun,
-  v_summary_bukubesar_3.saldo_mutasi As saldo_mutasi,
-  v_summary_bukubesar_3.akun_id As akun_id
+Select *
 From v_summary_bukubesar_3
 union
-Select v_summary_bukubesar_4.level1_nama As level1_nama,
-  v_summary_bukubesar_4.nama_akun As nama_akun,
-  v_summary_bukubesar_4.saldo_mutasi As saldo_mutasi,
-  v_summary_bukubesar_4.akun_id As akun_id
+Select *
 From v_summary_bukubesar_4;

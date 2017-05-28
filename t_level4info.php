@@ -19,10 +19,12 @@ class ct_level4 extends cTable {
 	var $level3_id;
 	var $level4_no;
 	var $level4_nama;
-	var $saldo_awal;
-	var $saldo;
+	var $sa_debet;
+	var $sa_kredit;
 	var $jurnal;
 	var $jurnal_kode;
+	var $sm_debet;
+	var $sm_kredit;
 
 	//
 	// Table class constructor
@@ -88,17 +90,17 @@ class ct_level4 extends cTable {
 		$this->level4_nama->Sortable = TRUE; // Allow sort
 		$this->fields['level4_nama'] = &$this->level4_nama;
 
-		// saldo_awal
-		$this->saldo_awal = new cField('t_level4', 't_level4', 'x_saldo_awal', 'saldo_awal', '`saldo_awal`', '`saldo_awal`', 20, -1, FALSE, '`saldo_awal`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->saldo_awal->Sortable = TRUE; // Allow sort
-		$this->saldo_awal->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
-		$this->fields['saldo_awal'] = &$this->saldo_awal;
+		// sa_debet
+		$this->sa_debet = new cField('t_level4', 't_level4', 'x_sa_debet', 'sa_debet', '`sa_debet`', '`sa_debet`', 4, -1, FALSE, '`sa_debet`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->sa_debet->Sortable = TRUE; // Allow sort
+		$this->sa_debet->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['sa_debet'] = &$this->sa_debet;
 
-		// saldo
-		$this->saldo = new cField('t_level4', 't_level4', 'x_saldo', 'saldo', '`saldo`', '`saldo`', 20, -1, FALSE, '`saldo`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->saldo->Sortable = FALSE; // Allow sort
-		$this->saldo->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
-		$this->fields['saldo'] = &$this->saldo;
+		// sa_kredit
+		$this->sa_kredit = new cField('t_level4', 't_level4', 'x_sa_kredit', 'sa_kredit', '`sa_kredit`', '`sa_kredit`', 4, -1, FALSE, '`sa_kredit`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->sa_kredit->Sortable = TRUE; // Allow sort
+		$this->sa_kredit->FldDefaultErrMsg = $Language->Phrase("IncorrectFloat");
+		$this->fields['sa_kredit'] = &$this->sa_kredit;
 
 		// jurnal
 		$this->jurnal = new cField('t_level4', 't_level4', 'x_jurnal', 'jurnal', '`jurnal`', '`jurnal`', 16, -1, FALSE, '`jurnal`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'RADIO');
@@ -112,6 +114,18 @@ class ct_level4 extends cTable {
 		$this->jurnal_kode->Sortable = TRUE; // Allow sort
 		$this->jurnal_kode->OptionCount = 2;
 		$this->fields['jurnal_kode'] = &$this->jurnal_kode;
+
+		// sm_debet
+		$this->sm_debet = new cField('t_level4', 't_level4', 'x_sm_debet', 'sm_debet', '`sm_debet`', '`sm_debet`', 4, -1, FALSE, '`sm_debet`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->sm_debet->Sortable = FALSE; // Allow sort
+		$this->sm_debet->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['sm_debet'] = &$this->sm_debet;
+
+		// sm_kredit
+		$this->sm_kredit = new cField('t_level4', 't_level4', 'x_sm_kredit', 'sm_kredit', '`sm_kredit`', '`sm_kredit`', 4, -1, FALSE, '`sm_kredit`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->sm_kredit->Sortable = FALSE; // Allow sort
+		$this->sm_kredit->FldDefaultErrMsg = $Language->Phrase("IncorrectFloat");
+		$this->fields['sm_kredit'] = &$this->sm_kredit;
 	}
 
 	// Set Field Visibility
@@ -704,10 +718,12 @@ class ct_level4 extends cTable {
 		$this->level3_id->setDbValue($rs->fields('level3_id'));
 		$this->level4_no->setDbValue($rs->fields('level4_no'));
 		$this->level4_nama->setDbValue($rs->fields('level4_nama'));
-		$this->saldo_awal->setDbValue($rs->fields('saldo_awal'));
-		$this->saldo->setDbValue($rs->fields('saldo'));
+		$this->sa_debet->setDbValue($rs->fields('sa_debet'));
+		$this->sa_kredit->setDbValue($rs->fields('sa_kredit'));
 		$this->jurnal->setDbValue($rs->fields('jurnal'));
 		$this->jurnal_kode->setDbValue($rs->fields('jurnal_kode'));
+		$this->sm_debet->setDbValue($rs->fields('sm_debet'));
+		$this->sm_kredit->setDbValue($rs->fields('sm_kredit'));
 	}
 
 	// Render list row values
@@ -724,12 +740,18 @@ class ct_level4 extends cTable {
 		// level3_id
 		// level4_no
 		// level4_nama
-		// saldo_awal
-		// saldo
+		// sa_debet
+		// sa_kredit
 		// jurnal
 		// jurnal_kode
-		// level4_id
+		// sm_debet
 
+		$this->sm_debet->CellCssStyle = "white-space: nowrap;";
+
+		// sm_kredit
+		$this->sm_kredit->CellCssStyle = "white-space: nowrap;";
+
+		// level4_id
 		$this->level4_id->ViewValue = $this->level4_id->CurrentValue;
 		$this->level4_id->ViewCustomAttributes = "";
 
@@ -831,17 +853,17 @@ class ct_level4 extends cTable {
 		$this->level4_nama->ViewValue = $this->level4_nama->CurrentValue;
 		$this->level4_nama->ViewCustomAttributes = "";
 
-		// saldo_awal
-		$this->saldo_awal->ViewValue = $this->saldo_awal->CurrentValue;
-		$this->saldo_awal->ViewValue = ew_FormatNumber($this->saldo_awal->ViewValue, 0, -2, -2, -1);
-		$this->saldo_awal->CellCssStyle .= "text-align: right;";
-		$this->saldo_awal->ViewCustomAttributes = "";
+		// sa_debet
+		$this->sa_debet->ViewValue = $this->sa_debet->CurrentValue;
+		$this->sa_debet->ViewValue = ew_FormatNumber($this->sa_debet->ViewValue, 0, -2, -2, -1);
+		$this->sa_debet->CellCssStyle .= "text-align: right;";
+		$this->sa_debet->ViewCustomAttributes = "";
 
-		// saldo
-		$this->saldo->ViewValue = $this->saldo->CurrentValue;
-		$this->saldo->ViewValue = ew_FormatNumber($this->saldo->ViewValue, 0, -2, -2, -1);
-		$this->saldo->CellCssStyle .= "text-align: right;";
-		$this->saldo->ViewCustomAttributes = "";
+		// sa_kredit
+		$this->sa_kredit->ViewValue = $this->sa_kredit->CurrentValue;
+		$this->sa_kredit->ViewValue = ew_FormatNumber($this->sa_kredit->ViewValue, 0, -2, -2, -2);
+		$this->sa_kredit->CellCssStyle .= "text-align: right;";
+		$this->sa_kredit->ViewCustomAttributes = "";
 
 		// jurnal
 		if (strval($this->jurnal->CurrentValue) <> "") {
@@ -858,6 +880,18 @@ class ct_level4 extends cTable {
 			$this->jurnal_kode->ViewValue = NULL;
 		}
 		$this->jurnal_kode->ViewCustomAttributes = "";
+
+		// sm_debet
+		$this->sm_debet->ViewValue = $this->sm_debet->CurrentValue;
+		$this->sm_debet->ViewValue = ew_FormatNumber($this->sm_debet->ViewValue, 0, -2, -2, -1);
+		$this->sm_debet->CellCssStyle .= "text-align: right;";
+		$this->sm_debet->ViewCustomAttributes = "";
+
+		// sm_kredit
+		$this->sm_kredit->ViewValue = $this->sm_kredit->CurrentValue;
+		$this->sm_kredit->ViewValue = ew_FormatNumber($this->sm_kredit->ViewValue, 0, -2, -2, -2);
+		$this->sm_kredit->CellCssStyle .= "text-align: right;";
+		$this->sm_kredit->ViewCustomAttributes = "";
 
 		// level4_id
 		$this->level4_id->LinkCustomAttributes = "";
@@ -889,15 +923,15 @@ class ct_level4 extends cTable {
 		$this->level4_nama->HrefValue = "";
 		$this->level4_nama->TooltipValue = "";
 
-		// saldo_awal
-		$this->saldo_awal->LinkCustomAttributes = "";
-		$this->saldo_awal->HrefValue = "";
-		$this->saldo_awal->TooltipValue = "";
+		// sa_debet
+		$this->sa_debet->LinkCustomAttributes = "";
+		$this->sa_debet->HrefValue = "";
+		$this->sa_debet->TooltipValue = "";
 
-		// saldo
-		$this->saldo->LinkCustomAttributes = "";
-		$this->saldo->HrefValue = "";
-		$this->saldo->TooltipValue = "";
+		// sa_kredit
+		$this->sa_kredit->LinkCustomAttributes = "";
+		$this->sa_kredit->HrefValue = "";
+		$this->sa_kredit->TooltipValue = "";
 
 		// jurnal
 		$this->jurnal->LinkCustomAttributes = "";
@@ -908,6 +942,16 @@ class ct_level4 extends cTable {
 		$this->jurnal_kode->LinkCustomAttributes = "";
 		$this->jurnal_kode->HrefValue = "";
 		$this->jurnal_kode->TooltipValue = "";
+
+		// sm_debet
+		$this->sm_debet->LinkCustomAttributes = "";
+		$this->sm_debet->HrefValue = "";
+		$this->sm_debet->TooltipValue = "";
+
+		// sm_kredit
+		$this->sm_kredit->LinkCustomAttributes = "";
+		$this->sm_kredit->HrefValue = "";
+		$this->sm_kredit->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -956,17 +1000,19 @@ class ct_level4 extends cTable {
 		$this->level4_nama->EditValue = $this->level4_nama->CurrentValue;
 		$this->level4_nama->PlaceHolder = ew_RemoveHtml($this->level4_nama->FldCaption());
 
-		// saldo_awal
-		$this->saldo_awal->EditAttrs["class"] = "form-control";
-		$this->saldo_awal->EditCustomAttributes = "";
-		$this->saldo_awal->EditValue = $this->saldo_awal->CurrentValue;
-		$this->saldo_awal->PlaceHolder = ew_RemoveHtml($this->saldo_awal->FldCaption());
+		// sa_debet
+		$this->sa_debet->EditAttrs["class"] = "form-control";
+		$this->sa_debet->EditCustomAttributes = "";
+		$this->sa_debet->EditValue = $this->sa_debet->CurrentValue;
+		$this->sa_debet->PlaceHolder = ew_RemoveHtml($this->sa_debet->FldCaption());
+		if (strval($this->sa_debet->EditValue) <> "" && is_numeric($this->sa_debet->EditValue)) $this->sa_debet->EditValue = ew_FormatNumber($this->sa_debet->EditValue, -2, -2, -2, -1);
 
-		// saldo
-		$this->saldo->EditAttrs["class"] = "form-control";
-		$this->saldo->EditCustomAttributes = "";
-		$this->saldo->EditValue = $this->saldo->CurrentValue;
-		$this->saldo->PlaceHolder = ew_RemoveHtml($this->saldo->FldCaption());
+		// sa_kredit
+		$this->sa_kredit->EditAttrs["class"] = "form-control";
+		$this->sa_kredit->EditCustomAttributes = "";
+		$this->sa_kredit->EditValue = $this->sa_kredit->CurrentValue;
+		$this->sa_kredit->PlaceHolder = ew_RemoveHtml($this->sa_kredit->FldCaption());
+		if (strval($this->sa_kredit->EditValue) <> "" && is_numeric($this->sa_kredit->EditValue)) $this->sa_kredit->EditValue = ew_FormatNumber($this->sa_kredit->EditValue, -2, -2, -2, -2);
 
 		// jurnal
 		$this->jurnal->EditCustomAttributes = "";
@@ -975,6 +1021,20 @@ class ct_level4 extends cTable {
 		// jurnal_kode
 		$this->jurnal_kode->EditCustomAttributes = "";
 		$this->jurnal_kode->EditValue = $this->jurnal_kode->Options(FALSE);
+
+		// sm_debet
+		$this->sm_debet->EditAttrs["class"] = "form-control";
+		$this->sm_debet->EditCustomAttributes = "";
+		$this->sm_debet->EditValue = $this->sm_debet->CurrentValue;
+		$this->sm_debet->PlaceHolder = ew_RemoveHtml($this->sm_debet->FldCaption());
+		if (strval($this->sm_debet->EditValue) <> "" && is_numeric($this->sm_debet->EditValue)) $this->sm_debet->EditValue = ew_FormatNumber($this->sm_debet->EditValue, -2, -2, -2, -1);
+
+		// sm_kredit
+		$this->sm_kredit->EditAttrs["class"] = "form-control";
+		$this->sm_kredit->EditCustomAttributes = "";
+		$this->sm_kredit->EditValue = $this->sm_kredit->CurrentValue;
+		$this->sm_kredit->PlaceHolder = ew_RemoveHtml($this->sm_kredit->FldCaption());
+		if (strval($this->sm_kredit->EditValue) <> "" && is_numeric($this->sm_kredit->EditValue)) $this->sm_kredit->EditValue = ew_FormatNumber($this->sm_kredit->EditValue, -2, -2, -2, -2);
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -1008,7 +1068,8 @@ class ct_level4 extends cTable {
 					if ($this->level3_id->Exportable) $Doc->ExportCaption($this->level3_id);
 					if ($this->level4_no->Exportable) $Doc->ExportCaption($this->level4_no);
 					if ($this->level4_nama->Exportable) $Doc->ExportCaption($this->level4_nama);
-					if ($this->saldo_awal->Exportable) $Doc->ExportCaption($this->saldo_awal);
+					if ($this->sa_debet->Exportable) $Doc->ExportCaption($this->sa_debet);
+					if ($this->sa_kredit->Exportable) $Doc->ExportCaption($this->sa_kredit);
 					if ($this->jurnal->Exportable) $Doc->ExportCaption($this->jurnal);
 					if ($this->jurnal_kode->Exportable) $Doc->ExportCaption($this->jurnal_kode);
 				} else {
@@ -1017,7 +1078,8 @@ class ct_level4 extends cTable {
 					if ($this->level3_id->Exportable) $Doc->ExportCaption($this->level3_id);
 					if ($this->level4_no->Exportable) $Doc->ExportCaption($this->level4_no);
 					if ($this->level4_nama->Exportable) $Doc->ExportCaption($this->level4_nama);
-					if ($this->saldo_awal->Exportable) $Doc->ExportCaption($this->saldo_awal);
+					if ($this->sa_debet->Exportable) $Doc->ExportCaption($this->sa_debet);
+					if ($this->sa_kredit->Exportable) $Doc->ExportCaption($this->sa_kredit);
 					if ($this->jurnal->Exportable) $Doc->ExportCaption($this->jurnal);
 					if ($this->jurnal_kode->Exportable) $Doc->ExportCaption($this->jurnal_kode);
 				}
@@ -1056,7 +1118,8 @@ class ct_level4 extends cTable {
 						if ($this->level3_id->Exportable) $Doc->ExportField($this->level3_id);
 						if ($this->level4_no->Exportable) $Doc->ExportField($this->level4_no);
 						if ($this->level4_nama->Exportable) $Doc->ExportField($this->level4_nama);
-						if ($this->saldo_awal->Exportable) $Doc->ExportField($this->saldo_awal);
+						if ($this->sa_debet->Exportable) $Doc->ExportField($this->sa_debet);
+						if ($this->sa_kredit->Exportable) $Doc->ExportField($this->sa_kredit);
 						if ($this->jurnal->Exportable) $Doc->ExportField($this->jurnal);
 						if ($this->jurnal_kode->Exportable) $Doc->ExportField($this->jurnal_kode);
 					} else {
@@ -1065,7 +1128,8 @@ class ct_level4 extends cTable {
 						if ($this->level3_id->Exportable) $Doc->ExportField($this->level3_id);
 						if ($this->level4_no->Exportable) $Doc->ExportField($this->level4_no);
 						if ($this->level4_nama->Exportable) $Doc->ExportField($this->level4_nama);
-						if ($this->saldo_awal->Exportable) $Doc->ExportField($this->saldo_awal);
+						if ($this->sa_debet->Exportable) $Doc->ExportField($this->sa_debet);
+						if ($this->sa_kredit->Exportable) $Doc->ExportField($this->sa_kredit);
 						if ($this->jurnal->Exportable) $Doc->ExportField($this->jurnal);
 						if ($this->jurnal_kode->Exportable) $Doc->ExportField($this->jurnal_kode);
 					}

@@ -542,12 +542,16 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 		$this->ket->SetVisibility();
 		$this->debet->SetVisibility();
 		$this->kredit->SetVisibility();
+		$this->sa_debet->SetVisibility();
+		$this->sm_debet->SetVisibility();
+		$this->sa_kredit->SetVisibility();
+		$this->sm_kredit->SetVisibility();
 
 		// Aggregate variables
 		// 1st dimension = no of groups (level 0 used for grand total)
 		// 2nd dimension = no of fields
 
-		$nDtls = 6;
+		$nDtls = 10;
 		$nGrps = 2;
 		$this->Val = &ewr_InitArray($nDtls, 0);
 		$this->Cnt = &ewr_Init2DArray($nGrps, $nDtls, 0);
@@ -560,7 +564,7 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 		$this->GrandMx = &ewr_InitArray($nDtls, NULL);
 
 		// Set up array if accumulation required: array(Accum, SkipNullOrZero)
-		$this->Col = array(array(FALSE, FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(TRUE,FALSE), array(TRUE,FALSE));
+		$this->Col = array(array(FALSE, FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(TRUE,FALSE), array(TRUE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE));
 
 		// Set up groups per page dynamically
 		$this->SetUpDisplayGrps();
@@ -841,8 +845,10 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 				$this->FirstRowData['no_akun'] = ewr_Conv($rs->fields('no_akun'), 200);
 				$this->FirstRowData['nama_akun'] = ewr_Conv($rs->fields('nama_akun'), 200);
 				$this->FirstRowData['no_nama_akun'] = ewr_Conv($rs->fields('no_nama_akun'), 200);
-				$this->FirstRowData['saldo_awal'] = ewr_Conv($rs->fields('saldo_awal'), 20);
-				$this->FirstRowData['saldo'] = ewr_Conv($rs->fields('saldo'), 20);
+				$this->FirstRowData['sa_debet'] = ewr_Conv($rs->fields('sa_debet'), 4);
+				$this->FirstRowData['sm_debet'] = ewr_Conv($rs->fields('sm_debet'), 4);
+				$this->FirstRowData['sa_kredit'] = ewr_Conv($rs->fields('sa_kredit'), 4);
+				$this->FirstRowData['sm_kredit'] = ewr_Conv($rs->fields('sm_kredit'), 4);
 			}
 		} else { // Get next row
 			$rs->MoveNext();
@@ -864,13 +870,19 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 				else
 					$this->no_nama_akun->setDbValue(ewr_GroupValue($this->no_nama_akun, $rs->fields('no_nama_akun')));
 			}
-			$this->saldo_awal->setDbValue($rs->fields('saldo_awal'));
-			$this->saldo->setDbValue($rs->fields('saldo'));
+			$this->sa_debet->setDbValue($rs->fields('sa_debet'));
+			$this->sm_debet->setDbValue($rs->fields('sm_debet'));
+			$this->sa_kredit->setDbValue($rs->fields('sa_kredit'));
+			$this->sm_kredit->setDbValue($rs->fields('sm_kredit'));
 			$this->Val[1] = $this->no_bukti->CurrentValue;
 			$this->Val[2] = $this->tgl->CurrentValue;
 			$this->Val[3] = $this->ket->CurrentValue;
 			$this->Val[4] = $this->debet->CurrentValue;
 			$this->Val[5] = $this->kredit->CurrentValue;
+			$this->Val[6] = $this->sa_debet->CurrentValue;
+			$this->Val[7] = $this->sm_debet->CurrentValue;
+			$this->Val[8] = $this->sa_kredit->CurrentValue;
+			$this->Val[9] = $this->sm_kredit->CurrentValue;
 		} else {
 			$this->detail_id->setDbValue("");
 			$this->jurnal_id->setDbValue("");
@@ -883,8 +895,10 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 			$this->no_akun->setDbValue("");
 			$this->nama_akun->setDbValue("");
 			$this->no_nama_akun->setDbValue("");
-			$this->saldo_awal->setDbValue("");
-			$this->saldo->setDbValue("");
+			$this->sa_debet->setDbValue("");
+			$this->sm_debet->setDbValue("");
+			$this->sa_kredit->setDbValue("");
+			$this->sm_kredit->setDbValue("");
 		}
 	}
 
@@ -1057,6 +1071,10 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 				$this->GrandSmry[4] = $rsagg->fields("sum_debet");
 				$this->GrandCnt[5] = $this->TotCount;
 				$this->GrandSmry[5] = $rsagg->fields("sum_kredit");
+				$this->GrandCnt[6] = $this->TotCount;
+				$this->GrandCnt[7] = $this->TotCount;
+				$this->GrandCnt[8] = $this->TotCount;
+				$this->GrandCnt[9] = $this->TotCount;
 				$rsagg->Close();
 				$bGotSummary = TRUE;
 			}
@@ -1121,6 +1139,18 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 
 			// kredit
 			$this->kredit->HrefValue = "";
+
+			// sa_debet
+			$this->sa_debet->HrefValue = "";
+
+			// sm_debet
+			$this->sm_debet->HrefValue = "";
+
+			// sa_kredit
+			$this->sa_kredit->HrefValue = "";
+
+			// sm_kredit
+			$this->sm_kredit->HrefValue = "";
 		} else {
 			if ($this->RowTotalType == EWR_ROWTOTAL_GROUP && $this->RowTotalSubType == EWR_ROWTOTAL_HEADER) {
 			$this->RowAttrs["data-group"] = $this->no_nama_akun->GroupValue(); // Set up group attribute
@@ -1156,6 +1186,26 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 			$this->kredit->ViewValue = $this->kredit->CurrentValue;
 			$this->kredit->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
 
+			// sa_debet
+			$this->sa_debet->ViewValue = $this->sa_debet->CurrentValue;
+			$this->sa_debet->ViewValue = ewr_FormatNumber($this->sa_debet->ViewValue, $this->sa_debet->DefaultDecimalPrecision, -1, 0, 0);
+			$this->sa_debet->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+
+			// sm_debet
+			$this->sm_debet->ViewValue = $this->sm_debet->CurrentValue;
+			$this->sm_debet->ViewValue = ewr_FormatNumber($this->sm_debet->ViewValue, $this->sm_debet->DefaultDecimalPrecision, -1, 0, 0);
+			$this->sm_debet->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+
+			// sa_kredit
+			$this->sa_kredit->ViewValue = $this->sa_kredit->CurrentValue;
+			$this->sa_kredit->ViewValue = ewr_FormatNumber($this->sa_kredit->ViewValue, $this->sa_kredit->DefaultDecimalPrecision, -1, 0, 0);
+			$this->sa_kredit->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+
+			// sm_kredit
+			$this->sm_kredit->ViewValue = $this->sm_kredit->CurrentValue;
+			$this->sm_kredit->ViewValue = ewr_FormatNumber($this->sm_kredit->ViewValue, $this->sm_kredit->DefaultDecimalPrecision, -1, 0, 0);
+			$this->sm_kredit->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+
 			// no_nama_akun
 			$this->no_nama_akun->HrefValue = "";
 
@@ -1173,6 +1223,18 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 
 			// kredit
 			$this->kredit->HrefValue = "";
+
+			// sa_debet
+			$this->sa_debet->HrefValue = "";
+
+			// sm_debet
+			$this->sm_debet->HrefValue = "";
+
+			// sa_kredit
+			$this->sa_kredit->HrefValue = "";
+
+			// sm_kredit
+			$this->sm_kredit->HrefValue = "";
 		}
 
 		// Call Cell_Rendered event
@@ -1259,6 +1321,42 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 			$HrefValue = &$this->kredit->HrefValue;
 			$LinkAttrs = &$this->kredit->LinkAttrs;
 			$this->Cell_Rendered($this->kredit, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+
+			// sa_debet
+			$CurrentValue = $this->sa_debet->CurrentValue;
+			$ViewValue = &$this->sa_debet->ViewValue;
+			$ViewAttrs = &$this->sa_debet->ViewAttrs;
+			$CellAttrs = &$this->sa_debet->CellAttrs;
+			$HrefValue = &$this->sa_debet->HrefValue;
+			$LinkAttrs = &$this->sa_debet->LinkAttrs;
+			$this->Cell_Rendered($this->sa_debet, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+
+			// sm_debet
+			$CurrentValue = $this->sm_debet->CurrentValue;
+			$ViewValue = &$this->sm_debet->ViewValue;
+			$ViewAttrs = &$this->sm_debet->ViewAttrs;
+			$CellAttrs = &$this->sm_debet->CellAttrs;
+			$HrefValue = &$this->sm_debet->HrefValue;
+			$LinkAttrs = &$this->sm_debet->LinkAttrs;
+			$this->Cell_Rendered($this->sm_debet, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+
+			// sa_kredit
+			$CurrentValue = $this->sa_kredit->CurrentValue;
+			$ViewValue = &$this->sa_kredit->ViewValue;
+			$ViewAttrs = &$this->sa_kredit->ViewAttrs;
+			$CellAttrs = &$this->sa_kredit->CellAttrs;
+			$HrefValue = &$this->sa_kredit->HrefValue;
+			$LinkAttrs = &$this->sa_kredit->LinkAttrs;
+			$this->Cell_Rendered($this->sa_kredit, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+
+			// sm_kredit
+			$CurrentValue = $this->sm_kredit->CurrentValue;
+			$ViewValue = &$this->sm_kredit->ViewValue;
+			$ViewAttrs = &$this->sm_kredit->ViewAttrs;
+			$CellAttrs = &$this->sm_kredit->CellAttrs;
+			$HrefValue = &$this->sm_kredit->HrefValue;
+			$LinkAttrs = &$this->sm_kredit->LinkAttrs;
+			$this->Cell_Rendered($this->sm_kredit, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
 		}
 
 		// Call Row_Rendered event
@@ -1277,6 +1375,10 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 		if ($this->ket->Visible) $this->DtlColumnCount += 1;
 		if ($this->debet->Visible) $this->DtlColumnCount += 1;
 		if ($this->kredit->Visible) $this->DtlColumnCount += 1;
+		if ($this->sa_debet->Visible) $this->DtlColumnCount += 1;
+		if ($this->sm_debet->Visible) $this->DtlColumnCount += 1;
+		if ($this->sa_kredit->Visible) $this->DtlColumnCount += 1;
+		if ($this->sm_kredit->Visible) $this->DtlColumnCount += 1;
 	}
 
 	// Set up Breadcrumb
@@ -1333,6 +1435,10 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 			$this->ket->setSort("");
 			$this->debet->setSort("");
 			$this->kredit->setSort("");
+			$this->sa_debet->setSort("");
+			$this->sm_debet->setSort("");
+			$this->sa_kredit->setSort("");
+			$this->sm_kredit->setSort("");
 
 		// Check for an Order parameter
 		} elseif ($orderBy <> "") {
@@ -1344,6 +1450,10 @@ class crr_bukubesar2_summary extends crr_bukubesar2 {
 			$this->UpdateSort($this->ket, $bCtrl); // ket
 			$this->UpdateSort($this->debet, $bCtrl); // debet
 			$this->UpdateSort($this->kredit, $bCtrl); // kredit
+			$this->UpdateSort($this->sa_debet, $bCtrl); // sa_debet
+			$this->UpdateSort($this->sm_debet, $bCtrl); // sm_debet
+			$this->UpdateSort($this->sa_kredit, $bCtrl); // sa_kredit
+			$this->UpdateSort($this->sm_kredit, $bCtrl); // sm_kredit
 			$sSortSql = $this->SortSql();
 			$this->setOrderBy($sSortSql);
 			$this->setStartGroup(1);
@@ -1897,6 +2007,78 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 	</td>
 <?php } ?>
 <?php } ?>
+<?php if ($Page->sa_debet->Visible) { ?>
+<?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
+	<td data-field="sa_debet"><div class="r_bukubesar2_sa_debet"><span class="ewTableHeaderCaption"><?php echo $Page->sa_debet->FldCaption() ?></span></div></td>
+<?php } else { ?>
+	<td data-field="sa_debet">
+<?php if ($Page->SortUrl($Page->sa_debet) == "") { ?>
+		<div class="ewTableHeaderBtn r_bukubesar2_sa_debet">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sa_debet->FldCaption() ?></span>
+		</div>
+<?php } else { ?>
+		<div class="ewTableHeaderBtn ewPointer r_bukubesar2_sa_debet" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->sa_debet) ?>',2);">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sa_debet->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->sa_debet->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->sa_debet->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		</div>
+<?php } ?>
+	</td>
+<?php } ?>
+<?php } ?>
+<?php if ($Page->sm_debet->Visible) { ?>
+<?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
+	<td data-field="sm_debet"><div class="r_bukubesar2_sm_debet"><span class="ewTableHeaderCaption"><?php echo $Page->sm_debet->FldCaption() ?></span></div></td>
+<?php } else { ?>
+	<td data-field="sm_debet">
+<?php if ($Page->SortUrl($Page->sm_debet) == "") { ?>
+		<div class="ewTableHeaderBtn r_bukubesar2_sm_debet">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sm_debet->FldCaption() ?></span>
+		</div>
+<?php } else { ?>
+		<div class="ewTableHeaderBtn ewPointer r_bukubesar2_sm_debet" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->sm_debet) ?>',2);">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sm_debet->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->sm_debet->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->sm_debet->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		</div>
+<?php } ?>
+	</td>
+<?php } ?>
+<?php } ?>
+<?php if ($Page->sa_kredit->Visible) { ?>
+<?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
+	<td data-field="sa_kredit"><div class="r_bukubesar2_sa_kredit"><span class="ewTableHeaderCaption"><?php echo $Page->sa_kredit->FldCaption() ?></span></div></td>
+<?php } else { ?>
+	<td data-field="sa_kredit">
+<?php if ($Page->SortUrl($Page->sa_kredit) == "") { ?>
+		<div class="ewTableHeaderBtn r_bukubesar2_sa_kredit">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sa_kredit->FldCaption() ?></span>
+		</div>
+<?php } else { ?>
+		<div class="ewTableHeaderBtn ewPointer r_bukubesar2_sa_kredit" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->sa_kredit) ?>',2);">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sa_kredit->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->sa_kredit->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->sa_kredit->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		</div>
+<?php } ?>
+	</td>
+<?php } ?>
+<?php } ?>
+<?php if ($Page->sm_kredit->Visible) { ?>
+<?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
+	<td data-field="sm_kredit"><div class="r_bukubesar2_sm_kredit"><span class="ewTableHeaderCaption"><?php echo $Page->sm_kredit->FldCaption() ?></span></div></td>
+<?php } else { ?>
+	<td data-field="sm_kredit">
+<?php if ($Page->SortUrl($Page->sm_kredit) == "") { ?>
+		<div class="ewTableHeaderBtn r_bukubesar2_sm_kredit">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sm_kredit->FldCaption() ?></span>
+		</div>
+<?php } else { ?>
+		<div class="ewTableHeaderBtn ewPointer r_bukubesar2_sm_kredit" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->sm_kredit) ?>',2);">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sm_kredit->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->sm_kredit->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->sm_kredit->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		</div>
+<?php } ?>
+	</td>
+<?php } ?>
+<?php } ?>
 	</tr>
 </thead>
 <tbody>
@@ -1994,6 +2176,22 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>>
 <span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar2_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->ListViewValue() ?></span></td>
 <?php } ?>
+<?php if ($Page->sa_debet->Visible) { ?>
+		<td data-field="sa_debet"<?php echo $Page->sa_debet->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar2_sa_debet"<?php echo $Page->sa_debet->ViewAttributes() ?>><?php echo $Page->sa_debet->ListViewValue() ?></span></td>
+<?php } ?>
+<?php if ($Page->sm_debet->Visible) { ?>
+		<td data-field="sm_debet"<?php echo $Page->sm_debet->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar2_sm_debet"<?php echo $Page->sm_debet->ViewAttributes() ?>><?php echo $Page->sm_debet->ListViewValue() ?></span></td>
+<?php } ?>
+<?php if ($Page->sa_kredit->Visible) { ?>
+		<td data-field="sa_kredit"<?php echo $Page->sa_kredit->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar2_sa_kredit"<?php echo $Page->sa_kredit->ViewAttributes() ?>><?php echo $Page->sa_kredit->ListViewValue() ?></span></td>
+<?php } ?>
+<?php if ($Page->sm_kredit->Visible) { ?>
+		<td data-field="sm_kredit"<?php echo $Page->sm_kredit->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_bukubesar2_sm_kredit"<?php echo $Page->sm_kredit->ViewAttributes() ?>><?php echo $Page->sm_kredit->ListViewValue() ?></span></td>
+<?php } ?>
 	</tr>
 <?php
 
@@ -2052,11 +2250,23 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 <?php if ($Page->kredit->Visible) { ?>
 		<td data-field="kredit"<?php echo $Page->no_nama_akun->CellAttributes() ?>><span class="ewAggregateCaption"><?php echo $ReportLanguage->Phrase("RptSum") ?></span><?php echo $ReportLanguage->Phrase("AggregateEqual") ?><span class="ewAggregateValue"><span data-class="tpgs<?php echo $Page->GrpCount ?>_r_bukubesar2_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></span></td>
 <?php } ?>
+<?php if ($Page->sa_debet->Visible) { ?>
+		<td data-field="sa_debet"<?php echo $Page->no_nama_akun->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->sm_debet->Visible) { ?>
+		<td data-field="sm_debet"<?php echo $Page->no_nama_akun->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->sa_kredit->Visible) { ?>
+		<td data-field="sa_kredit"<?php echo $Page->no_nama_akun->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->sm_kredit->Visible) { ?>
+		<td data-field="sm_kredit"<?php echo $Page->no_nama_akun->CellAttributes() ?>></td>
+<?php } ?>
 	</tr>
 <?php } else { ?>
 	<tr<?php echo $Page->RowAttributes(); ?>>
 <?php if ($Page->GrpColumnCount + $Page->DtlColumnCount > 0) { ?>
-		<td colspan="<?php echo ($Page->GrpColumnCount + $Page->DtlColumnCount) ?>"<?php echo $Page->kredit->CellAttributes() ?>><?php echo str_replace(array("%v", "%c"), array($Page->no_nama_akun->GroupViewValue, $Page->no_nama_akun->FldCaption()), $ReportLanguage->Phrase("RptSumHead")) ?> <span class="ewDirLtr">(<?php echo ewr_FormatNumber($Page->Cnt[1][0],0,-2,-2,-2) ?><?php echo $ReportLanguage->Phrase("RptDtlRec") ?>)</span></td>
+		<td colspan="<?php echo ($Page->GrpColumnCount + $Page->DtlColumnCount) ?>"<?php echo $Page->sm_kredit->CellAttributes() ?>><?php echo str_replace(array("%v", "%c"), array($Page->no_nama_akun->GroupViewValue, $Page->no_nama_akun->FldCaption()), $ReportLanguage->Phrase("RptSumHead")) ?> <span class="ewDirLtr">(<?php echo ewr_FormatNumber($Page->Cnt[1][0],0,-2,-2,-2) ?><?php echo $ReportLanguage->Phrase("RptDtlRec") ?>)</span></td>
 <?php } ?>
 	</tr>
 	<tr<?php echo $Page->RowAttributes(); ?>>
@@ -2073,12 +2283,24 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 		<td data-field="ket"<?php echo $Page->no_nama_akun->CellAttributes() ?>>&nbsp;</td>
 <?php } ?>
 <?php if ($Page->debet->Visible) { ?>
-		<td data-field="debet"<?php echo $Page->kredit->CellAttributes() ?>>
+		<td data-field="debet"<?php echo $Page->sm_kredit->CellAttributes() ?>>
 <span data-class="tpgs<?php echo $Page->GrpCount ?>_r_bukubesar2_debet"<?php echo $Page->debet->ViewAttributes() ?>><?php echo $Page->debet->SumViewValue ?></span></td>
 <?php } ?>
 <?php if ($Page->kredit->Visible) { ?>
-		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>>
+		<td data-field="kredit"<?php echo $Page->sm_kredit->CellAttributes() ?>>
 <span data-class="tpgs<?php echo $Page->GrpCount ?>_r_bukubesar2_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></td>
+<?php } ?>
+<?php if ($Page->sa_debet->Visible) { ?>
+		<td data-field="sa_debet"<?php echo $Page->no_nama_akun->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->sm_debet->Visible) { ?>
+		<td data-field="sm_debet"<?php echo $Page->no_nama_akun->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->sa_kredit->Visible) { ?>
+		<td data-field="sa_kredit"<?php echo $Page->no_nama_akun->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->sm_kredit->Visible) { ?>
+		<td data-field="sm_kredit"<?php echo $Page->no_nama_akun->CellAttributes() ?>>&nbsp;</td>
 <?php } ?>
 	</tr>
 <?php } ?>
@@ -2144,6 +2366,18 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 <?php if ($Page->kredit->Visible) { ?>
 		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>><?php echo $ReportLanguage->Phrase("RptSum") ?>=<span data-class="tpps_r_bukubesar2_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></td>
 <?php } ?>
+<?php if ($Page->sa_debet->Visible) { ?>
+		<td data-field="sa_debet"<?php echo $Page->sa_debet->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->sm_debet->Visible) { ?>
+		<td data-field="sm_debet"<?php echo $Page->sm_debet->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->sa_kredit->Visible) { ?>
+		<td data-field="sa_kredit"<?php echo $Page->sa_kredit->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->sm_kredit->Visible) { ?>
+		<td data-field="sm_kredit"<?php echo $Page->sm_kredit->CellAttributes() ?>></td>
+<?php } ?>
 	</tr>
 <?php } else { ?>
 	<tr<?php echo $Page->RowAttributes(); ?>><td colspan="<?php echo ($Page->GrpColumnCount + $Page->DtlColumnCount) ?>"><?php echo $ReportLanguage->Phrase("RptPageSummary") ?> <span class="ewDirLtr">(<?php echo ewr_FormatNumber($Page->Cnt[0][0],0,-2,-2,-2); ?><?php echo $ReportLanguage->Phrase("RptDtlRec") ?>)</span></td></tr>
@@ -2167,6 +2401,18 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 <?php if ($Page->kredit->Visible) { ?>
 		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>>
 <span data-class="tpps_r_bukubesar2_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></td>
+<?php } ?>
+<?php if ($Page->sa_debet->Visible) { ?>
+		<td data-field="sa_debet"<?php echo $Page->sa_debet->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->sm_debet->Visible) { ?>
+		<td data-field="sm_debet"<?php echo $Page->sm_debet->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->sa_kredit->Visible) { ?>
+		<td data-field="sa_kredit"<?php echo $Page->sa_kredit->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->sm_kredit->Visible) { ?>
+		<td data-field="sm_kredit"<?php echo $Page->sm_kredit->CellAttributes() ?>>&nbsp;</td>
 <?php } ?>
 	</tr>
 <?php } ?>
@@ -2204,6 +2450,18 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 <?php if ($Page->kredit->Visible) { ?>
 		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>><?php echo $ReportLanguage->Phrase("RptSum") ?>=<span data-class="tpts_r_bukubesar2_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></td>
 <?php } ?>
+<?php if ($Page->sa_debet->Visible) { ?>
+		<td data-field="sa_debet"<?php echo $Page->sa_debet->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->sm_debet->Visible) { ?>
+		<td data-field="sm_debet"<?php echo $Page->sm_debet->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->sa_kredit->Visible) { ?>
+		<td data-field="sa_kredit"<?php echo $Page->sa_kredit->CellAttributes() ?>></td>
+<?php } ?>
+<?php if ($Page->sm_kredit->Visible) { ?>
+		<td data-field="sm_kredit"<?php echo $Page->sm_kredit->CellAttributes() ?>></td>
+<?php } ?>
 	</tr>
 <?php } else { ?>
 	<tr<?php echo $Page->RowAttributes() ?>><td colspan="<?php echo ($Page->GrpColumnCount + $Page->DtlColumnCount) ?>"><?php echo $ReportLanguage->Phrase("RptGrandSummary") ?> <span class="ewDirLtr">(<?php echo ewr_FormatNumber($Page->TotCount,0,-2,-2,-2); ?><?php echo $ReportLanguage->Phrase("RptDtlRec") ?>)</span></td></tr>
@@ -2227,6 +2485,18 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 <?php if ($Page->kredit->Visible) { ?>
 		<td data-field="kredit"<?php echo $Page->kredit->CellAttributes() ?>>
 <span data-class="tpts_r_bukubesar2_kredit"<?php echo $Page->kredit->ViewAttributes() ?>><?php echo $Page->kredit->SumViewValue ?></span></td>
+<?php } ?>
+<?php if ($Page->sa_debet->Visible) { ?>
+		<td data-field="sa_debet"<?php echo $Page->sa_debet->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->sm_debet->Visible) { ?>
+		<td data-field="sm_debet"<?php echo $Page->sm_debet->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->sa_kredit->Visible) { ?>
+		<td data-field="sa_kredit"<?php echo $Page->sa_kredit->CellAttributes() ?>>&nbsp;</td>
+<?php } ?>
+<?php if ($Page->sm_kredit->Visible) { ?>
+		<td data-field="sm_kredit"<?php echo $Page->sm_kredit->CellAttributes() ?>>&nbsp;</td>
 <?php } ?>
 	</tr>
 <?php } ?>

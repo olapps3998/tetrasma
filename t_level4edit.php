@@ -290,7 +290,8 @@ class ct_level4_edit extends ct_level4 {
 		$this->level3_id->SetVisibility();
 		$this->level4_no->SetVisibility();
 		$this->level4_nama->SetVisibility();
-		$this->saldo_awal->SetVisibility();
+		$this->sa_debet->SetVisibility();
+		$this->sa_kredit->SetVisibility();
 		$this->jurnal->SetVisibility();
 		$this->jurnal_kode->SetVisibility();
 
@@ -559,8 +560,11 @@ class ct_level4_edit extends ct_level4 {
 		if (!$this->level4_nama->FldIsDetailKey) {
 			$this->level4_nama->setFormValue($objForm->GetValue("x_level4_nama"));
 		}
-		if (!$this->saldo_awal->FldIsDetailKey) {
-			$this->saldo_awal->setFormValue($objForm->GetValue("x_saldo_awal"));
+		if (!$this->sa_debet->FldIsDetailKey) {
+			$this->sa_debet->setFormValue($objForm->GetValue("x_sa_debet"));
+		}
+		if (!$this->sa_kredit->FldIsDetailKey) {
+			$this->sa_kredit->setFormValue($objForm->GetValue("x_sa_kredit"));
 		}
 		if (!$this->jurnal->FldIsDetailKey) {
 			$this->jurnal->setFormValue($objForm->GetValue("x_jurnal"));
@@ -582,7 +586,8 @@ class ct_level4_edit extends ct_level4 {
 		$this->level3_id->CurrentValue = $this->level3_id->FormValue;
 		$this->level4_no->CurrentValue = $this->level4_no->FormValue;
 		$this->level4_nama->CurrentValue = $this->level4_nama->FormValue;
-		$this->saldo_awal->CurrentValue = $this->saldo_awal->FormValue;
+		$this->sa_debet->CurrentValue = $this->sa_debet->FormValue;
+		$this->sa_kredit->CurrentValue = $this->sa_kredit->FormValue;
 		$this->jurnal->CurrentValue = $this->jurnal->FormValue;
 		$this->jurnal_kode->CurrentValue = $this->jurnal_kode->FormValue;
 	}
@@ -663,10 +668,12 @@ class ct_level4_edit extends ct_level4 {
 		}
 		$this->level4_no->setDbValue($rs->fields('level4_no'));
 		$this->level4_nama->setDbValue($rs->fields('level4_nama'));
-		$this->saldo_awal->setDbValue($rs->fields('saldo_awal'));
-		$this->saldo->setDbValue($rs->fields('saldo'));
+		$this->sa_debet->setDbValue($rs->fields('sa_debet'));
+		$this->sa_kredit->setDbValue($rs->fields('sa_kredit'));
 		$this->jurnal->setDbValue($rs->fields('jurnal'));
 		$this->jurnal_kode->setDbValue($rs->fields('jurnal_kode'));
+		$this->sm_debet->setDbValue($rs->fields('sm_debet'));
+		$this->sm_kredit->setDbValue($rs->fields('sm_kredit'));
 	}
 
 	// Load DbValue from recordset
@@ -679,10 +686,12 @@ class ct_level4_edit extends ct_level4 {
 		$this->level3_id->DbValue = $row['level3_id'];
 		$this->level4_no->DbValue = $row['level4_no'];
 		$this->level4_nama->DbValue = $row['level4_nama'];
-		$this->saldo_awal->DbValue = $row['saldo_awal'];
-		$this->saldo->DbValue = $row['saldo'];
+		$this->sa_debet->DbValue = $row['sa_debet'];
+		$this->sa_kredit->DbValue = $row['sa_kredit'];
 		$this->jurnal->DbValue = $row['jurnal'];
 		$this->jurnal_kode->DbValue = $row['jurnal_kode'];
+		$this->sm_debet->DbValue = $row['sm_debet'];
+		$this->sm_kredit->DbValue = $row['sm_kredit'];
 	}
 
 	// Render row values based on field settings
@@ -690,8 +699,16 @@ class ct_level4_edit extends ct_level4 {
 		global $Security, $Language, $gsLanguage;
 
 		// Initialize URLs
-		// Call Row_Rendering event
+		// Convert decimal values if posted back
 
+		if ($this->sa_debet->FormValue == $this->sa_debet->CurrentValue && is_numeric(ew_StrToFloat($this->sa_debet->CurrentValue)))
+			$this->sa_debet->CurrentValue = ew_StrToFloat($this->sa_debet->CurrentValue);
+
+		// Convert decimal values if posted back
+		if ($this->sa_kredit->FormValue == $this->sa_kredit->CurrentValue && is_numeric(ew_StrToFloat($this->sa_kredit->CurrentValue)))
+			$this->sa_kredit->CurrentValue = ew_StrToFloat($this->sa_kredit->CurrentValue);
+
+		// Call Row_Rendering event
 		$this->Row_Rendering();
 
 		// Common render codes for all row types
@@ -701,10 +718,12 @@ class ct_level4_edit extends ct_level4 {
 		// level3_id
 		// level4_no
 		// level4_nama
-		// saldo_awal
-		// saldo
+		// sa_debet
+		// sa_kredit
 		// jurnal
 		// jurnal_kode
+		// sm_debet
+		// sm_kredit
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -806,11 +825,17 @@ class ct_level4_edit extends ct_level4 {
 		$this->level4_nama->ViewValue = $this->level4_nama->CurrentValue;
 		$this->level4_nama->ViewCustomAttributes = "";
 
-		// saldo_awal
-		$this->saldo_awal->ViewValue = $this->saldo_awal->CurrentValue;
-		$this->saldo_awal->ViewValue = ew_FormatNumber($this->saldo_awal->ViewValue, 0, -2, -2, -1);
-		$this->saldo_awal->CellCssStyle .= "text-align: right;";
-		$this->saldo_awal->ViewCustomAttributes = "";
+		// sa_debet
+		$this->sa_debet->ViewValue = $this->sa_debet->CurrentValue;
+		$this->sa_debet->ViewValue = ew_FormatNumber($this->sa_debet->ViewValue, 0, -2, -2, -1);
+		$this->sa_debet->CellCssStyle .= "text-align: right;";
+		$this->sa_debet->ViewCustomAttributes = "";
+
+		// sa_kredit
+		$this->sa_kredit->ViewValue = $this->sa_kredit->CurrentValue;
+		$this->sa_kredit->ViewValue = ew_FormatNumber($this->sa_kredit->ViewValue, 0, -2, -2, -2);
+		$this->sa_kredit->CellCssStyle .= "text-align: right;";
+		$this->sa_kredit->ViewCustomAttributes = "";
 
 		// jurnal
 		if (strval($this->jurnal->CurrentValue) <> "") {
@@ -853,10 +878,15 @@ class ct_level4_edit extends ct_level4 {
 			$this->level4_nama->HrefValue = "";
 			$this->level4_nama->TooltipValue = "";
 
-			// saldo_awal
-			$this->saldo_awal->LinkCustomAttributes = "";
-			$this->saldo_awal->HrefValue = "";
-			$this->saldo_awal->TooltipValue = "";
+			// sa_debet
+			$this->sa_debet->LinkCustomAttributes = "";
+			$this->sa_debet->HrefValue = "";
+			$this->sa_debet->TooltipValue = "";
+
+			// sa_kredit
+			$this->sa_kredit->LinkCustomAttributes = "";
+			$this->sa_kredit->HrefValue = "";
+			$this->sa_kredit->TooltipValue = "";
 
 			// jurnal
 			$this->jurnal->LinkCustomAttributes = "";
@@ -965,11 +995,19 @@ class ct_level4_edit extends ct_level4 {
 			$this->level4_nama->EditValue = ew_HtmlEncode($this->level4_nama->CurrentValue);
 			$this->level4_nama->PlaceHolder = ew_RemoveHtml($this->level4_nama->FldCaption());
 
-			// saldo_awal
-			$this->saldo_awal->EditAttrs["class"] = "form-control";
-			$this->saldo_awal->EditCustomAttributes = "";
-			$this->saldo_awal->EditValue = ew_HtmlEncode($this->saldo_awal->CurrentValue);
-			$this->saldo_awal->PlaceHolder = ew_RemoveHtml($this->saldo_awal->FldCaption());
+			// sa_debet
+			$this->sa_debet->EditAttrs["class"] = "form-control";
+			$this->sa_debet->EditCustomAttributes = "";
+			$this->sa_debet->EditValue = ew_HtmlEncode($this->sa_debet->CurrentValue);
+			$this->sa_debet->PlaceHolder = ew_RemoveHtml($this->sa_debet->FldCaption());
+			if (strval($this->sa_debet->EditValue) <> "" && is_numeric($this->sa_debet->EditValue)) $this->sa_debet->EditValue = ew_FormatNumber($this->sa_debet->EditValue, -2, -2, -2, -1);
+
+			// sa_kredit
+			$this->sa_kredit->EditAttrs["class"] = "form-control";
+			$this->sa_kredit->EditCustomAttributes = "";
+			$this->sa_kredit->EditValue = ew_HtmlEncode($this->sa_kredit->CurrentValue);
+			$this->sa_kredit->PlaceHolder = ew_RemoveHtml($this->sa_kredit->FldCaption());
+			if (strval($this->sa_kredit->EditValue) <> "" && is_numeric($this->sa_kredit->EditValue)) $this->sa_kredit->EditValue = ew_FormatNumber($this->sa_kredit->EditValue, -2, -2, -2, -2);
 
 			// jurnal
 			$this->jurnal->EditCustomAttributes = "";
@@ -1001,9 +1039,13 @@ class ct_level4_edit extends ct_level4 {
 			$this->level4_nama->LinkCustomAttributes = "";
 			$this->level4_nama->HrefValue = "";
 
-			// saldo_awal
-			$this->saldo_awal->LinkCustomAttributes = "";
-			$this->saldo_awal->HrefValue = "";
+			// sa_debet
+			$this->sa_debet->LinkCustomAttributes = "";
+			$this->sa_debet->HrefValue = "";
+
+			// sa_kredit
+			$this->sa_kredit->LinkCustomAttributes = "";
+			$this->sa_kredit->HrefValue = "";
 
 			// jurnal
 			$this->jurnal->LinkCustomAttributes = "";
@@ -1049,8 +1091,11 @@ class ct_level4_edit extends ct_level4 {
 		if (!$this->level4_nama->FldIsDetailKey && !is_null($this->level4_nama->FormValue) && $this->level4_nama->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->level4_nama->FldCaption(), $this->level4_nama->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->saldo_awal->FormValue)) {
-			ew_AddMessage($gsFormError, $this->saldo_awal->FldErrMsg());
+		if (!ew_CheckInteger($this->sa_debet->FormValue)) {
+			ew_AddMessage($gsFormError, $this->sa_debet->FldErrMsg());
+		}
+		if (!ew_CheckNumber($this->sa_kredit->FormValue)) {
+			ew_AddMessage($gsFormError, $this->sa_kredit->FldErrMsg());
 		}
 
 		// Return validate result
@@ -1103,8 +1148,11 @@ class ct_level4_edit extends ct_level4 {
 			// level4_nama
 			$this->level4_nama->SetDbValueDef($rsnew, $this->level4_nama->CurrentValue, "", $this->level4_nama->ReadOnly);
 
-			// saldo_awal
-			$this->saldo_awal->SetDbValueDef($rsnew, $this->saldo_awal->CurrentValue, NULL, $this->saldo_awal->ReadOnly);
+			// sa_debet
+			$this->sa_debet->SetDbValueDef($rsnew, $this->sa_debet->CurrentValue, NULL, $this->sa_debet->ReadOnly);
+
+			// sa_kredit
+			$this->sa_kredit->SetDbValueDef($rsnew, $this->sa_kredit->CurrentValue, NULL, $this->sa_kredit->ReadOnly);
 
 			// jurnal
 			$this->jurnal->SetDbValueDef($rsnew, $this->jurnal->CurrentValue, NULL, $this->jurnal->ReadOnly);
@@ -1374,9 +1422,12 @@ ft_level4edit.Validate = function() {
 			elm = this.GetElements("x" + infix + "_level4_nama");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $t_level4->level4_nama->FldCaption(), $t_level4->level4_nama->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_saldo_awal");
+			elm = this.GetElements("x" + infix + "_sa_debet");
 			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($t_level4->saldo_awal->FldErrMsg()) ?>");
+				return this.OnError(elm, "<?php echo ew_JsEncode2($t_level4->sa_debet->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_sa_kredit");
+			if (elm && !ew_CheckNumber(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($t_level4->sa_kredit->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -1582,14 +1633,24 @@ ft_level4edit.CreateAutoSuggest({"id":"x_level3_id","forceSelect":true});
 <?php echo $t_level4->level4_nama->CustomMsg ?></div></div>
 	</div>
 <?php } ?>
-<?php if ($t_level4->saldo_awal->Visible) { // saldo_awal ?>
-	<div id="r_saldo_awal" class="form-group">
-		<label id="elh_t_level4_saldo_awal" for="x_saldo_awal" class="col-sm-2 control-label ewLabel"><?php echo $t_level4->saldo_awal->FldCaption() ?></label>
-		<div class="col-sm-10"><div<?php echo $t_level4->saldo_awal->CellAttributes() ?>>
-<span id="el_t_level4_saldo_awal">
-<input type="text" data-table="t_level4" data-field="x_saldo_awal" name="x_saldo_awal" id="x_saldo_awal" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->saldo_awal->getPlaceHolder()) ?>" value="<?php echo $t_level4->saldo_awal->EditValue ?>"<?php echo $t_level4->saldo_awal->EditAttributes() ?>>
+<?php if ($t_level4->sa_debet->Visible) { // sa_debet ?>
+	<div id="r_sa_debet" class="form-group">
+		<label id="elh_t_level4_sa_debet" for="x_sa_debet" class="col-sm-2 control-label ewLabel"><?php echo $t_level4->sa_debet->FldCaption() ?></label>
+		<div class="col-sm-10"><div<?php echo $t_level4->sa_debet->CellAttributes() ?>>
+<span id="el_t_level4_sa_debet">
+<input type="text" data-table="t_level4" data-field="x_sa_debet" name="x_sa_debet" id="x_sa_debet" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->sa_debet->getPlaceHolder()) ?>" value="<?php echo $t_level4->sa_debet->EditValue ?>"<?php echo $t_level4->sa_debet->EditAttributes() ?>>
 </span>
-<?php echo $t_level4->saldo_awal->CustomMsg ?></div></div>
+<?php echo $t_level4->sa_debet->CustomMsg ?></div></div>
+	</div>
+<?php } ?>
+<?php if ($t_level4->sa_kredit->Visible) { // sa_kredit ?>
+	<div id="r_sa_kredit" class="form-group">
+		<label id="elh_t_level4_sa_kredit" for="x_sa_kredit" class="col-sm-2 control-label ewLabel"><?php echo $t_level4->sa_kredit->FldCaption() ?></label>
+		<div class="col-sm-10"><div<?php echo $t_level4->sa_kredit->CellAttributes() ?>>
+<span id="el_t_level4_sa_kredit">
+<input type="text" data-table="t_level4" data-field="x_sa_kredit" name="x_sa_kredit" id="x_sa_kredit" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->sa_kredit->getPlaceHolder()) ?>" value="<?php echo $t_level4->sa_kredit->EditValue ?>"<?php echo $t_level4->sa_kredit->EditAttributes() ?>>
+</span>
+<?php echo $t_level4->sa_kredit->CustomMsg ?></div></div>
 	</div>
 <?php } ?>
 <?php if ($t_level4->jurnal->Visible) { // jurnal ?>

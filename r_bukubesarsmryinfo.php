@@ -14,14 +14,16 @@ class crr_bukubesar extends crTableBase {
 	var $akun_id;
 	var $no_akun;
 	var $nama_akun;
-	var $saldo_awal;
-	var $saldo;
 	var $no_nama_akun;
 	var $tgl;
 	var $no_bukti;
 	var $ket;
 	var $debet;
 	var $kredit;
+	var $sa_debet;
+	var $sm_debet;
+	var $sa_kredit;
+	var $sm_kredit;
 
 	//
 	// Table class constructor
@@ -77,24 +79,6 @@ class crr_bukubesar extends crTableBase {
 		$this->nama_akun->DateFilter = "";
 		$this->nama_akun->SqlSelect = "";
 		$this->nama_akun->SqlOrderBy = "";
-
-		// saldo_awal
-		$this->saldo_awal = new crField('r_bukubesar', 'r_bukubesar', 'x_saldo_awal', 'saldo_awal', '`saldo_awal`', 20, EWR_DATATYPE_NUMBER, -1);
-		$this->saldo_awal->Sortable = TRUE; // Allow sort
-		$this->saldo_awal->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
-		$this->fields['saldo_awal'] = &$this->saldo_awal;
-		$this->saldo_awal->DateFilter = "";
-		$this->saldo_awal->SqlSelect = "";
-		$this->saldo_awal->SqlOrderBy = "";
-
-		// saldo
-		$this->saldo = new crField('r_bukubesar', 'r_bukubesar', 'x_saldo', 'saldo', '`saldo`', 20, EWR_DATATYPE_NUMBER, -1);
-		$this->saldo->Sortable = TRUE; // Allow sort
-		$this->saldo->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectInteger");
-		$this->fields['saldo'] = &$this->saldo;
-		$this->saldo->DateFilter = "";
-		$this->saldo->SqlSelect = "";
-		$this->saldo->SqlOrderBy = "";
 
 		// no_nama_akun
 		$this->no_nama_akun = new crField('r_bukubesar', 'r_bukubesar', 'x_no_nama_akun', 'no_nama_akun', '`no_nama_akun`', 200, EWR_DATATYPE_STRING, -1);
@@ -152,6 +136,42 @@ class crr_bukubesar extends crTableBase {
 		$this->kredit->DateFilter = "";
 		$this->kredit->SqlSelect = "";
 		$this->kredit->SqlOrderBy = "";
+
+		// sa_debet
+		$this->sa_debet = new crField('r_bukubesar', 'r_bukubesar', 'x_sa_debet', 'sa_debet', '`sa_debet`', 4, EWR_DATATYPE_NUMBER, -1);
+		$this->sa_debet->Sortable = TRUE; // Allow sort
+		$this->sa_debet->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectFloat");
+		$this->fields['sa_debet'] = &$this->sa_debet;
+		$this->sa_debet->DateFilter = "";
+		$this->sa_debet->SqlSelect = "";
+		$this->sa_debet->SqlOrderBy = "";
+
+		// sm_debet
+		$this->sm_debet = new crField('r_bukubesar', 'r_bukubesar', 'x_sm_debet', 'sm_debet', '`sm_debet`', 4, EWR_DATATYPE_NUMBER, -1);
+		$this->sm_debet->Sortable = TRUE; // Allow sort
+		$this->sm_debet->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectFloat");
+		$this->fields['sm_debet'] = &$this->sm_debet;
+		$this->sm_debet->DateFilter = "";
+		$this->sm_debet->SqlSelect = "";
+		$this->sm_debet->SqlOrderBy = "";
+
+		// sa_kredit
+		$this->sa_kredit = new crField('r_bukubesar', 'r_bukubesar', 'x_sa_kredit', 'sa_kredit', '`sa_kredit`', 4, EWR_DATATYPE_NUMBER, -1);
+		$this->sa_kredit->Sortable = TRUE; // Allow sort
+		$this->sa_kredit->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectFloat");
+		$this->fields['sa_kredit'] = &$this->sa_kredit;
+		$this->sa_kredit->DateFilter = "";
+		$this->sa_kredit->SqlSelect = "";
+		$this->sa_kredit->SqlOrderBy = "";
+
+		// sm_kredit
+		$this->sm_kredit = new crField('r_bukubesar', 'r_bukubesar', 'x_sm_kredit', 'sm_kredit', '`sm_kredit`', 4, EWR_DATATYPE_NUMBER, -1);
+		$this->sm_kredit->Sortable = TRUE; // Allow sort
+		$this->sm_kredit->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectFloat");
+		$this->fields['sm_kredit'] = &$this->sm_kredit;
+		$this->sm_kredit->DateFilter = "";
+		$this->sm_kredit->SqlSelect = "";
+		$this->sm_kredit->SqlOrderBy = "";
 	}
 
 	// Set Field Visibility

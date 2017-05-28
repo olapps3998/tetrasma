@@ -418,7 +418,8 @@ class ct_level4_list extends ct_level4 {
 		$this->level3_id->SetVisibility();
 		$this->level4_no->SetVisibility();
 		$this->level4_nama->SetVisibility();
-		$this->saldo_awal->SetVisibility();
+		$this->sa_debet->SetVisibility();
+		$this->sa_kredit->SetVisibility();
 		$this->jurnal->SetVisibility();
 		$this->jurnal_kode->SetVisibility();
 
@@ -795,6 +796,8 @@ class ct_level4_list extends ct_level4 {
 	//  Exit inline mode
 	function ClearInlineMode() {
 		$this->setKey("level4_id", ""); // Clear inline edit key
+		$this->sa_debet->FormValue = ""; // Clear form value
+		$this->sa_kredit->FormValue = ""; // Clear form value
 		$this->LastAction = $this->CurrentAction; // Save last action
 		$this->CurrentAction = ""; // Clear action
 		$_SESSION[EW_SESSION_INLINE_MODE] = ""; // Clear inline mode
@@ -1165,7 +1168,9 @@ class ct_level4_list extends ct_level4 {
 			return FALSE;
 		if ($objForm->HasValue("x_level4_nama") && $objForm->HasValue("o_level4_nama") && $this->level4_nama->CurrentValue <> $this->level4_nama->OldValue)
 			return FALSE;
-		if ($objForm->HasValue("x_saldo_awal") && $objForm->HasValue("o_saldo_awal") && $this->saldo_awal->CurrentValue <> $this->saldo_awal->OldValue)
+		if ($objForm->HasValue("x_sa_debet") && $objForm->HasValue("o_sa_debet") && $this->sa_debet->CurrentValue <> $this->sa_debet->OldValue)
+			return FALSE;
+		if ($objForm->HasValue("x_sa_kredit") && $objForm->HasValue("o_sa_kredit") && $this->sa_kredit->CurrentValue <> $this->sa_kredit->OldValue)
 			return FALSE;
 		if ($objForm->HasValue("x_jurnal") && $objForm->HasValue("o_jurnal") && $this->jurnal->CurrentValue <> $this->jurnal->OldValue)
 			return FALSE;
@@ -1261,8 +1266,8 @@ class ct_level4_list extends ct_level4 {
 		$sFilterList = ew_Concat($sFilterList, $this->level3_id->AdvancedSearch->ToJSON(), ","); // Field level3_id
 		$sFilterList = ew_Concat($sFilterList, $this->level4_no->AdvancedSearch->ToJSON(), ","); // Field level4_no
 		$sFilterList = ew_Concat($sFilterList, $this->level4_nama->AdvancedSearch->ToJSON(), ","); // Field level4_nama
-		$sFilterList = ew_Concat($sFilterList, $this->saldo_awal->AdvancedSearch->ToJSON(), ","); // Field saldo_awal
-		$sFilterList = ew_Concat($sFilterList, $this->saldo->AdvancedSearch->ToJSON(), ","); // Field saldo
+		$sFilterList = ew_Concat($sFilterList, $this->sa_debet->AdvancedSearch->ToJSON(), ","); // Field sa_debet
+		$sFilterList = ew_Concat($sFilterList, $this->sa_kredit->AdvancedSearch->ToJSON(), ","); // Field sa_kredit
 		$sFilterList = ew_Concat($sFilterList, $this->jurnal->AdvancedSearch->ToJSON(), ","); // Field jurnal
 		$sFilterList = ew_Concat($sFilterList, $this->jurnal_kode->AdvancedSearch->ToJSON(), ","); // Field jurnal_kode
 		if ($this->BasicSearch->Keyword <> "") {
@@ -1357,21 +1362,21 @@ class ct_level4_list extends ct_level4 {
 		$this->level4_nama->AdvancedSearch->SearchOperator2 = @$filter["w_level4_nama"];
 		$this->level4_nama->AdvancedSearch->Save();
 
-		// Field saldo_awal
-		$this->saldo_awal->AdvancedSearch->SearchValue = @$filter["x_saldo_awal"];
-		$this->saldo_awal->AdvancedSearch->SearchOperator = @$filter["z_saldo_awal"];
-		$this->saldo_awal->AdvancedSearch->SearchCondition = @$filter["v_saldo_awal"];
-		$this->saldo_awal->AdvancedSearch->SearchValue2 = @$filter["y_saldo_awal"];
-		$this->saldo_awal->AdvancedSearch->SearchOperator2 = @$filter["w_saldo_awal"];
-		$this->saldo_awal->AdvancedSearch->Save();
+		// Field sa_debet
+		$this->sa_debet->AdvancedSearch->SearchValue = @$filter["x_sa_debet"];
+		$this->sa_debet->AdvancedSearch->SearchOperator = @$filter["z_sa_debet"];
+		$this->sa_debet->AdvancedSearch->SearchCondition = @$filter["v_sa_debet"];
+		$this->sa_debet->AdvancedSearch->SearchValue2 = @$filter["y_sa_debet"];
+		$this->sa_debet->AdvancedSearch->SearchOperator2 = @$filter["w_sa_debet"];
+		$this->sa_debet->AdvancedSearch->Save();
 
-		// Field saldo
-		$this->saldo->AdvancedSearch->SearchValue = @$filter["x_saldo"];
-		$this->saldo->AdvancedSearch->SearchOperator = @$filter["z_saldo"];
-		$this->saldo->AdvancedSearch->SearchCondition = @$filter["v_saldo"];
-		$this->saldo->AdvancedSearch->SearchValue2 = @$filter["y_saldo"];
-		$this->saldo->AdvancedSearch->SearchOperator2 = @$filter["w_saldo"];
-		$this->saldo->AdvancedSearch->Save();
+		// Field sa_kredit
+		$this->sa_kredit->AdvancedSearch->SearchValue = @$filter["x_sa_kredit"];
+		$this->sa_kredit->AdvancedSearch->SearchOperator = @$filter["z_sa_kredit"];
+		$this->sa_kredit->AdvancedSearch->SearchCondition = @$filter["v_sa_kredit"];
+		$this->sa_kredit->AdvancedSearch->SearchValue2 = @$filter["y_sa_kredit"];
+		$this->sa_kredit->AdvancedSearch->SearchOperator2 = @$filter["w_sa_kredit"];
+		$this->sa_kredit->AdvancedSearch->Save();
 
 		// Field jurnal
 		$this->jurnal->AdvancedSearch->SearchValue = @$filter["x_jurnal"];
@@ -1571,7 +1576,8 @@ class ct_level4_list extends ct_level4 {
 			$this->UpdateSort($this->level3_id, $bCtrl); // level3_id
 			$this->UpdateSort($this->level4_no, $bCtrl); // level4_no
 			$this->UpdateSort($this->level4_nama, $bCtrl); // level4_nama
-			$this->UpdateSort($this->saldo_awal, $bCtrl); // saldo_awal
+			$this->UpdateSort($this->sa_debet, $bCtrl); // sa_debet
+			$this->UpdateSort($this->sa_kredit, $bCtrl); // sa_kredit
 			$this->UpdateSort($this->jurnal, $bCtrl); // jurnal
 			$this->UpdateSort($this->jurnal_kode, $bCtrl); // jurnal_kode
 			$this->setStartRecordNumber(1); // Reset start position
@@ -1616,7 +1622,8 @@ class ct_level4_list extends ct_level4 {
 				$this->level3_id->setSort("");
 				$this->level4_no->setSort("");
 				$this->level4_nama->setSort("");
-				$this->saldo_awal->setSort("");
+				$this->sa_debet->setSort("");
+				$this->sa_kredit->setSort("");
 				$this->jurnal->setSort("");
 				$this->jurnal_kode->setSort("");
 			}
@@ -2143,8 +2150,10 @@ class ct_level4_list extends ct_level4 {
 		$this->level4_no->OldValue = $this->level4_no->CurrentValue;
 		$this->level4_nama->CurrentValue = NULL;
 		$this->level4_nama->OldValue = $this->level4_nama->CurrentValue;
-		$this->saldo_awal->CurrentValue = NULL;
-		$this->saldo_awal->OldValue = $this->saldo_awal->CurrentValue;
+		$this->sa_debet->CurrentValue = NULL;
+		$this->sa_debet->OldValue = $this->sa_debet->CurrentValue;
+		$this->sa_kredit->CurrentValue = 0.00;
+		$this->sa_kredit->OldValue = $this->sa_kredit->CurrentValue;
 		$this->jurnal->CurrentValue = 0;
 		$this->jurnal->OldValue = $this->jurnal->CurrentValue;
 		$this->jurnal_kode->CurrentValue = NULL;
@@ -2183,10 +2192,14 @@ class ct_level4_list extends ct_level4 {
 			$this->level4_nama->setFormValue($objForm->GetValue("x_level4_nama"));
 		}
 		$this->level4_nama->setOldValue($objForm->GetValue("o_level4_nama"));
-		if (!$this->saldo_awal->FldIsDetailKey) {
-			$this->saldo_awal->setFormValue($objForm->GetValue("x_saldo_awal"));
+		if (!$this->sa_debet->FldIsDetailKey) {
+			$this->sa_debet->setFormValue($objForm->GetValue("x_sa_debet"));
 		}
-		$this->saldo_awal->setOldValue($objForm->GetValue("o_saldo_awal"));
+		$this->sa_debet->setOldValue($objForm->GetValue("o_sa_debet"));
+		if (!$this->sa_kredit->FldIsDetailKey) {
+			$this->sa_kredit->setFormValue($objForm->GetValue("x_sa_kredit"));
+		}
+		$this->sa_kredit->setOldValue($objForm->GetValue("o_sa_kredit"));
 		if (!$this->jurnal->FldIsDetailKey) {
 			$this->jurnal->setFormValue($objForm->GetValue("x_jurnal"));
 		}
@@ -2209,7 +2222,8 @@ class ct_level4_list extends ct_level4 {
 		$this->level3_id->CurrentValue = $this->level3_id->FormValue;
 		$this->level4_no->CurrentValue = $this->level4_no->FormValue;
 		$this->level4_nama->CurrentValue = $this->level4_nama->FormValue;
-		$this->saldo_awal->CurrentValue = $this->saldo_awal->FormValue;
+		$this->sa_debet->CurrentValue = $this->sa_debet->FormValue;
+		$this->sa_kredit->CurrentValue = $this->sa_kredit->FormValue;
 		$this->jurnal->CurrentValue = $this->jurnal->FormValue;
 		$this->jurnal_kode->CurrentValue = $this->jurnal_kode->FormValue;
 	}
@@ -2290,10 +2304,12 @@ class ct_level4_list extends ct_level4 {
 		}
 		$this->level4_no->setDbValue($rs->fields('level4_no'));
 		$this->level4_nama->setDbValue($rs->fields('level4_nama'));
-		$this->saldo_awal->setDbValue($rs->fields('saldo_awal'));
-		$this->saldo->setDbValue($rs->fields('saldo'));
+		$this->sa_debet->setDbValue($rs->fields('sa_debet'));
+		$this->sa_kredit->setDbValue($rs->fields('sa_kredit'));
 		$this->jurnal->setDbValue($rs->fields('jurnal'));
 		$this->jurnal_kode->setDbValue($rs->fields('jurnal_kode'));
+		$this->sm_debet->setDbValue($rs->fields('sm_debet'));
+		$this->sm_kredit->setDbValue($rs->fields('sm_kredit'));
 	}
 
 	// Load DbValue from recordset
@@ -2306,10 +2322,12 @@ class ct_level4_list extends ct_level4 {
 		$this->level3_id->DbValue = $row['level3_id'];
 		$this->level4_no->DbValue = $row['level4_no'];
 		$this->level4_nama->DbValue = $row['level4_nama'];
-		$this->saldo_awal->DbValue = $row['saldo_awal'];
-		$this->saldo->DbValue = $row['saldo'];
+		$this->sa_debet->DbValue = $row['sa_debet'];
+		$this->sa_kredit->DbValue = $row['sa_kredit'];
 		$this->jurnal->DbValue = $row['jurnal'];
 		$this->jurnal_kode->DbValue = $row['jurnal_kode'];
+		$this->sm_debet->DbValue = $row['sm_debet'];
+		$this->sm_kredit->DbValue = $row['sm_kredit'];
 	}
 
 	// Load old record
@@ -2347,6 +2365,14 @@ class ct_level4_list extends ct_level4 {
 		$this->InlineCopyUrl = $this->GetInlineCopyUrl();
 		$this->DeleteUrl = $this->GetDeleteUrl();
 
+		// Convert decimal values if posted back
+		if ($this->sa_debet->FormValue == $this->sa_debet->CurrentValue && is_numeric(ew_StrToFloat($this->sa_debet->CurrentValue)))
+			$this->sa_debet->CurrentValue = ew_StrToFloat($this->sa_debet->CurrentValue);
+
+		// Convert decimal values if posted back
+		if ($this->sa_kredit->FormValue == $this->sa_kredit->CurrentValue && is_numeric(ew_StrToFloat($this->sa_kredit->CurrentValue)))
+			$this->sa_kredit->CurrentValue = ew_StrToFloat($this->sa_kredit->CurrentValue);
+
 		// Call Row_Rendering event
 		$this->Row_Rendering();
 
@@ -2357,11 +2383,16 @@ class ct_level4_list extends ct_level4 {
 		// level3_id
 		// level4_no
 		// level4_nama
-		// saldo_awal
-		// saldo
+		// sa_debet
+		// sa_kredit
 		// jurnal
 		// jurnal_kode
+		// sm_debet
 
+		$this->sm_debet->CellCssStyle = "white-space: nowrap;";
+
+		// sm_kredit
+		$this->sm_kredit->CellCssStyle = "white-space: nowrap;";
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// level1_id
@@ -2462,11 +2493,17 @@ class ct_level4_list extends ct_level4 {
 		$this->level4_nama->ViewValue = $this->level4_nama->CurrentValue;
 		$this->level4_nama->ViewCustomAttributes = "";
 
-		// saldo_awal
-		$this->saldo_awal->ViewValue = $this->saldo_awal->CurrentValue;
-		$this->saldo_awal->ViewValue = ew_FormatNumber($this->saldo_awal->ViewValue, 0, -2, -2, -1);
-		$this->saldo_awal->CellCssStyle .= "text-align: right;";
-		$this->saldo_awal->ViewCustomAttributes = "";
+		// sa_debet
+		$this->sa_debet->ViewValue = $this->sa_debet->CurrentValue;
+		$this->sa_debet->ViewValue = ew_FormatNumber($this->sa_debet->ViewValue, 0, -2, -2, -1);
+		$this->sa_debet->CellCssStyle .= "text-align: right;";
+		$this->sa_debet->ViewCustomAttributes = "";
+
+		// sa_kredit
+		$this->sa_kredit->ViewValue = $this->sa_kredit->CurrentValue;
+		$this->sa_kredit->ViewValue = ew_FormatNumber($this->sa_kredit->ViewValue, 0, -2, -2, -2);
+		$this->sa_kredit->CellCssStyle .= "text-align: right;";
+		$this->sa_kredit->ViewCustomAttributes = "";
 
 		// jurnal
 		if (strval($this->jurnal->CurrentValue) <> "") {
@@ -2509,10 +2546,15 @@ class ct_level4_list extends ct_level4 {
 			$this->level4_nama->HrefValue = "";
 			$this->level4_nama->TooltipValue = "";
 
-			// saldo_awal
-			$this->saldo_awal->LinkCustomAttributes = "";
-			$this->saldo_awal->HrefValue = "";
-			$this->saldo_awal->TooltipValue = "";
+			// sa_debet
+			$this->sa_debet->LinkCustomAttributes = "";
+			$this->sa_debet->HrefValue = "";
+			$this->sa_debet->TooltipValue = "";
+
+			// sa_kredit
+			$this->sa_kredit->LinkCustomAttributes = "";
+			$this->sa_kredit->HrefValue = "";
+			$this->sa_kredit->TooltipValue = "";
 
 			// jurnal
 			$this->jurnal->LinkCustomAttributes = "";
@@ -2621,11 +2663,25 @@ class ct_level4_list extends ct_level4 {
 			$this->level4_nama->EditValue = ew_HtmlEncode($this->level4_nama->CurrentValue);
 			$this->level4_nama->PlaceHolder = ew_RemoveHtml($this->level4_nama->FldCaption());
 
-			// saldo_awal
-			$this->saldo_awal->EditAttrs["class"] = "form-control";
-			$this->saldo_awal->EditCustomAttributes = "";
-			$this->saldo_awal->EditValue = ew_HtmlEncode($this->saldo_awal->CurrentValue);
-			$this->saldo_awal->PlaceHolder = ew_RemoveHtml($this->saldo_awal->FldCaption());
+			// sa_debet
+			$this->sa_debet->EditAttrs["class"] = "form-control";
+			$this->sa_debet->EditCustomAttributes = "";
+			$this->sa_debet->EditValue = ew_HtmlEncode($this->sa_debet->CurrentValue);
+			$this->sa_debet->PlaceHolder = ew_RemoveHtml($this->sa_debet->FldCaption());
+			if (strval($this->sa_debet->EditValue) <> "" && is_numeric($this->sa_debet->EditValue)) {
+			$this->sa_debet->EditValue = ew_FormatNumber($this->sa_debet->EditValue, -2, -2, -2, -1);
+			$this->sa_debet->OldValue = $this->sa_debet->EditValue;
+			}
+
+			// sa_kredit
+			$this->sa_kredit->EditAttrs["class"] = "form-control";
+			$this->sa_kredit->EditCustomAttributes = "";
+			$this->sa_kredit->EditValue = ew_HtmlEncode($this->sa_kredit->CurrentValue);
+			$this->sa_kredit->PlaceHolder = ew_RemoveHtml($this->sa_kredit->FldCaption());
+			if (strval($this->sa_kredit->EditValue) <> "" && is_numeric($this->sa_kredit->EditValue)) {
+			$this->sa_kredit->EditValue = ew_FormatNumber($this->sa_kredit->EditValue, -2, -2, -2, -2);
+			$this->sa_kredit->OldValue = $this->sa_kredit->EditValue;
+			}
 
 			// jurnal
 			$this->jurnal->EditCustomAttributes = "";
@@ -2657,9 +2713,13 @@ class ct_level4_list extends ct_level4 {
 			$this->level4_nama->LinkCustomAttributes = "";
 			$this->level4_nama->HrefValue = "";
 
-			// saldo_awal
-			$this->saldo_awal->LinkCustomAttributes = "";
-			$this->saldo_awal->HrefValue = "";
+			// sa_debet
+			$this->sa_debet->LinkCustomAttributes = "";
+			$this->sa_debet->HrefValue = "";
+
+			// sa_kredit
+			$this->sa_kredit->LinkCustomAttributes = "";
+			$this->sa_kredit->HrefValue = "";
 
 			// jurnal
 			$this->jurnal->LinkCustomAttributes = "";
@@ -2766,11 +2826,25 @@ class ct_level4_list extends ct_level4 {
 			$this->level4_nama->EditValue = ew_HtmlEncode($this->level4_nama->CurrentValue);
 			$this->level4_nama->PlaceHolder = ew_RemoveHtml($this->level4_nama->FldCaption());
 
-			// saldo_awal
-			$this->saldo_awal->EditAttrs["class"] = "form-control";
-			$this->saldo_awal->EditCustomAttributes = "";
-			$this->saldo_awal->EditValue = ew_HtmlEncode($this->saldo_awal->CurrentValue);
-			$this->saldo_awal->PlaceHolder = ew_RemoveHtml($this->saldo_awal->FldCaption());
+			// sa_debet
+			$this->sa_debet->EditAttrs["class"] = "form-control";
+			$this->sa_debet->EditCustomAttributes = "";
+			$this->sa_debet->EditValue = ew_HtmlEncode($this->sa_debet->CurrentValue);
+			$this->sa_debet->PlaceHolder = ew_RemoveHtml($this->sa_debet->FldCaption());
+			if (strval($this->sa_debet->EditValue) <> "" && is_numeric($this->sa_debet->EditValue)) {
+			$this->sa_debet->EditValue = ew_FormatNumber($this->sa_debet->EditValue, -2, -2, -2, -1);
+			$this->sa_debet->OldValue = $this->sa_debet->EditValue;
+			}
+
+			// sa_kredit
+			$this->sa_kredit->EditAttrs["class"] = "form-control";
+			$this->sa_kredit->EditCustomAttributes = "";
+			$this->sa_kredit->EditValue = ew_HtmlEncode($this->sa_kredit->CurrentValue);
+			$this->sa_kredit->PlaceHolder = ew_RemoveHtml($this->sa_kredit->FldCaption());
+			if (strval($this->sa_kredit->EditValue) <> "" && is_numeric($this->sa_kredit->EditValue)) {
+			$this->sa_kredit->EditValue = ew_FormatNumber($this->sa_kredit->EditValue, -2, -2, -2, -2);
+			$this->sa_kredit->OldValue = $this->sa_kredit->EditValue;
+			}
 
 			// jurnal
 			$this->jurnal->EditCustomAttributes = "";
@@ -2802,9 +2876,13 @@ class ct_level4_list extends ct_level4 {
 			$this->level4_nama->LinkCustomAttributes = "";
 			$this->level4_nama->HrefValue = "";
 
-			// saldo_awal
-			$this->saldo_awal->LinkCustomAttributes = "";
-			$this->saldo_awal->HrefValue = "";
+			// sa_debet
+			$this->sa_debet->LinkCustomAttributes = "";
+			$this->sa_debet->HrefValue = "";
+
+			// sa_kredit
+			$this->sa_kredit->LinkCustomAttributes = "";
+			$this->sa_kredit->HrefValue = "";
 
 			// jurnal
 			$this->jurnal->LinkCustomAttributes = "";
@@ -2850,8 +2928,11 @@ class ct_level4_list extends ct_level4 {
 		if (!$this->level4_nama->FldIsDetailKey && !is_null($this->level4_nama->FormValue) && $this->level4_nama->FormValue == "") {
 			ew_AddMessage($gsFormError, str_replace("%s", $this->level4_nama->FldCaption(), $this->level4_nama->ReqErrMsg));
 		}
-		if (!ew_CheckInteger($this->saldo_awal->FormValue)) {
-			ew_AddMessage($gsFormError, $this->saldo_awal->FldErrMsg());
+		if (!ew_CheckInteger($this->sa_debet->FormValue)) {
+			ew_AddMessage($gsFormError, $this->sa_debet->FldErrMsg());
+		}
+		if (!ew_CheckNumber($this->sa_kredit->FormValue)) {
+			ew_AddMessage($gsFormError, $this->sa_kredit->FldErrMsg());
 		}
 
 		// Return validate result
@@ -2986,8 +3067,11 @@ class ct_level4_list extends ct_level4 {
 			// level4_nama
 			$this->level4_nama->SetDbValueDef($rsnew, $this->level4_nama->CurrentValue, "", $this->level4_nama->ReadOnly);
 
-			// saldo_awal
-			$this->saldo_awal->SetDbValueDef($rsnew, $this->saldo_awal->CurrentValue, NULL, $this->saldo_awal->ReadOnly);
+			// sa_debet
+			$this->sa_debet->SetDbValueDef($rsnew, $this->sa_debet->CurrentValue, NULL, $this->sa_debet->ReadOnly);
+
+			// sa_kredit
+			$this->sa_kredit->SetDbValueDef($rsnew, $this->sa_kredit->CurrentValue, NULL, $this->sa_kredit->ReadOnly);
 
 			// jurnal
 			$this->jurnal->SetDbValueDef($rsnew, $this->jurnal->CurrentValue, NULL, $this->jurnal->ReadOnly);
@@ -3053,8 +3137,11 @@ class ct_level4_list extends ct_level4 {
 		// level4_nama
 		$this->level4_nama->SetDbValueDef($rsnew, $this->level4_nama->CurrentValue, "", FALSE);
 
-		// saldo_awal
-		$this->saldo_awal->SetDbValueDef($rsnew, $this->saldo_awal->CurrentValue, NULL, FALSE);
+		// sa_debet
+		$this->sa_debet->SetDbValueDef($rsnew, $this->sa_debet->CurrentValue, NULL, strval($this->sa_debet->CurrentValue) == "");
+
+		// sa_kredit
+		$this->sa_kredit->SetDbValueDef($rsnew, $this->sa_kredit->CurrentValue, NULL, strval($this->sa_kredit->CurrentValue) == "");
 
 		// jurnal
 		$this->jurnal->SetDbValueDef($rsnew, $this->jurnal->CurrentValue, NULL, strval($this->jurnal->CurrentValue) == "");
@@ -3652,9 +3739,12 @@ ft_level4list.Validate = function() {
 			elm = this.GetElements("x" + infix + "_level4_nama");
 			if (elm && !ew_IsHidden(elm) && !ew_HasValue(elm))
 				return this.OnError(elm, "<?php echo ew_JsEncode2(str_replace("%s", $t_level4->level4_nama->FldCaption(), $t_level4->level4_nama->ReqErrMsg)) ?>");
-			elm = this.GetElements("x" + infix + "_saldo_awal");
+			elm = this.GetElements("x" + infix + "_sa_debet");
 			if (elm && !ew_CheckInteger(elm.value))
-				return this.OnError(elm, "<?php echo ew_JsEncode2($t_level4->saldo_awal->FldErrMsg()) ?>");
+				return this.OnError(elm, "<?php echo ew_JsEncode2($t_level4->sa_debet->FldErrMsg()) ?>");
+			elm = this.GetElements("x" + infix + "_sa_kredit");
+			if (elm && !ew_CheckNumber(elm.value))
+				return this.OnError(elm, "<?php echo ew_JsEncode2($t_level4->sa_kredit->FldErrMsg()) ?>");
 
 			// Fire Form_CustomValidate event
 			if (!this.Form_CustomValidate(fobj))
@@ -3676,7 +3766,8 @@ ft_level4list.EmptyRow = function(infix) {
 	if (ew_ValueChanged(fobj, infix, "level3_id", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "level4_no", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "level4_nama", false)) return false;
-	if (ew_ValueChanged(fobj, infix, "saldo_awal", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "sa_debet", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "sa_kredit", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "jurnal", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "jurnal_kode", false)) return false;
 	return true;
@@ -3950,12 +4041,21 @@ $t_level4_list->ListOptions->Render("header", "left");
         </div></div></th>
 	<?php } ?>
 <?php } ?>		
-<?php if ($t_level4->saldo_awal->Visible) { // saldo_awal ?>
-	<?php if ($t_level4->SortUrl($t_level4->saldo_awal) == "") { ?>
-		<th data-name="saldo_awal"><div id="elh_t_level4_saldo_awal" class="t_level4_saldo_awal"><div class="ewTableHeaderCaption"><?php echo $t_level4->saldo_awal->FldCaption() ?></div></div></th>
+<?php if ($t_level4->sa_debet->Visible) { // sa_debet ?>
+	<?php if ($t_level4->SortUrl($t_level4->sa_debet) == "") { ?>
+		<th data-name="sa_debet"><div id="elh_t_level4_sa_debet" class="t_level4_sa_debet"><div class="ewTableHeaderCaption"><?php echo $t_level4->sa_debet->FldCaption() ?></div></div></th>
 	<?php } else { ?>
-		<th data-name="saldo_awal"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t_level4->SortUrl($t_level4->saldo_awal) ?>',2);"><div id="elh_t_level4_saldo_awal" class="t_level4_saldo_awal">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->saldo_awal->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->saldo_awal->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->saldo_awal->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+		<th data-name="sa_debet"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t_level4->SortUrl($t_level4->sa_debet) ?>',2);"><div id="elh_t_level4_sa_debet" class="t_level4_sa_debet">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->sa_debet->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->sa_debet->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->sa_debet->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+        </div></div></th>
+	<?php } ?>
+<?php } ?>		
+<?php if ($t_level4->sa_kredit->Visible) { // sa_kredit ?>
+	<?php if ($t_level4->SortUrl($t_level4->sa_kredit) == "") { ?>
+		<th data-name="sa_kredit"><div id="elh_t_level4_sa_kredit" class="t_level4_sa_kredit"><div class="ewTableHeaderCaption"><?php echo $t_level4->sa_kredit->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="sa_kredit"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t_level4->SortUrl($t_level4->sa_kredit) ?>',2);"><div id="elh_t_level4_sa_kredit" class="t_level4_sa_kredit">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->sa_kredit->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->sa_kredit->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->sa_kredit->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
         </div></div></th>
 	<?php } ?>
 <?php } ?>		
@@ -4096,12 +4196,20 @@ ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_l
 <input type="hidden" data-table="t_level4" data-field="x_level4_nama" name="o<?php echo $t_level4_list->RowIndex ?>_level4_nama" id="o<?php echo $t_level4_list->RowIndex ?>_level4_nama" value="<?php echo ew_HtmlEncode($t_level4->level4_nama->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($t_level4->saldo_awal->Visible) { // saldo_awal ?>
-		<td data-name="saldo_awal">
-<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_saldo_awal" class="form-group t_level4_saldo_awal">
-<input type="text" data-table="t_level4" data-field="x_saldo_awal" name="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->saldo_awal->getPlaceHolder()) ?>" value="<?php echo $t_level4->saldo_awal->EditValue ?>"<?php echo $t_level4->saldo_awal->EditAttributes() ?>>
+	<?php if ($t_level4->sa_debet->Visible) { // sa_debet ?>
+		<td data-name="sa_debet">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_sa_debet" class="form-group t_level4_sa_debet">
+<input type="text" data-table="t_level4" data-field="x_sa_debet" name="x<?php echo $t_level4_list->RowIndex ?>_sa_debet" id="x<?php echo $t_level4_list->RowIndex ?>_sa_debet" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->sa_debet->getPlaceHolder()) ?>" value="<?php echo $t_level4->sa_debet->EditValue ?>"<?php echo $t_level4->sa_debet->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="t_level4" data-field="x_saldo_awal" name="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" value="<?php echo ew_HtmlEncode($t_level4->saldo_awal->OldValue) ?>">
+<input type="hidden" data-table="t_level4" data-field="x_sa_debet" name="o<?php echo $t_level4_list->RowIndex ?>_sa_debet" id="o<?php echo $t_level4_list->RowIndex ?>_sa_debet" value="<?php echo ew_HtmlEncode($t_level4->sa_debet->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->sa_kredit->Visible) { // sa_kredit ?>
+		<td data-name="sa_kredit">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_sa_kredit" class="form-group t_level4_sa_kredit">
+<input type="text" data-table="t_level4" data-field="x_sa_kredit" name="x<?php echo $t_level4_list->RowIndex ?>_sa_kredit" id="x<?php echo $t_level4_list->RowIndex ?>_sa_kredit" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->sa_kredit->getPlaceHolder()) ?>" value="<?php echo $t_level4->sa_kredit->EditValue ?>"<?php echo $t_level4->sa_kredit->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_sa_kredit" name="o<?php echo $t_level4_list->RowIndex ?>_sa_kredit" id="o<?php echo $t_level4_list->RowIndex ?>_sa_kredit" value="<?php echo ew_HtmlEncode($t_level4->sa_kredit->OldValue) ?>">
 </td>
 	<?php } ?>
 	<?php if ($t_level4->jurnal->Visible) { // jurnal ?>
@@ -4447,23 +4555,44 @@ ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_l
 <?php } ?>
 </td>
 	<?php } ?>
-	<?php if ($t_level4->saldo_awal->Visible) { // saldo_awal ?>
-		<td data-name="saldo_awal"<?php echo $t_level4->saldo_awal->CellAttributes() ?>>
+	<?php if ($t_level4->sa_debet->Visible) { // sa_debet ?>
+		<td data-name="sa_debet"<?php echo $t_level4->sa_debet->CellAttributes() ?>>
 <?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
-<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_saldo_awal" class="form-group t_level4_saldo_awal">
-<input type="text" data-table="t_level4" data-field="x_saldo_awal" name="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->saldo_awal->getPlaceHolder()) ?>" value="<?php echo $t_level4->saldo_awal->EditValue ?>"<?php echo $t_level4->saldo_awal->EditAttributes() ?>>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_sa_debet" class="form-group t_level4_sa_debet">
+<input type="text" data-table="t_level4" data-field="x_sa_debet" name="x<?php echo $t_level4_list->RowIndex ?>_sa_debet" id="x<?php echo $t_level4_list->RowIndex ?>_sa_debet" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->sa_debet->getPlaceHolder()) ?>" value="<?php echo $t_level4->sa_debet->EditValue ?>"<?php echo $t_level4->sa_debet->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="t_level4" data-field="x_saldo_awal" name="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" value="<?php echo ew_HtmlEncode($t_level4->saldo_awal->OldValue) ?>">
+<input type="hidden" data-table="t_level4" data-field="x_sa_debet" name="o<?php echo $t_level4_list->RowIndex ?>_sa_debet" id="o<?php echo $t_level4_list->RowIndex ?>_sa_debet" value="<?php echo ew_HtmlEncode($t_level4->sa_debet->OldValue) ?>">
 <?php } ?>
 <?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
-<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_saldo_awal" class="form-group t_level4_saldo_awal">
-<input type="text" data-table="t_level4" data-field="x_saldo_awal" name="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->saldo_awal->getPlaceHolder()) ?>" value="<?php echo $t_level4->saldo_awal->EditValue ?>"<?php echo $t_level4->saldo_awal->EditAttributes() ?>>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_sa_debet" class="form-group t_level4_sa_debet">
+<input type="text" data-table="t_level4" data-field="x_sa_debet" name="x<?php echo $t_level4_list->RowIndex ?>_sa_debet" id="x<?php echo $t_level4_list->RowIndex ?>_sa_debet" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->sa_debet->getPlaceHolder()) ?>" value="<?php echo $t_level4->sa_debet->EditValue ?>"<?php echo $t_level4->sa_debet->EditAttributes() ?>>
 </span>
 <?php } ?>
 <?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
-<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_saldo_awal" class="t_level4_saldo_awal">
-<span<?php echo $t_level4->saldo_awal->ViewAttributes() ?>>
-<?php echo $t_level4->saldo_awal->ListViewValue() ?></span>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_sa_debet" class="t_level4_sa_debet">
+<span<?php echo $t_level4->sa_debet->ViewAttributes() ?>>
+<?php echo $t_level4->sa_debet->ListViewValue() ?></span>
+</span>
+<?php } ?>
+</td>
+	<?php } ?>
+	<?php if ($t_level4->sa_kredit->Visible) { // sa_kredit ?>
+		<td data-name="sa_kredit"<?php echo $t_level4->sa_kredit->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_sa_kredit" class="form-group t_level4_sa_kredit">
+<input type="text" data-table="t_level4" data-field="x_sa_kredit" name="x<?php echo $t_level4_list->RowIndex ?>_sa_kredit" id="x<?php echo $t_level4_list->RowIndex ?>_sa_kredit" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->sa_kredit->getPlaceHolder()) ?>" value="<?php echo $t_level4->sa_kredit->EditValue ?>"<?php echo $t_level4->sa_kredit->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_sa_kredit" name="o<?php echo $t_level4_list->RowIndex ?>_sa_kredit" id="o<?php echo $t_level4_list->RowIndex ?>_sa_kredit" value="<?php echo ew_HtmlEncode($t_level4->sa_kredit->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_sa_kredit" class="form-group t_level4_sa_kredit">
+<input type="text" data-table="t_level4" data-field="x_sa_kredit" name="x<?php echo $t_level4_list->RowIndex ?>_sa_kredit" id="x<?php echo $t_level4_list->RowIndex ?>_sa_kredit" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->sa_kredit->getPlaceHolder()) ?>" value="<?php echo $t_level4->sa_kredit->EditValue ?>"<?php echo $t_level4->sa_kredit->EditAttributes() ?>>
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_sa_kredit" class="t_level4_sa_kredit">
+<span<?php echo $t_level4->sa_kredit->ViewAttributes() ?>>
+<?php echo $t_level4->sa_kredit->ListViewValue() ?></span>
 </span>
 <?php } ?>
 </td>
@@ -4646,12 +4775,20 @@ ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_l
 <input type="hidden" data-table="t_level4" data-field="x_level4_nama" name="o<?php echo $t_level4_list->RowIndex ?>_level4_nama" id="o<?php echo $t_level4_list->RowIndex ?>_level4_nama" value="<?php echo ew_HtmlEncode($t_level4->level4_nama->OldValue) ?>">
 </td>
 	<?php } ?>
-	<?php if ($t_level4->saldo_awal->Visible) { // saldo_awal ?>
-		<td data-name="saldo_awal">
-<span id="el$rowindex$_t_level4_saldo_awal" class="form-group t_level4_saldo_awal">
-<input type="text" data-table="t_level4" data-field="x_saldo_awal" name="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="x<?php echo $t_level4_list->RowIndex ?>_saldo_awal" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->saldo_awal->getPlaceHolder()) ?>" value="<?php echo $t_level4->saldo_awal->EditValue ?>"<?php echo $t_level4->saldo_awal->EditAttributes() ?>>
+	<?php if ($t_level4->sa_debet->Visible) { // sa_debet ?>
+		<td data-name="sa_debet">
+<span id="el$rowindex$_t_level4_sa_debet" class="form-group t_level4_sa_debet">
+<input type="text" data-table="t_level4" data-field="x_sa_debet" name="x<?php echo $t_level4_list->RowIndex ?>_sa_debet" id="x<?php echo $t_level4_list->RowIndex ?>_sa_debet" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->sa_debet->getPlaceHolder()) ?>" value="<?php echo $t_level4->sa_debet->EditValue ?>"<?php echo $t_level4->sa_debet->EditAttributes() ?>>
 </span>
-<input type="hidden" data-table="t_level4" data-field="x_saldo_awal" name="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" id="o<?php echo $t_level4_list->RowIndex ?>_saldo_awal" value="<?php echo ew_HtmlEncode($t_level4->saldo_awal->OldValue) ?>">
+<input type="hidden" data-table="t_level4" data-field="x_sa_debet" name="o<?php echo $t_level4_list->RowIndex ?>_sa_debet" id="o<?php echo $t_level4_list->RowIndex ?>_sa_debet" value="<?php echo ew_HtmlEncode($t_level4->sa_debet->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->sa_kredit->Visible) { // sa_kredit ?>
+		<td data-name="sa_kredit">
+<span id="el$rowindex$_t_level4_sa_kredit" class="form-group t_level4_sa_kredit">
+<input type="text" data-table="t_level4" data-field="x_sa_kredit" name="x<?php echo $t_level4_list->RowIndex ?>_sa_kredit" id="x<?php echo $t_level4_list->RowIndex ?>_sa_kredit" size="30" placeholder="<?php echo ew_HtmlEncode($t_level4->sa_kredit->getPlaceHolder()) ?>" value="<?php echo $t_level4->sa_kredit->EditValue ?>"<?php echo $t_level4->sa_kredit->EditAttributes() ?>>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_sa_kredit" name="o<?php echo $t_level4_list->RowIndex ?>_sa_kredit" id="o<?php echo $t_level4_list->RowIndex ?>_sa_kredit" value="<?php echo ew_HtmlEncode($t_level4->sa_kredit->OldValue) ?>">
 </td>
 	<?php } ?>
 	<?php if ($t_level4->jurnal->Visible) { // jurnal ?>

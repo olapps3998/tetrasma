@@ -11,8 +11,9 @@ class crr_summary_bukubesar extends crTableBase {
 	var $ShowCompactSummaryFooter = TRUE;
 	var $level1_nama;
 	var $nama_akun;
-	var $saldo_mutasi;
 	var $akun_id;
+	var $sm_debet;
+	var $sm_kredit;
 
 	//
 	// Table class constructor
@@ -48,15 +49,6 @@ class crr_summary_bukubesar extends crTableBase {
 		$this->nama_akun->SqlSelect = "";
 		$this->nama_akun->SqlOrderBy = "";
 
-		// saldo_mutasi
-		$this->saldo_mutasi = new crField('r_summary_bukubesar', 'r_summary_bukubesar', 'x_saldo_mutasi', 'saldo_mutasi', '`saldo_mutasi`', 131, EWR_DATATYPE_NUMBER, -1);
-		$this->saldo_mutasi->Sortable = TRUE; // Allow sort
-		$this->saldo_mutasi->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectFloat");
-		$this->fields['saldo_mutasi'] = &$this->saldo_mutasi;
-		$this->saldo_mutasi->DateFilter = "";
-		$this->saldo_mutasi->SqlSelect = "";
-		$this->saldo_mutasi->SqlOrderBy = "";
-
 		// akun_id
 		$this->akun_id = new crField('r_summary_bukubesar', 'r_summary_bukubesar', 'x_akun_id', 'akun_id', '`akun_id`', 3, EWR_DATATYPE_NUMBER, -1);
 		$this->akun_id->Sortable = TRUE; // Allow sort
@@ -65,6 +57,24 @@ class crr_summary_bukubesar extends crTableBase {
 		$this->akun_id->DateFilter = "";
 		$this->akun_id->SqlSelect = "";
 		$this->akun_id->SqlOrderBy = "";
+
+		// sm_debet
+		$this->sm_debet = new crField('r_summary_bukubesar', 'r_summary_bukubesar', 'x_sm_debet', 'sm_debet', '`sm_debet`', 131, EWR_DATATYPE_NUMBER, -1);
+		$this->sm_debet->Sortable = TRUE; // Allow sort
+		$this->sm_debet->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectFloat");
+		$this->fields['sm_debet'] = &$this->sm_debet;
+		$this->sm_debet->DateFilter = "";
+		$this->sm_debet->SqlSelect = "";
+		$this->sm_debet->SqlOrderBy = "";
+
+		// sm_kredit
+		$this->sm_kredit = new crField('r_summary_bukubesar', 'r_summary_bukubesar', 'x_sm_kredit', 'sm_kredit', '`sm_kredit`', 131, EWR_DATATYPE_NUMBER, -1);
+		$this->sm_kredit->Sortable = TRUE; // Allow sort
+		$this->sm_kredit->FldDefaultErrMsg = $ReportLanguage->Phrase("IncorrectFloat");
+		$this->fields['sm_kredit'] = &$this->sm_kredit;
+		$this->sm_kredit->DateFilter = "";
+		$this->sm_kredit->SqlSelect = "";
+		$this->sm_kredit->SqlOrderBy = "";
 	}
 
 	// Set Field Visibility

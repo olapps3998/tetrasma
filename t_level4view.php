@@ -388,7 +388,8 @@ class ct_level4_view extends ct_level4 {
 		$this->level3_id->SetVisibility();
 		$this->level4_no->SetVisibility();
 		$this->level4_nama->SetVisibility();
-		$this->saldo_awal->SetVisibility();
+		$this->sa_debet->SetVisibility();
+		$this->sa_kredit->SetVisibility();
 		$this->jurnal->SetVisibility();
 		$this->jurnal_kode->SetVisibility();
 
@@ -728,10 +729,12 @@ class ct_level4_view extends ct_level4 {
 		}
 		$this->level4_no->setDbValue($rs->fields('level4_no'));
 		$this->level4_nama->setDbValue($rs->fields('level4_nama'));
-		$this->saldo_awal->setDbValue($rs->fields('saldo_awal'));
-		$this->saldo->setDbValue($rs->fields('saldo'));
+		$this->sa_debet->setDbValue($rs->fields('sa_debet'));
+		$this->sa_kredit->setDbValue($rs->fields('sa_kredit'));
 		$this->jurnal->setDbValue($rs->fields('jurnal'));
 		$this->jurnal_kode->setDbValue($rs->fields('jurnal_kode'));
+		$this->sm_debet->setDbValue($rs->fields('sm_debet'));
+		$this->sm_kredit->setDbValue($rs->fields('sm_kredit'));
 	}
 
 	// Load DbValue from recordset
@@ -744,10 +747,12 @@ class ct_level4_view extends ct_level4 {
 		$this->level3_id->DbValue = $row['level3_id'];
 		$this->level4_no->DbValue = $row['level4_no'];
 		$this->level4_nama->DbValue = $row['level4_nama'];
-		$this->saldo_awal->DbValue = $row['saldo_awal'];
-		$this->saldo->DbValue = $row['saldo'];
+		$this->sa_debet->DbValue = $row['sa_debet'];
+		$this->sa_kredit->DbValue = $row['sa_kredit'];
 		$this->jurnal->DbValue = $row['jurnal'];
 		$this->jurnal_kode->DbValue = $row['jurnal_kode'];
+		$this->sm_debet->DbValue = $row['sm_debet'];
+		$this->sm_kredit->DbValue = $row['sm_kredit'];
 	}
 
 	// Render row values based on field settings
@@ -762,6 +767,14 @@ class ct_level4_view extends ct_level4 {
 		$this->ListUrl = $this->GetListUrl();
 		$this->SetupOtherOptions();
 
+		// Convert decimal values if posted back
+		if ($this->sa_debet->FormValue == $this->sa_debet->CurrentValue && is_numeric(ew_StrToFloat($this->sa_debet->CurrentValue)))
+			$this->sa_debet->CurrentValue = ew_StrToFloat($this->sa_debet->CurrentValue);
+
+		// Convert decimal values if posted back
+		if ($this->sa_kredit->FormValue == $this->sa_kredit->CurrentValue && is_numeric(ew_StrToFloat($this->sa_kredit->CurrentValue)))
+			$this->sa_kredit->CurrentValue = ew_StrToFloat($this->sa_kredit->CurrentValue);
+
 		// Call Row_Rendering event
 		$this->Row_Rendering();
 
@@ -772,10 +785,12 @@ class ct_level4_view extends ct_level4 {
 		// level3_id
 		// level4_no
 		// level4_nama
-		// saldo_awal
-		// saldo
+		// sa_debet
+		// sa_kredit
 		// jurnal
 		// jurnal_kode
+		// sm_debet
+		// sm_kredit
 
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
@@ -877,11 +892,17 @@ class ct_level4_view extends ct_level4 {
 		$this->level4_nama->ViewValue = $this->level4_nama->CurrentValue;
 		$this->level4_nama->ViewCustomAttributes = "";
 
-		// saldo_awal
-		$this->saldo_awal->ViewValue = $this->saldo_awal->CurrentValue;
-		$this->saldo_awal->ViewValue = ew_FormatNumber($this->saldo_awal->ViewValue, 0, -2, -2, -1);
-		$this->saldo_awal->CellCssStyle .= "text-align: right;";
-		$this->saldo_awal->ViewCustomAttributes = "";
+		// sa_debet
+		$this->sa_debet->ViewValue = $this->sa_debet->CurrentValue;
+		$this->sa_debet->ViewValue = ew_FormatNumber($this->sa_debet->ViewValue, 0, -2, -2, -1);
+		$this->sa_debet->CellCssStyle .= "text-align: right;";
+		$this->sa_debet->ViewCustomAttributes = "";
+
+		// sa_kredit
+		$this->sa_kredit->ViewValue = $this->sa_kredit->CurrentValue;
+		$this->sa_kredit->ViewValue = ew_FormatNumber($this->sa_kredit->ViewValue, 0, -2, -2, -2);
+		$this->sa_kredit->CellCssStyle .= "text-align: right;";
+		$this->sa_kredit->ViewCustomAttributes = "";
 
 		// jurnal
 		if (strval($this->jurnal->CurrentValue) <> "") {
@@ -924,10 +945,15 @@ class ct_level4_view extends ct_level4 {
 			$this->level4_nama->HrefValue = "";
 			$this->level4_nama->TooltipValue = "";
 
-			// saldo_awal
-			$this->saldo_awal->LinkCustomAttributes = "";
-			$this->saldo_awal->HrefValue = "";
-			$this->saldo_awal->TooltipValue = "";
+			// sa_debet
+			$this->sa_debet->LinkCustomAttributes = "";
+			$this->sa_debet->HrefValue = "";
+			$this->sa_debet->TooltipValue = "";
+
+			// sa_kredit
+			$this->sa_kredit->LinkCustomAttributes = "";
+			$this->sa_kredit->HrefValue = "";
+			$this->sa_kredit->TooltipValue = "";
 
 			// jurnal
 			$this->jurnal->LinkCustomAttributes = "";
@@ -1497,13 +1523,24 @@ $t_level4_view->ShowMessage();
 </td>
 	</tr>
 <?php } ?>
-<?php if ($t_level4->saldo_awal->Visible) { // saldo_awal ?>
-	<tr id="r_saldo_awal">
-		<td><span id="elh_t_level4_saldo_awal"><?php echo $t_level4->saldo_awal->FldCaption() ?></span></td>
-		<td data-name="saldo_awal"<?php echo $t_level4->saldo_awal->CellAttributes() ?>>
-<span id="el_t_level4_saldo_awal">
-<span<?php echo $t_level4->saldo_awal->ViewAttributes() ?>>
-<?php echo $t_level4->saldo_awal->ViewValue ?></span>
+<?php if ($t_level4->sa_debet->Visible) { // sa_debet ?>
+	<tr id="r_sa_debet">
+		<td><span id="elh_t_level4_sa_debet"><?php echo $t_level4->sa_debet->FldCaption() ?></span></td>
+		<td data-name="sa_debet"<?php echo $t_level4->sa_debet->CellAttributes() ?>>
+<span id="el_t_level4_sa_debet">
+<span<?php echo $t_level4->sa_debet->ViewAttributes() ?>>
+<?php echo $t_level4->sa_debet->ViewValue ?></span>
+</span>
+</td>
+	</tr>
+<?php } ?>
+<?php if ($t_level4->sa_kredit->Visible) { // sa_kredit ?>
+	<tr id="r_sa_kredit">
+		<td><span id="elh_t_level4_sa_kredit"><?php echo $t_level4->sa_kredit->FldCaption() ?></span></td>
+		<td data-name="sa_kredit"<?php echo $t_level4->sa_kredit->CellAttributes() ?>>
+<span id="el_t_level4_sa_kredit">
+<span<?php echo $t_level4->sa_kredit->ViewAttributes() ?>>
+<?php echo $t_level4->sa_kredit->ViewValue ?></span>
 </span>
 </td>
 	</tr>

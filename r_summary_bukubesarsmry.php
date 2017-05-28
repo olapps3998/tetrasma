@@ -538,13 +538,14 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 
 		// Set field visibility for detail fields
 		$this->nama_akun->SetVisibility();
-		$this->saldo_mutasi->SetVisibility();
+		$this->sm_debet->SetVisibility();
+		$this->sm_kredit->SetVisibility();
 
 		// Aggregate variables
 		// 1st dimension = no of groups (level 0 used for grand total)
 		// 2nd dimension = no of fields
 
-		$nDtls = 3;
+		$nDtls = 4;
 		$nGrps = 2;
 		$this->Val = &ewr_InitArray($nDtls, 0);
 		$this->Cnt = &ewr_Init2DArray($nGrps, $nDtls, 0);
@@ -557,7 +558,7 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 		$this->GrandMx = &ewr_InitArray($nDtls, NULL);
 
 		// Set up array if accumulation required: array(Accum, SkipNullOrZero)
-		$this->Col = array(array(FALSE, FALSE), array(FALSE,FALSE), array(FALSE,FALSE));
+		$this->Col = array(array(FALSE, FALSE), array(FALSE,FALSE), array(FALSE,FALSE), array(FALSE,FALSE));
 
 		// Set up groups per page dynamically
 		$this->SetUpDisplayGrps();
@@ -830,8 +831,9 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 				$this->FirstRowData = array();
 				$this->FirstRowData['level1_nama'] = ewr_Conv($rs->fields('level1_nama'), 200);
 				$this->FirstRowData['nama_akun'] = ewr_Conv($rs->fields('nama_akun'), 200);
-				$this->FirstRowData['saldo_mutasi'] = ewr_Conv($rs->fields('saldo_mutasi'), 131);
 				$this->FirstRowData['akun_id'] = ewr_Conv($rs->fields('akun_id'), 3);
+				$this->FirstRowData['sm_debet'] = ewr_Conv($rs->fields('sm_debet'), 131);
+				$this->FirstRowData['sm_kredit'] = ewr_Conv($rs->fields('sm_kredit'), 131);
 			}
 		} else { // Get next row
 			$rs->MoveNext();
@@ -844,15 +846,18 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 					$this->level1_nama->setDbValue(ewr_GroupValue($this->level1_nama, $rs->fields('level1_nama')));
 			}
 			$this->nama_akun->setDbValue($rs->fields('nama_akun'));
-			$this->saldo_mutasi->setDbValue($rs->fields('saldo_mutasi'));
 			$this->akun_id->setDbValue($rs->fields('akun_id'));
+			$this->sm_debet->setDbValue($rs->fields('sm_debet'));
+			$this->sm_kredit->setDbValue($rs->fields('sm_kredit'));
 			$this->Val[1] = $this->nama_akun->CurrentValue;
-			$this->Val[2] = $this->saldo_mutasi->CurrentValue;
+			$this->Val[2] = $this->sm_debet->CurrentValue;
+			$this->Val[3] = $this->sm_kredit->CurrentValue;
 		} else {
 			$this->level1_nama->setDbValue("");
 			$this->nama_akun->setDbValue("");
-			$this->saldo_mutasi->setDbValue("");
 			$this->akun_id->setDbValue("");
+			$this->sm_debet->setDbValue("");
+			$this->sm_kredit->setDbValue("");
 		}
 	}
 
@@ -1061,8 +1066,11 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 				$this->nama_akun->HrefValue = "";
 			}
 
-			// saldo_mutasi
-			$this->saldo_mutasi->HrefValue = "";
+			// sm_debet
+			$this->sm_debet->HrefValue = "";
+
+			// sm_kredit
+			$this->sm_kredit->HrefValue = "";
 		} else {
 			if ($this->RowTotalType == EWR_ROWTOTAL_GROUP && $this->RowTotalSubType == EWR_ROWTOTAL_HEADER) {
 			$this->RowAttrs["data-group"] = $this->level1_nama->GroupValue(); // Set up group attribute
@@ -1081,11 +1089,17 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 			$this->nama_akun->ViewValue = $this->nama_akun->CurrentValue;
 			$this->nama_akun->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
 
-			// saldo_mutasi
-			$this->saldo_mutasi->ViewValue = $this->saldo_mutasi->CurrentValue;
-			$this->saldo_mutasi->ViewValue = ewr_FormatNumber($this->saldo_mutasi->ViewValue, 0, -2, -2, -2);
-			$this->saldo_mutasi->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
-			$this->saldo_mutasi->CellAttrs["style"] = "text-align:right;";
+			// sm_debet
+			$this->sm_debet->ViewValue = $this->sm_debet->CurrentValue;
+			$this->sm_debet->ViewValue = ewr_FormatNumber($this->sm_debet->ViewValue, 0, -2, -2, -2);
+			$this->sm_debet->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+			$this->sm_debet->CellAttrs["style"] = "text-align:right;";
+
+			// sm_kredit
+			$this->sm_kredit->ViewValue = $this->sm_kredit->CurrentValue;
+			$this->sm_kredit->ViewValue = ewr_FormatNumber($this->sm_kredit->ViewValue, 0, -2, -2, -2);
+			$this->sm_kredit->CellAttrs["class"] = ($this->RecCount % 2 <> 1) ? "ewTableAltRow" : "ewTableRow";
+			$this->sm_kredit->CellAttrs["style"] = "text-align:right;";
 
 			// level1_nama
 			$this->level1_nama->HrefValue = "";
@@ -1099,8 +1113,11 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 				$this->nama_akun->HrefValue = "";
 			}
 
-			// saldo_mutasi
-			$this->saldo_mutasi->HrefValue = "";
+			// sm_debet
+			$this->sm_debet->HrefValue = "";
+
+			// sm_kredit
+			$this->sm_kredit->HrefValue = "";
 		}
 
 		// Call Cell_Rendered event
@@ -1134,14 +1151,23 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 			$LinkAttrs = &$this->nama_akun->LinkAttrs;
 			$this->Cell_Rendered($this->nama_akun, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
 
-			// saldo_mutasi
-			$CurrentValue = $this->saldo_mutasi->CurrentValue;
-			$ViewValue = &$this->saldo_mutasi->ViewValue;
-			$ViewAttrs = &$this->saldo_mutasi->ViewAttrs;
-			$CellAttrs = &$this->saldo_mutasi->CellAttrs;
-			$HrefValue = &$this->saldo_mutasi->HrefValue;
-			$LinkAttrs = &$this->saldo_mutasi->LinkAttrs;
-			$this->Cell_Rendered($this->saldo_mutasi, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+			// sm_debet
+			$CurrentValue = $this->sm_debet->CurrentValue;
+			$ViewValue = &$this->sm_debet->ViewValue;
+			$ViewAttrs = &$this->sm_debet->ViewAttrs;
+			$CellAttrs = &$this->sm_debet->CellAttrs;
+			$HrefValue = &$this->sm_debet->HrefValue;
+			$LinkAttrs = &$this->sm_debet->LinkAttrs;
+			$this->Cell_Rendered($this->sm_debet, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
+
+			// sm_kredit
+			$CurrentValue = $this->sm_kredit->CurrentValue;
+			$ViewValue = &$this->sm_kredit->ViewValue;
+			$ViewAttrs = &$this->sm_kredit->ViewAttrs;
+			$CellAttrs = &$this->sm_kredit->CellAttrs;
+			$HrefValue = &$this->sm_kredit->HrefValue;
+			$LinkAttrs = &$this->sm_kredit->LinkAttrs;
+			$this->Cell_Rendered($this->sm_kredit, $CurrentValue, $ViewValue, $ViewAttrs, $CellAttrs, $HrefValue, $LinkAttrs);
 		}
 
 		// Call Row_Rendered event
@@ -1156,7 +1182,8 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 		$this->DtlColumnCount = 0;
 		if ($this->level1_nama->Visible) $this->GrpColumnCount += 1;
 		if ($this->nama_akun->Visible) $this->DtlColumnCount += 1;
-		if ($this->saldo_mutasi->Visible) $this->DtlColumnCount += 1;
+		if ($this->sm_debet->Visible) $this->DtlColumnCount += 1;
+		if ($this->sm_kredit->Visible) $this->DtlColumnCount += 1;
 	}
 
 	// Set up Breadcrumb
@@ -1209,7 +1236,8 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 			$this->setStartGroup(1);
 			$this->level1_nama->setSort("");
 			$this->nama_akun->setSort("");
-			$this->saldo_mutasi->setSort("");
+			$this->sm_debet->setSort("");
+			$this->sm_kredit->setSort("");
 
 		// Check for an Order parameter
 		} elseif ($orderBy <> "") {
@@ -1217,7 +1245,8 @@ class crr_summary_bukubesar_summary extends crr_summary_bukubesar {
 			$this->CurrentOrderType = $orderType;
 			$this->UpdateSort($this->level1_nama, $bCtrl); // level1_nama
 			$this->UpdateSort($this->nama_akun, $bCtrl); // nama_akun
-			$this->UpdateSort($this->saldo_mutasi, $bCtrl); // saldo_mutasi
+			$this->UpdateSort($this->sm_debet, $bCtrl); // sm_debet
+			$this->UpdateSort($this->sm_kredit, $bCtrl); // sm_kredit
 			$sSortSql = $this->SortSql();
 			$this->setOrderBy($sSortSql);
 			$this->setStartGroup(1);
@@ -1699,19 +1728,37 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 	</td>
 <?php } ?>
 <?php } ?>
-<?php if ($Page->saldo_mutasi->Visible) { ?>
+<?php if ($Page->sm_debet->Visible) { ?>
 <?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
-	<td data-field="saldo_mutasi"><div class="r_summary_bukubesar_saldo_mutasi" style="text-align: right;"><span class="ewTableHeaderCaption"><?php echo $Page->saldo_mutasi->FldCaption() ?></span></div></td>
+	<td data-field="sm_debet"><div class="r_summary_bukubesar_sm_debet" style="text-align: right;"><span class="ewTableHeaderCaption"><?php echo $Page->sm_debet->FldCaption() ?></span></div></td>
 <?php } else { ?>
-	<td data-field="saldo_mutasi">
-<?php if ($Page->SortUrl($Page->saldo_mutasi) == "") { ?>
-		<div class="ewTableHeaderBtn r_summary_bukubesar_saldo_mutasi" style="text-align: right;">
-			<span class="ewTableHeaderCaption"><?php echo $Page->saldo_mutasi->FldCaption() ?></span>
+	<td data-field="sm_debet">
+<?php if ($Page->SortUrl($Page->sm_debet) == "") { ?>
+		<div class="ewTableHeaderBtn r_summary_bukubesar_sm_debet" style="text-align: right;">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sm_debet->FldCaption() ?></span>
 		</div>
 <?php } else { ?>
-		<div class="ewTableHeaderBtn ewPointer r_summary_bukubesar_saldo_mutasi" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->saldo_mutasi) ?>',2);" style="text-align: right;">
-			<span class="ewTableHeaderCaption"><?php echo $Page->saldo_mutasi->FldCaption() ?></span>
-			<span class="ewTableHeaderSort"><?php if ($Page->saldo_mutasi->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->saldo_mutasi->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		<div class="ewTableHeaderBtn ewPointer r_summary_bukubesar_sm_debet" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->sm_debet) ?>',2);" style="text-align: right;">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sm_debet->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->sm_debet->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->sm_debet->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
+		</div>
+<?php } ?>
+	</td>
+<?php } ?>
+<?php } ?>
+<?php if ($Page->sm_kredit->Visible) { ?>
+<?php if ($Page->Export <> "" || $Page->DrillDown) { ?>
+	<td data-field="sm_kredit"><div class="r_summary_bukubesar_sm_kredit" style="text-align: right;"><span class="ewTableHeaderCaption"><?php echo $Page->sm_kredit->FldCaption() ?></span></div></td>
+<?php } else { ?>
+	<td data-field="sm_kredit">
+<?php if ($Page->SortUrl($Page->sm_kredit) == "") { ?>
+		<div class="ewTableHeaderBtn r_summary_bukubesar_sm_kredit" style="text-align: right;">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sm_kredit->FldCaption() ?></span>
+		</div>
+<?php } else { ?>
+		<div class="ewTableHeaderBtn ewPointer r_summary_bukubesar_sm_kredit" onclick="ewr_Sort(event,'<?php echo $Page->SortUrl($Page->sm_kredit) ?>',2);" style="text-align: right;">
+			<span class="ewTableHeaderCaption"><?php echo $Page->sm_kredit->FldCaption() ?></span>
+			<span class="ewTableHeaderSort"><?php if ($Page->sm_kredit->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($Page->sm_kredit->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span>
 		</div>
 <?php } ?>
 	</td>
@@ -1808,9 +1855,13 @@ while ($rsgrp && !$rsgrp->EOF && $Page->GrpCount <= $Page->DisplayGrps || $Page-
 <?php } ?>
 </span></td>
 <?php } ?>
-<?php if ($Page->saldo_mutasi->Visible) { ?>
-		<td data-field="saldo_mutasi"<?php echo $Page->saldo_mutasi->CellAttributes() ?>>
-<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_summary_bukubesar_saldo_mutasi"<?php echo $Page->saldo_mutasi->ViewAttributes() ?>><?php echo $Page->saldo_mutasi->ListViewValue() ?></span></td>
+<?php if ($Page->sm_debet->Visible) { ?>
+		<td data-field="sm_debet"<?php echo $Page->sm_debet->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_summary_bukubesar_sm_debet"<?php echo $Page->sm_debet->ViewAttributes() ?>><?php echo $Page->sm_debet->ListViewValue() ?></span></td>
+<?php } ?>
+<?php if ($Page->sm_kredit->Visible) { ?>
+		<td data-field="sm_kredit"<?php echo $Page->sm_kredit->CellAttributes() ?>>
+<span data-class="tpx<?php echo $Page->GrpCount ?>_<?php echo $Page->RecCount ?>_r_summary_bukubesar_sm_kredit"<?php echo $Page->sm_kredit->ViewAttributes() ?>><?php echo $Page->sm_kredit->ListViewValue() ?></span></td>
 <?php } ?>
 	</tr>
 <?php
