@@ -324,7 +324,7 @@ $q = "select * from v_kasbank_memorial where akun_id = '".$_GET["akun_id"]."'";
 $rs = Conn()->Execute($q);
 ?>
 
-<table class="table ewTableSeparate">
+<table border="1" class="table ewTableSeparate">
 	<tr>
 		<th rowspan="2">Tanggal</th>
 		<th rowspan="2">Keterangan</th>
