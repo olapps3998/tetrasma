@@ -312,21 +312,6 @@ Page_Rendering();
 </div>
 <?php } ?>
 <?php
-$conn =& DbHelper();
-
-/*if ($_SERVER["HTTP_HOST"] == "tetrasma.nma-indonesia.com") {
-	include "adodb5/adodb.inc.php";
-	$conn = ADONewConnection('mysql');
-	$conn->Connect('mysql.idhostinger.com','u945388674_tetra','M457r1P 81','u945388674_tetra');
-}
-else {
-	//include_once "phpfn13.php";
-	$conn =& DbHelper();
-}*/
-
-$q = "select sa_debet, sa_kredit from t_level4 where level4_id = '".$_GET["akun_id"]."'";
-$rs = $conn->Execute($q); echo $rs->fields["sa_debet"]." - ".$rs->fields["sa_kredit"];
-
 $q = "select sa_debet, sa_kredit from t_level4 where level4_id = '".$_GET["akun_id"]."'";
 $rs = Conn()->Execute($q); echo $rs->fields["sa_debet"]." - ".$rs->fields["sa_kredit"];
 
@@ -336,7 +321,7 @@ $s_debet  = $sa_debet;
 $s_kredit = $sa_kredit;
 
 $q = "select * from v_kasbank_memorial where akun_id = '".$_GET["akun_id"]."'";
-$rs = $conn->Execute($q);
+$rs = Conn()->Execute($q);
 ?>
 <table class="table ewTableSeparate">
 	<tr>
