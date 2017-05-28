@@ -313,7 +313,7 @@ Page_Rendering();
 <?php } ?>
 <?php
 $q = "select sa_debet, sa_kredit from t_level4 where level4_id = '".$_GET["akun_id"]."'";
-$rs = Conn()->Execute($q); echo $rs->fields["sa_debet"]." - ".$rs->fields["sa_kredit"];
+$rs = Conn()->Execute($q);
 
 $sa_debet  = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_debet"]  != null ? $rs->fields["sa_debet"]  : 0);
 $sa_kredit = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_kredit"] != null ? $rs->fields["sa_kredit"] : 0);
@@ -323,6 +323,7 @@ $s_kredit = $sa_kredit;
 $q = "select * from v_kasbank_memorial where akun_id = '".$_GET["akun_id"]."'";
 $rs = Conn()->Execute($q);
 ?>
+
 <table class="table ewTableSeparate">
 	<tr>
 		<th rowspan="2">Tanggal</th>
