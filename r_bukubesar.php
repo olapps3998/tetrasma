@@ -312,9 +312,9 @@ Page_Rendering();
 </div>
 <?php } ?>
 <?php
-//$conn =& DbHelper();
+$conn =& DbHelper();
 
-if ($_SERVER["HTTP_HOST"] == "tetrasma.nma-indonesia.com") {
+/*if ($_SERVER["HTTP_HOST"] == "tetrasma.nma-indonesia.com") {
 	include "adodb5/adodb.inc.php";
 	$conn = ADONewConnection('mysql');
 	$conn->Connect('mysql.idhostinger.com','u945388674_tetra','M457r1P 81','u945388674_tetra');
@@ -322,7 +322,7 @@ if ($_SERVER["HTTP_HOST"] == "tetrasma.nma-indonesia.com") {
 else {
 	//include_once "phpfn13.php";
 	$conn =& DbHelper();
-}
+}*/
 
 $q = "select sa_debet, sa_kredit from t_level4 where level4_id = '".$_GET["akun_id"]."'";
 $rs = $conn->Execute($q);
