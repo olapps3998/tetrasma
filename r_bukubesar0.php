@@ -313,7 +313,7 @@ Page_Rendering();
 <?php } ?>
 <form id="myform" name="myform" class="form-horizontal" method="post" action="r_bukubesar1.php">
 	<div id="r_start" class="form-group">
-		<label for="start" class="col-sm-2 control-label ewLabel">Date Start</label>
+		<label for="start" class="col-sm-2 control-label ewLabel">Mulai</label>
 		<div class="col-sm-10">
 		  <span id="el_calendar_start">
 		  <input type="text" name="start" data-field="start" data-format="5" size="20" class="form-control" id="start">
@@ -324,7 +324,7 @@ Page_Rendering();
 		</div>
 	</div>
 	<div id="r_end" class="form-group">
-		<label for="end" class="col-sm-2 control-label ewLabel">Date End</label>
+		<label for="end" class="col-sm-2 control-label ewLabel">Sampai</label>
 		<div class="col-sm-10">
 		  <span id="el_calendar_end">
 		  <input type="text" name="end" data-field="end" data-format="5" size="20" class="form-control" id="end">

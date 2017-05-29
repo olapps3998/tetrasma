@@ -14,9 +14,9 @@ ob_start(); // Turn on output buffering
 // Page class
 //
 
-$r_bukubesar_php = NULL; // Initialize page object first
+$r_labarugi0_php = NULL; // Initialize page object first
 
-class cr_bukubesar_php {
+class cr_labarugi0_php {
 
 	// Page ID
 	var $PageID = 'custom';
@@ -25,10 +25,10 @@ class cr_bukubesar_php {
 	var $ProjectID = "{D8E5AA29-C8A1-46A6-8DFF-08A223163C5D}";
 
 	// Table name
-	var $TableName = 'r_bukubesar.php';
+	var $TableName = 'r_labarugi0.php';
 
 	// Page object name
-	var $PageObjName = 'r_bukubesar_php';
+	var $PageObjName = 'r_labarugi0_php';
 
 	// Page name
 	function PageName() {
@@ -195,7 +195,7 @@ class cr_bukubesar_php {
 
 		// Table name (for backward compatibility)
 		if (!defined("EW_TABLE_NAME"))
-			define("EW_TABLE_NAME", 'r_bukubesar.php', TRUE);
+			define("EW_TABLE_NAME", 'r_labarugi0.php', TRUE);
 
 		// Start timer
 		if (!isset($GLOBALS["gTimer"])) $GLOBALS["gTimer"] = new cTimer();
@@ -284,7 +284,7 @@ class cr_bukubesar_php {
 		global $Breadcrumb;
 		$Breadcrumb = new cBreadcrumb();
 		$url = substr(ew_CurrentUrl(), strrpos(ew_CurrentUrl(), "/")+1);
-		$Breadcrumb->Add("custom", "r_bukubesar_php", $url, "", "r_bukubesar_php", TRUE);
+		$Breadcrumb->Add("custom", "r_labarugi0_php", $url, "", "r_labarugi0_php", TRUE);
 	}
 }
 ?>
@@ -292,13 +292,13 @@ class cr_bukubesar_php {
 <?php
 
 // Create page object
-if (!isset($r_bukubesar_php)) $r_bukubesar_php = new cr_bukubesar_php();
+if (!isset($r_labarugi0_php)) $r_labarugi0_php = new cr_labarugi0_php();
 
 // Page init
-$r_bukubesar_php->Page_Init();
+$r_labarugi0_php->Page_Init();
 
 // Page main
-$r_bukubesar_php->Page_Main();
+$r_labarugi0_php->Page_Main();
 
 // Global Page Rendering event (in userfn*.php)
 Page_Rendering();
@@ -311,72 +311,56 @@ Page_Rendering();
 <div class="clearfix"></div>
 </div>
 <?php } ?>
-<?php
-$q = "select sa_debet, sa_kredit, level4_nama from t_level4 where level4_id = '".$_GET["akun_id"]."'";
-$rs = Conn()->Execute($q);
-$sa_debet    = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_debet"]  != null ? $rs->fields["sa_debet"]  : 0);
-$sa_kredit   = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_kredit"] != null ? $rs->fields["sa_kredit"] : 0);
-$level4_nama = ($rs && $rs->RecordCount() > 0 && $rs->fields["level4_nama"] != null ? $rs->fields["level4_nama"] : "-");
-//$s_debet  = $sa_debet;
-//$s_kredit = $sa_kredit;
-$saldo = $sa_debet - $sa_kredit;
-
-$q = "select * from v_kasbank_memorial where akun_id = '".$_GET["akun_id"]."'";
-$rs = Conn()->Execute($q);
-?>
-<p><?php echo "<b>Akun : ".$level4_nama."</b>";?></p>
-<table border="1" class="table ewTableSeparate">
-	<tr>
-		<th rowspan="2">Tanggal</th>
-		<th rowspan="2">Keterangan</th>
-		<th align="center" colspan="2">Mutasi</th>
-		<th align="center" colspan="2">Saldo</th>
-	</tr>
-	<tr>
-		<th align="right">Debet</th>
-		<th align="right">Kredit</th>
-		<th align="right">Debet</th>
-		<th align="right">Kredit</th>
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
-		<td>Saldo Awal</td>
-		<td align="right"><?php echo number_format($sa_debet);?></td>
-		<td align="right"><?php echo number_format($sa_kredit);?></td>
-		<?php if ($saldo >= 0) { ?>
-			<td align="right"><?php echo number_format($saldo);?></td>
-			<td align="right"><?php echo number_format(0);?></td>
-		<?php }
-		else { ?>
-			<td align="right"><?php echo number_format(0);?></td>
-			<td align="right"><?php echo number_format(abs($saldo));?></td>
-		<?php } ?>
-	</tr>
-<?php
-while (!$rs->EOF) {
-	?>
-	<tr>
-		<td><?php echo $rs->fields["tgl"];?></td>
-		<td><?php echo $rs->fields["ket"];?></td>
-		<td align="right"><?php echo number_format($rs->fields["debet"]);?></td>
-		<td align="right"><?php echo number_format($rs->fields["kredit"]);?></td>
-		<?php $saldo += $rs->fields["debet"] - $rs->fields["kredit"];?>
-		<?php if ($saldo >= 0) { ?>
-			<td align="right"><?php echo number_format($saldo);?></td>
-			<td align="right"><?php echo number_format(0);?></td>
-		<?php }
-		else { ?>
-			<td align="right"><?php echo number_format(0);?></td>
-			<td align="right"><?php echo number_format(abs($saldo));?></td>
-		<?php } ?>
-	</tr>
-	<?php
-	$rs->MoveNext();
-}
-?>
-</table>
+<form id="myform" name="myform" class="form-horizontal" method="post" action="r_labarugi1.php">
+	<div id="r_start" class="form-group">
+		<label for="start" class="col-sm-2 control-label ewLabel">Bulan</label>
+		<div class="col-sm-10">
+		  <span id="el_calendar_start">
+		  <select name="bulan" class="form-control">
+		  	<option value="0">Semua Bulan</option>
+		  	<option value="1" <?php echo (date("n") == 1 ? "selected" : "");?>>Januari</option>
+		  	<option value="2" <?php echo (date("n") == 2 ? "selected" : "");?>>Februari</option>
+		  	<option value="3" <?php echo (date("n") == 3 ? "selected" : "");?>>Maret</option>
+		  	<option value="4" <?php echo (date("n") == 4 ? "selected" : "");?>>April</option>
+		  	<option value="5" <?php echo (date("n") == 5 ? "selected" : "");?>>Mei</option>
+		  	<option value="6" <?php echo (date("n") == 6 ? "selected" : "");?>>Juni</option>
+		  	<option value="7" <?php echo (date("n") == 7 ? "selected" : "");?>>Juli</option>
+		  	<option value="8" <?php echo (date("n") == 8 ? "selected" : "");?>>Agustus</option>
+		  	<option value="9" <?php echo (date("n") == 9 ? "selected" : "");?>>September</option>
+		  	<option value="10" <?php echo (date("n") == 10 ? "selected" : "");?>>Oktober</option>
+		  	<option value="11" <?php echo (date("n") == 11 ? "selected" : "");?>>November</option>
+		  	<option value="12" <?php echo (date("n") == 12 ? "selected" : "");?>>Desember</option>
+		  </select>
+		  <!--<input type="text" name="bulan" data-field="start" data-format="5" size="20" class="form-control" id="start">-->
+		  <!--<script type="text/javascript">
+			ew_CreateCalendar("myform", "start", 5);
+		  </script>-->
+		  </span>
+		</div>
+	</div>
+	<div id="r_end" class="form-group">
+		<label for="end" class="col-sm-2 control-label ewLabel">Tahun</label>
+		<div class="col-sm-10">
+		  <span id="el_calendar_end">
+		  <select name="tahun" class="form-control">
+		  	<option value="2017" <?php echo (date("Y") == 2017 ? "selected" : "");?>>2017</option>
+		  	<option value="2018" <?php echo (date("Y") == 2018 ? "selected" : "");?>>2018</option>
+		  	<option value="2019" <?php echo (date("Y") == 2019 ? "selected" : "");?>>2019</option>
+		  	<option value="2020" <?php echo (date("Y") == 2020 ? "selected" : "");?>>2020</option>
+		  	<option value="2021" <?php echo (date("Y") == 2021 ? "selected" : "");?>>2021</option>
+		  	<option value="2022" <?php echo (date("Y") == 2022 ? "selected" : "");?>>2022</option>
+		  </select>
+		  <!--<input type="text" name="end" data-field="end" data-format="5" size="20" class="form-control" id="end">-->
+		  <!--<script type="text/javascript">
+			ew_CreateCalendar("myform", "end", 5);
+		  </script>-->
+		  </span>
+		</div>
+	</div>
+	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit">Submit</button>
+</form>
 <?php if (EW_DEBUG_ENABLED) echo ew_DebugMsg(); ?>
 <?php include_once "footer.php" ?>
 <?php
-$r_bukubesar_php->Page_Terminate();
+$r_labarugi0_php->Page_Terminate();
 ?>

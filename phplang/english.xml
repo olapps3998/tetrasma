@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2017/5/29" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2017/5/30" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -583,14 +583,17 @@
   <project>
     <phrase id="bodytitle" value="Tetrasma" />
     <phrase id="footertext" value="&amp;copy;2017 TETRASMA. All rights reserved." />
+    <menu id="10145">
+      <phrase id="menutext" value="r_labarugi1" />
+    </menu>
     <menu id="10143">
       <phrase id="menutext" value="Buku Besar" />
     </menu>
-    <menu id="10137">
-      <phrase id="menutext" value="v kasbank detail" />
-    </menu>
     <menu id="22">
       <phrase id="menutext" value="Home" />
+    </menu>
+    <menu id="10137">
+      <phrase id="menutext" value="v kasbank detail" />
     </menu>
     <menu id="10065">
       <phrase id="menutext" value="Setup" />
@@ -616,9 +619,6 @@
     <menu id="16">
       <phrase id="menutext" value="User" />
     </menu>
-    <menu id="10138">
-      <phrase id="menutext" value="v kasbank jurnal" />
-    </menu>
     <menu id="10106">
       <phrase id="menutext" value="Input" />
     </menu>
@@ -637,11 +637,17 @@
     <menu id="10142">
       <phrase id="menutext" value="Buku Besar" />
     </menu>
+    <menu id="10144">
+      <phrase id="menutext" value="Laba Rugi" />
+    </menu>
     <menu id="10022">
       <phrase id="menutext" value="r bukubesar 2" />
     </menu>
     <menu id="10029">
       <phrase id="menutext" value="Buku Besar" />
+    </menu>
+    <menu id="10138">
+      <phrase id="menutext" value="v kasbank jurnal" />
     </menu>
     <menu id="10139">
       <phrase id="menutext" value="v kasbank memorial" />
@@ -1343,6 +1349,12 @@
     </table>
     <table id="r_bukubesar2_php">
       <phrase id="tblcaption" value="Buku Besar" />
+    </table>
+    <table id="r_labarugi0_php">
+      <phrase id="tblcaption" value="Periode Laba Rugi" />
+    </table>
+    <table id="r_labarugi1_php">
+      <phrase id="tblcaption" value="r_labarugi1" />
     </table>
   </project>
 </ew-language>

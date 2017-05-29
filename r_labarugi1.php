@@ -3,6 +3,7 @@ if (session_id() == "") session_start(); // Init session data
 ob_start(); // Turn on output buffering
 ?>
 <?php include_once "ewcfg13.php" ?>
+<?php $EW_ROOT_RELATIVE_PATH = ""; ?>
 <?php include_once ((EW_USE_ADODB) ? "adodb5/adodb.inc.php" : "ewmysql13.php") ?>
 <?php include_once "phpfn13.php" ?>
 <?php include_once "t_userinfo.php" ?>
@@ -13,18 +14,21 @@ ob_start(); // Turn on output buffering
 // Page class
 //
 
-$default = NULL; // Initialize page object first
+$r_labarugi1_php = NULL; // Initialize page object first
 
-class cdefault {
+class cr_labarugi1_php {
 
 	// Page ID
-	var $PageID = 'default';
+	var $PageID = 'custom';
 
 	// Project ID
 	var $ProjectID = "{D8E5AA29-C8A1-46A6-8DFF-08A223163C5D}";
 
+	// Table name
+	var $TableName = 'r_labarugi1.php';
+
 	// Page object name
-	var $PageObjName = 'default';
+	var $PageObjName = 'r_labarugi1_php';
 
 	// Page name
 	function PageName() {
@@ -187,7 +191,11 @@ class cdefault {
 
 		// Page ID
 		if (!defined("EW_PAGE_ID"))
-			define("EW_PAGE_ID", 'default', TRUE);
+			define("EW_PAGE_ID", 'custom', TRUE);
+
+		// Table name (for backward compatibility)
+		if (!defined("EW_TABLE_NAME"))
+			define("EW_TABLE_NAME", 'r_labarugi1.php', TRUE);
 
 		// Start timer
 		if (!isset($GLOBALS["gTimer"])) $GLOBALS["gTimer"] = new cTimer();
@@ -210,12 +218,23 @@ class cdefault {
 
 		// Security
 		$Security = new cAdvancedSecurity();
+		if (!$Security->IsLoggedIn()) $Security->AutoLogin();
+		if ($Security->IsLoggedIn()) $Security->TablePermission_Loading();
+		$Security->LoadCurrentUserLevel($this->ProjectID . $this->TableName);
+		if ($Security->IsLoggedIn()) $Security->TablePermission_Loaded();
+		if (!$Security->CanReport()) {
+			$Security->SaveLastUrl();
+			$this->setFailureMessage(ew_DeniedMsg()); // Set no permission
+			$this->Page_Terminate(ew_GetUrl("index.php"));
+		}
+		if ($Security->IsLoggedIn()) {
+			$Security->UserID_Loading();
+			$Security->LoadUserID();
+			$Security->UserID_Loaded();
+		}
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
-
-		// Page Load event
-		$this->Page_Load();
 
 		// Check token
 		if (!$this->ValidPost()) {
@@ -234,16 +253,12 @@ class cdefault {
 	function Page_Terminate($url = "") {
 		global $gsExportFile, $gTmpImages;
 
-		// Page Unload event
-		$this->Page_Unload();
-
 		// Global Page Unloaded event (in userfn*.php)
 		Page_Unloaded();
 
 		// Export
-		$this->Page_Redirecting($url);
-
 		 // Close connection
+
 		ew_CloseConn();
 
 		// Go to URL if specified
@@ -259,81 +274,17 @@ class cdefault {
 	// Page main
 	//
 	function Page_Main() {
-		global $Security, $Language;
 
-		// If session expired, show session expired message
-		if (@$_GET["expired"] == "1")
-			$this->setFailureMessage($Language->Phrase("SessionExpired"));
-		if (!$Security->IsLoggedIn()) $Security->AutoLogin();
-		$Security->LoadUserLevel(); // Load User Level
-		if ($Security->AllowList(CurrentProjectID() . 'home.php'))
-		$this->Page_Terminate("home.php"); // Exit and go to default page
-		if ($Security->AllowList(CurrentProjectID() . 't_anggota'))
-			$this->Page_Terminate("t_anggotalist.php");
-		if ($Security->AllowList(CurrentProjectID() . 'audittrail'))
-			$this->Page_Terminate("audittraillist.php");
-		if ($Security->AllowList(CurrentProjectID() . 't_level1'))
-			$this->Page_Terminate("t_level1list.php");
-		if ($Security->AllowList(CurrentProjectID() . 't_level2'))
-			$this->Page_Terminate("t_level2list.php");
-		if ($Security->AllowList(CurrentProjectID() . 't_level3'))
-			$this->Page_Terminate("t_level3list.php");
-		if ($Security->AllowList(CurrentProjectID() . 't_level4'))
-			$this->Page_Terminate("t_level4list.php");
-		if ($Security->AllowList(CurrentProjectID() . 't_user'))
-			$this->Page_Terminate("t_userlist.php");
-		if ($Security->AllowList(CurrentProjectID() . 'view_akun.php'))
-			$this->Page_Terminate("view_akun.php");
-		if ($Security->AllowList(CurrentProjectID() . 't_detail'))
-			$this->Page_Terminate("t_detaillist.php");
-		if ($Security->AllowList(CurrentProjectID() . 't_jurnal'))
-			$this->Page_Terminate("t_jurnallist.php");
-		if ($Security->AllowList(CurrentProjectID() . 't_detailm'))
-			$this->Page_Terminate("t_detailmlist.php");
-		if ($Security->AllowList(CurrentProjectID() . 't_jurnalm'))
-			$this->Page_Terminate("t_jurnalmlist.php");
-		if ($Security->AllowList(CurrentProjectID() . 'r_bukubesar0.php'))
-			$this->Page_Terminate("r_bukubesar0.php");
-		if ($Security->AllowList(CurrentProjectID() . 'r_bukubesar2.php'))
-			$this->Page_Terminate("r_bukubesar2.php");
-		if ($Security->AllowList(CurrentProjectID() . 'r_labarugi0.php'))
-			$this->Page_Terminate("r_labarugi0.php");
-		if ($Security->AllowList(CurrentProjectID() . 'r_labarugi1.php'))
-			$this->Page_Terminate("r_labarugi1.php");
-		if ($Security->IsLoggedIn()) {
-			$this->setFailureMessage(ew_DeniedMsg() . "<br><br><a href=\"logout.php\">" . $Language->Phrase("BackToLogin") . "</a>");
-		} else {
-			$this->Page_Terminate("login.php"); // Exit and go to login page
-		}
+		// Set up Breadcrumb
+		$this->SetupBreadcrumb();
 	}
 
-	// Page Load event
-	function Page_Load() {
-
-		//echo "Page Load";
-	}
-
-	// Page Unload event
-	function Page_Unload() {
-
-		//echo "Page Unload";
-	}
-
-	// Page Redirecting event
-	function Page_Redirecting(&$url) {
-
-		// Example:
-		//$url = "your URL";
-
-	}
-
-	// Message Showing event
-	// $type = ''|'success'|'failure'
-	function Message_Showing(&$msg, $type) {
-
-		// Example:
-		//if ($type == 'success') $msg = "your success message";
-
+	// Set up Breadcrumb
+	function SetupBreadcrumb() {
+		global $Breadcrumb;
+		$Breadcrumb = new cBreadcrumb();
+		$url = substr(ew_CurrentUrl(), strrpos(ew_CurrentUrl(), "/")+1);
+		$Breadcrumb->Add("custom", "r_labarugi1_php", $url, "", "r_labarugi1_php", TRUE);
 	}
 }
 ?>
@@ -341,19 +292,30 @@ class cdefault {
 <?php
 
 // Create page object
-if (!isset($default)) $default = new cdefault();
+if (!isset($r_labarugi1_php)) $r_labarugi1_php = new cr_labarugi1_php();
 
 // Page init
-$default->Page_Init();
+$r_labarugi1_php->Page_Init();
 
 // Page main
-$default->Page_Main();
+$r_labarugi1_php->Page_Main();
+
+// Global Page Rendering event (in userfn*.php)
+Page_Rendering();
 ?>
 <?php include_once "header.php" ?>
+<?php if (!@$gbSkipHeaderFooter) { ?>
+<div class="ewToolbar">
+<?php $Breadcrumb->Render(); ?>
+<?php echo $Language->SelectionForm(); ?>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <?php
-$default->ShowMessage();
+
 ?>
+<?php if (EW_DEBUG_ENABLED) echo ew_DebugMsg(); ?>
 <?php include_once "footer.php" ?>
 <?php
-$default->Page_Terminate();
+$r_labarugi1_php->Page_Terminate();
 ?>

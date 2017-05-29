@@ -55,13 +55,6 @@ ewr_GetCss("<?php echo ewr_CssFile(EWR_PROJECT_STYLESHEET_FILENAME) ?>");
 </style>
 <?php } ?>
 <?php if (@$gsExport == "") { ?>
-<script type="text/javascript">
-if (!window.Calendar) {
-	ewr_GetCss("jscalendar/calendar.css");
-	ewr_GetScript("jscalendar/calendar.min.js");
-	ewr_GetScript("jscalendar/calendar-setup.js");
-}
-</script>
 <?php } ?>
 <?php if (@$gsExport == "" || @$gsExport == "print" || @$gsExport == "email" && @$gsEmailContentType == "url") { ?>
 <script type="text/javascript">if (!window.jQuery) ewr_GetScript("jquery/jquery-1.12.4.min.js");</script>
@@ -88,7 +81,6 @@ var EWR_CHART_EXPORT_HANDLER = "<?php echo ewr_ConvertFullUrl("fcexporter10.php"
 <script type="text/javascript">if (!window.moment) ewr_GetScript("phprptjs/moment.min.js");</script>
 <script type="text/javascript">if (!window.Clipboard) ewr_GetScript("phprptjs/clipboard.min.js");</script>
 <script type="text/javascript">ewr_GetScript("phprptjs/ewr10.js");</script>
-<script type="text/javascript">if (window.jQuery && !window.jQuery.views) ewr_GetScript("phprptjs/jsrender.min.js");</script>
 <script type="text/javascript">
 if (window._jQuery) ewr_Extend(jQuery);
 if (window.jQuery && !jQuery.fn.alert) ewr_GetScript("bootstrap3/js/bootstrap.min.js");
