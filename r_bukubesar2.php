@@ -372,7 +372,7 @@ $rs = Conn()->Execute($q);
 while (!$rs->EOF) {
 	?>
 	<tr>
-		<td><?php echo $rs->fields["tgl"];?></td>
+		<td><?php echo tgl_indo($rs->fields["tgl"]);?></td>
 		<td><?php echo $rs->fields["ket"];?></td>
 		<td align="right"><?php echo number_format($rs->fields["debet"]);?></td>
 		<td align="right"><?php echo number_format($rs->fields["kredit"]);?></td>
