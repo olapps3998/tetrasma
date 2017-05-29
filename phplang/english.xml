@@ -584,7 +584,7 @@
     <phrase id="bodytitle" value="Tetrasma" />
     <phrase id="footertext" value="&amp;copy;2017 TETRASMA. All rights reserved." />
     <menu id="10145">
-      <phrase id="menutext" value="r_labarugi1" />
+      <phrase id="menutext" value="Laba / Rugi" />
     </menu>
     <menu id="10143">
       <phrase id="menutext" value="Buku Besar" />
@@ -638,7 +638,7 @@
       <phrase id="menutext" value="Buku Besar" />
     </menu>
     <menu id="10144">
-      <phrase id="menutext" value="Laba Rugi" />
+      <phrase id="menutext" value="Laba / Rugi" />
     </menu>
     <menu id="10022">
       <phrase id="menutext" value="r bukubesar 2" />
@@ -1351,10 +1351,10 @@
       <phrase id="tblcaption" value="Buku Besar" />
     </table>
     <table id="r_labarugi0_php">
-      <phrase id="tblcaption" value="Periode Laba Rugi" />
+      <phrase id="tblcaption" value="Periode Laba / Rugi" />
     </table>
-    <table id="r_labarugi1_php">
-      <phrase id="tblcaption" value="r_labarugi1" />
+    <table id="r_labarugi2_php">
+      <phrase id="tblcaption" value="Laba / Rugi" />
     </table>
   </project>
 </ew-language>
