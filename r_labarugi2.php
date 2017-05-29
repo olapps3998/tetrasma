@@ -331,7 +331,12 @@ select
 	, b.*
 from
 	v_summary_lr_4 a
-	left join (select * from v_saldo_mutasi_tgl where month(tgl) = ".$_GET["bulan"]." and year(tgl) = ".$_GET["tahun"].") b on a.level4_id = b.akun_id
+	left join (select * from v_saldo_mutasi_tgl where ";
+if ($_GET["bulan"] != 0) {
+$q .= "
+	month(tgl) = ".$_GET["bulan"]." and ";
+}
+$q .= "year(tgl) = ".$_GET["tahun"].") b on a.level4_id = b.akun_id
 ";
 $rs = Conn()->Execute($q);
 ?>
@@ -372,7 +377,12 @@ select
 	, b.*
 from
 	v_summary_lr_6 a
-	left join (select * from v_saldo_mutasi_tgl where month(tgl) = ".$_GET["bulan"]." and year(tgl) = ".$_GET["tahun"].") b on a.level4_id = b.akun_id
+	left join (select * from v_saldo_mutasi_tgl where ";
+if ($_GET["bulan"] != 0) {
+$q .= "
+	month(tgl) = ".$_GET["bulan"]." and ";
+}
+$q .= "year(tgl) = ".$_GET["tahun"].") b on a.level4_id = b.akun_id
 ";
 $rs = Conn()->Execute($q);
 if (!$rs->EOF) {

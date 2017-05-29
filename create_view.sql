@@ -190,3 +190,36 @@ From v_summary_bukubesar_3
 union
 Select *
 From v_summary_bukubesar_4;
+
+create view v_saldo_mutasi_tgl as
+SELECT v_kasbank_memorial.akun_id AS akun_id,
+  v_kasbank_memorial.tgl AS tgl,
+  (CASE
+    WHEN ((Sum(v_kasbank_memorial.debet) - Sum(v_kasbank_memorial.kredit)) >=
+    0) THEN (Sum(v_kasbank_memorial.debet) - Sum(v_kasbank_memorial.kredit))
+    ELSE 0 END) AS sm_debet,
+  (CASE
+    WHEN ((Sum(v_kasbank_memorial.debet) - Sum(v_kasbank_memorial.kredit)) <
+    0) THEN abs((Sum(v_kasbank_memorial.debet) -
+    Sum(v_kasbank_memorial.kredit))) ELSE 0 END) AS sm_kredit
+FROM v_kasbank_memorial
+GROUP BY v_kasbank_memorial.akun_id,
+  v_kasbank_memorial.tgl;
+  
+create view v_summary_lr_4 as
+SELECT a.level1_nama AS level1_nama,
+  b.nama_akun AS nama_akun,
+  b.level4_id AS level4_id
+FROM t_level1 a
+  LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
+WHERE a.level1_no = 4
+ORDER BY b.no_akun;
+
+create view v_summary_lr_6 as
+SELECT a.level1_nama AS level1_nama,
+  b.nama_akun AS nama_akun,
+  b.level4_id AS level4_id
+FROM t_level1 a
+  LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
+WHERE a.level1_no = 6
+ORDER BY b.no_akun;

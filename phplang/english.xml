@@ -583,6 +583,15 @@
   <project>
     <phrase id="bodytitle" value="Tetrasma" />
     <phrase id="footertext" value="&amp;copy;2017 TETRASMA. All rights reserved." />
+    <menu id="10146">
+      <phrase id="menutext" value="v saldo mutasi tgl" />
+    </menu>
+    <menu id="10147">
+      <phrase id="menutext" value="v summary lr 4" />
+    </menu>
+    <menu id="10148">
+      <phrase id="menutext" value="v summary lr 6" />
+    </menu>
     <menu id="10145">
       <phrase id="menutext" value="Laba / Rugi" />
     </menu>
@@ -1355,6 +1364,45 @@
     </table>
     <table id="r_labarugi2_php">
       <phrase id="tblcaption" value="Laba / Rugi" />
+    </table>
+    <table id="v_saldo_mutasi_tgl">
+      <phrase id="tblcaption" value="v saldo mutasi tgl" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="tgl">
+        <phrase id="fldcaption" value="tgl" />
+      </field>
+      <field id="sm_debet">
+        <phrase id="fldcaption" value="sm debet" />
+      </field>
+      <field id="sm_kredit">
+        <phrase id="fldcaption" value="sm kredit" />
+      </field>
+    </table>
+    <table id="v_summary_lr_4">
+      <phrase id="tblcaption" value="v summary lr 4" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="level4_id">
+        <phrase id="fldcaption" value="level 4 id" />
+      </field>
+    </table>
+    <table id="v_summary_lr_6">
+      <phrase id="tblcaption" value="v summary lr 6" />
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="level4_id">
+        <phrase id="fldcaption" value="level 4 id" />
+      </field>
     </table>
   </project>
 </ew-language>
