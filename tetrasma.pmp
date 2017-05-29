@@ -210,7 +210,8 @@
       <Field FldName="akun_id" FldAlias="0" FldSourceName="" FldSourceTable="" FldSourceField="" FldType="3" FldTypeName="INT" NativeDataType="3" FldSQL="" FldIsCustom="0" FldSupport="1" FldSort="1" FldSize="11" FldUniqueIdx="0" FldZeroLen="0" FldReq="0" FldIsPrimaryKey="0" FldAutoIncrement="0" FldAttribute="100" FldMin="" FldMax="" FldErrMsg="" FldValidate="INTEGER" FldServerValidateArgs="" FldClientValidateArgs="" FldRequired="0" FldPopCalendar="0" FldGenerate="1" FldList="1" FldExport="1" FldView="1" FldEdit="1" FldAdd="1" FldAddOpt="1" FldSearch="1" FldBasicSearch="0" FldExtendedBasicSearch="0" FldRegister="0" FldSrchOpr="=" FldSrchOpr2="" FldDefault="0" FldSearchDefault="" FldSearchDefault2="" FldDbDefault="0" FldCaption="akun id" FldViewTag="FORMATTED TEXT" FldViewThumbnail="0" FldHtmlTag="TEXT" FldTagSize="30" FldTagMaxLength="0" FldTagValues="" FldHtmlTagReadOnly="0" FldTagHiddenValue="" FldSelectType="Values" FldTagLnkTbl="" FldTagLnkFld="" FldTagLnkDisplay="" FldTagLnkDisp2="" FldTagLnkDisp3="" FldTagLnkDisp4="" FldTagLnkOrderBy="" FldTagLnkOrderType="" FldTagLnkDistinct="0" FldTagCols="0" FldTagRows="0" FldTagImgWidth="0" FldTagImgHeight="0" FldTagAType="" FldTagATarget="" FldTagAPrefix="None" FldTagASuffix="" FldBold="0" FldItalic="0" FldAlign="" FldFmtType="None" FldDtFormat="0" FldNumDigits="0" FldIncLeadDigit="-2" FldUseParen="-2" FldGpDigits="-2" FileNameFld="" FileTypeFld="" FileSizeFld="" ImageWidthFld="" ImageHeightFld="" FldHrefFld="" FldHrefFldOrig="0" FldStrFunc="" FldUseDHTMLEditor="0" FldMemoMaxLength="0" FldSelectSize="0" FldSelectMultiple="0" FldSelectFilter="" FldAutoFillSourceFields="" FldAutoFillTargetFields="" FldParentSelect="" FldParentSelect2="" FldParentSelect3="" FldParentSelect4="" FldSelectFilterFld="" FldSelectFilterFld2="" FldSelectFilterFld3="" FldSelectFilterFld4="" FldParentSelectTbl="" FldParentSelectTbl2="" FldParentSelectTbl3="" FldParentSelectTbl4="" FldSelectAllowAdd="0" FldQuoteS="" FldQuoteE="" FldColumnWidth="" FldColumnWrap="1" FldAggregate="" FldGroupBy="0" FldOrderBy="0" FldOrder="" FldGroupByShowSummary="0" FldRptAggSum="0" FldRptAggAvg="0" FldRptAggMin="0" FldRptAggMax="0" FldRepeatColumns="5" FldUploadPath="" FldUploadMultiple="0" UploadAllowedFileExt="" UploadMaxFileSize="0" UploadMaxFileCount="0" FldCheckDuplicate="0" FldPageIndex="1" FldAjax="1" FldAutoUpdateValue="" FldUploadResize="0" FldResizeWidth="0" FldResizeHeight="0" FldMultiUpdate="1" FldTitle="" FldAlt="" FldEditCustomAttributes="" FldViewCustomAttributes="" FldTagACustomAttributes="" FldResizeQuality="75" FldEditTableField="" FldAutoFill="0" FldSelectForceSelection="0" FldMemoCRLFReplace="0" FldTooltipFld="" FldTooltipWidth="0" FldVirtualLookup="0" FldVirtualLookupSearch="0" FldViewTemplate="" FldOptionTemplate="" FldDropdown="0" FldDropdownWidth="0" FldDropdownHeight="0" FldModalLookup="0" FldModalLookupPageSize="0" />
       <Field FldName="sm_kredit" FldAlias="0" FldSourceName="" FldSourceTable="" FldSourceField="" FldType="131" FldTypeName="DECIMAL" NativeDataType="246" FldSQL="" FldIsCustom="0" FldSupport="1" FldSort="1" FldSize="43" FldUniqueIdx="0" FldZeroLen="0" FldReq="0" FldIsPrimaryKey="0" FldAutoIncrement="0" FldAttribute="100" FldMin="" FldMax="" FldErrMsg="" FldValidate="FLOAT" FldServerValidateArgs="" FldClientValidateArgs="" FldRequired="0" FldPopCalendar="0" FldGenerate="1" FldList="1" FldExport="1" FldView="1" FldEdit="1" FldAdd="1" FldAddOpt="1" FldSearch="1" FldBasicSearch="0" FldExtendedBasicSearch="0" FldRegister="0" FldSrchOpr="=" FldSrchOpr2="" FldDefault="" FldSearchDefault="" FldSearchDefault2="" FldDbDefault="" FldCaption="sm kredit" FldViewTag="FORMATTED TEXT" FldViewThumbnail="0" FldHtmlTag="TEXT" FldTagSize="30" FldTagMaxLength="0" FldTagValues="" FldHtmlTagReadOnly="0" FldTagHiddenValue="" FldSelectType="Values" FldTagLnkTbl="" FldTagLnkFld="" FldTagLnkDisplay="" FldTagLnkDisp2="" FldTagLnkDisp3="" FldTagLnkDisp4="" FldTagLnkOrderBy="" FldTagLnkOrderType="" FldTagLnkDistinct="0" FldTagCols="0" FldTagRows="0" FldTagImgWidth="0" FldTagImgHeight="0" FldTagAType="" FldTagATarget="" FldTagAPrefix="None" FldTagASuffix="" FldBold="0" FldItalic="0" FldAlign="" FldFmtType="None" FldDtFormat="0" FldNumDigits="0" FldIncLeadDigit="-2" FldUseParen="-2" FldGpDigits="-2" FileNameFld="" FileTypeFld="" FileSizeFld="" ImageWidthFld="" ImageHeightFld="" FldHrefFld="" FldHrefFldOrig="0" FldStrFunc="" FldUseDHTMLEditor="0" FldMemoMaxLength="0" FldSelectSize="0" FldSelectMultiple="0" FldSelectFilter="" FldAutoFillSourceFields="" FldAutoFillTargetFields="" FldParentSelect="" FldParentSelect2="" FldParentSelect3="" FldParentSelect4="" FldSelectFilterFld="" FldSelectFilterFld2="" FldSelectFilterFld3="" FldSelectFilterFld4="" FldParentSelectTbl="" FldParentSelectTbl2="" FldParentSelectTbl3="" FldParentSelectTbl4="" FldSelectAllowAdd="0" FldQuoteS="" FldQuoteE="" FldColumnWidth="" FldColumnWrap="1" FldAggregate="" FldGroupBy="0" FldOrderBy="0" FldOrder="" FldGroupByShowSummary="0" FldRptAggSum="0" FldRptAggAvg="0" FldRptAggMin="0" FldRptAggMax="0" FldRepeatColumns="5" FldUploadPath="" FldUploadMultiple="0" UploadAllowedFileExt="" UploadMaxFileSize="0" UploadMaxFileCount="0" FldCheckDuplicate="0" FldPageIndex="1" FldAjax="1" FldAutoUpdateValue="" FldUploadResize="0" FldResizeWidth="0" FldResizeHeight="0" FldMultiUpdate="1" FldTitle="" FldAlt="" FldEditCustomAttributes="" FldViewCustomAttributes="" FldTagACustomAttributes="" FldResizeQuality="75" FldEditTableField="" FldAutoFill="0" FldSelectForceSelection="0" FldMemoCRLFReplace="0" FldTooltipFld="" FldTooltipWidth="0" FldVirtualLookup="0" FldVirtualLookupSearch="0" FldViewTemplate="" FldOptionTemplate="" FldDropdown="0" FldDropdownWidth="0" FldDropdownHeight="0" FldModalLookup="0" FldModalLookupPageSize="0" />
     </Table>
-    <Table TblSchema="" TblName="r_bukubesar.php" TblType="REPORT" TblGen="1" TblGenList="custom=1" TblList="1" TblView="0" TblInlineEdit="0" TblGridEdit="0" TblEdit="0" TblEditConfirm="0" TblEditCaptcha="0" TblGridAdd="0" TblAdd="0" TblAddReturnPage="" TblAddOpt="0" TblAddConfirm="0" TblAddCaptcha="0" TblInlineAdd="0" TblInlineCopy="0" TblMultiUpdate="0" TblMultiUpdateConfirm="0" TblAnonymous="0" TblIsMaster="0" TblIsDetail="0" TblDelete="0" TblCaption="Buku Besar" TblUpdatable="0" TblSQL="" TblError="" TblSrchType="NONE" TblSearchHighlight="0" TblSearchColor="" TblSearch="0" TblBasicSearch="1" TblExtendedBasicSearch="1" TblBasicSearchDefault="" TblBasicSearchTypeDefault="" TblExtSearchFldPerRow="0" TblDefault="0" TblCopy="0" TblFilter="" TblUserIDFld="" TblSecurity="0,&quot;Default&quot;,0" TblUserIDAllow="0" TblExpanded="0" TblLoaded="1" TblRptShowDetails="0" TblRptShowGrandTotal="0" OutputFolder="" IncludeFiles="1" TblReportType="custom" TblCustomSQL="" TblCustomError="" TblRptSrc="" TblRptIndent="0" TblUseGlobal="1" TblRecPerPage="20" TblRecPerPageList="" TblPrinterFriendly="0" TblExportHtml="0" TblExportWord="0" TblExportExcel="0" TblExportXml="0" TblExportCsv="0" TblExportEmail="0" TblExportPDF="0" TblExportType="" TblRecPerRow="0" TblMultiDelete="0" TblSortType="0" TblPagerStyle="2" TblTopPageLink="0" TblBottomPageLink="1" TblViewExport="0" TblListExport="0" TblLinkOnLeft="0" TblInlineDelete="0" TblDetailViewPaging="0" TblDetailEditPaging="0" TblModalSearch="0" TblModalAdd="0" TblModalEdit="0" TblModalUpdate="0" TblModalView="0" TblAuditTrail="0" TblSendMailOnAdd="0" TblSendMailOnEdit="0" TblSendMailOnDelete="0" TblShowBlankListPage="0" TblDetailShowCount="0" TblDetailAdd="0" TblDetailEdit="0" TblDetailView="0" TblShowMultipleDetails="0" TblEditReturnPage="" TblMultiPageAdd="0" TblMultiPageEdit="0" TblMultiPageView="0" TblMultiPageSearch="0" TblCheckConcurrentUpdate="0" TblUserLevelPriv="1" TblDisplayRowCount="0" TblUseButtonsForLinks="1" TblUseDropDownForAction="1" TblUseDropDownForListOptions="1" TblMultiPageType="" TblUseDropDownForExport="1" LinkDBID="" LinkTableName="" LinkTableType="" TblPageCaptions="" />
+    <Table TblSchema="" TblName="r_bukubesar0.php" TblType="REPORT" TblGen="1" TblGenList="custom=1" TblList="1" TblView="0" TblInlineEdit="0" TblGridEdit="0" TblEdit="0" TblEditConfirm="0" TblEditCaptcha="0" TblGridAdd="0" TblAdd="0" TblAddReturnPage="" TblAddOpt="0" TblAddConfirm="0" TblAddCaptcha="0" TblInlineAdd="0" TblInlineCopy="0" TblMultiUpdate="0" TblMultiUpdateConfirm="0" TblAnonymous="0" TblIsMaster="0" TblIsDetail="0" TblDelete="0" TblCaption="Periode Buku Besar" TblUpdatable="0" TblSQL="" TblError="" TblSrchType="NONE" TblSearchHighlight="0" TblSearchColor="" TblSearch="0" TblBasicSearch="1" TblExtendedBasicSearch="1" TblBasicSearchDefault="" TblBasicSearchTypeDefault="" TblExtSearchFldPerRow="0" TblDefault="0" TblCopy="0" TblFilter="" TblUserIDFld="" TblSecurity="0,&quot;Default&quot;,0" TblUserIDAllow="0" TblExpanded="0" TblLoaded="1" TblRptShowDetails="0" TblRptShowGrandTotal="0" OutputFolder="" IncludeFiles="1" TblReportType="custom" TblCustomSQL="" TblCustomError="" TblRptSrc="" TblRptIndent="0" TblUseGlobal="1" TblRecPerPage="20" TblRecPerPageList="" TblPrinterFriendly="0" TblExportHtml="0" TblExportWord="0" TblExportExcel="0" TblExportXml="0" TblExportCsv="0" TblExportEmail="0" TblExportPDF="0" TblExportType="" TblRecPerRow="0" TblMultiDelete="0" TblSortType="0" TblPagerStyle="2" TblTopPageLink="0" TblBottomPageLink="1" TblViewExport="0" TblListExport="0" TblLinkOnLeft="0" TblInlineDelete="0" TblDetailViewPaging="0" TblDetailEditPaging="0" TblModalSearch="0" TblModalAdd="0" TblModalEdit="0" TblModalUpdate="0" TblModalView="0" TblAuditTrail="0" TblSendMailOnAdd="0" TblSendMailOnEdit="0" TblSendMailOnDelete="0" TblShowBlankListPage="0" TblDetailShowCount="0" TblDetailAdd="0" TblDetailEdit="0" TblDetailView="0" TblShowMultipleDetails="0" TblEditReturnPage="" TblMultiPageAdd="0" TblMultiPageEdit="0" TblMultiPageView="0" TblMultiPageSearch="0" TblCheckConcurrentUpdate="0" TblUserLevelPriv="1" TblDisplayRowCount="0" TblUseButtonsForLinks="1" TblUseDropDownForAction="1" TblUseDropDownForListOptions="1" TblMultiPageType="" TblUseDropDownForExport="1" LinkDBID="" LinkTableName="" LinkTableType="" TblPageCaptions="" />
+    <Table TblSchema="" TblName="r_bukubesar2.php" TblType="REPORT" TblGen="1" TblGenList="custom=1" TblList="1" TblView="0" TblInlineEdit="0" TblGridEdit="0" TblEdit="0" TblEditConfirm="0" TblEditCaptcha="0" TblGridAdd="0" TblAdd="0" TblAddReturnPage="" TblAddOpt="0" TblAddConfirm="0" TblAddCaptcha="0" TblInlineAdd="0" TblInlineCopy="0" TblMultiUpdate="0" TblMultiUpdateConfirm="0" TblAnonymous="0" TblIsMaster="0" TblIsDetail="0" TblDelete="0" TblCaption="Buku Besar" TblUpdatable="0" TblSQL="" TblError="" TblSrchType="NONE" TblSearchHighlight="0" TblSearchColor="" TblSearch="0" TblBasicSearch="1" TblExtendedBasicSearch="1" TblBasicSearchDefault="" TblBasicSearchTypeDefault="" TblExtSearchFldPerRow="0" TblDefault="0" TblCopy="0" TblFilter="" TblUserIDFld="" TblSecurity="0,&quot;Default&quot;,0" TblUserIDAllow="0" TblExpanded="0" TblLoaded="1" TblRptShowDetails="0" TblRptShowGrandTotal="0" OutputFolder="" IncludeFiles="1" TblReportType="custom" TblCustomSQL="" TblCustomError="" TblRptSrc="" TblRptIndent="0" TblUseGlobal="1" TblRecPerPage="20" TblRecPerPageList="" TblPrinterFriendly="0" TblExportHtml="0" TblExportWord="0" TblExportExcel="0" TblExportXml="0" TblExportCsv="0" TblExportEmail="0" TblExportPDF="0" TblExportType="" TblRecPerRow="0" TblMultiDelete="0" TblSortType="0" TblPagerStyle="2" TblTopPageLink="0" TblBottomPageLink="1" TblViewExport="0" TblListExport="0" TblLinkOnLeft="0" TblInlineDelete="0" TblDetailViewPaging="0" TblDetailEditPaging="0" TblModalSearch="0" TblModalAdd="0" TblModalEdit="0" TblModalUpdate="0" TblModalView="0" TblAuditTrail="0" TblSendMailOnAdd="0" TblSendMailOnEdit="0" TblSendMailOnDelete="0" TblShowBlankListPage="0" TblDetailShowCount="0" TblDetailAdd="0" TblDetailEdit="0" TblDetailView="0" TblShowMultipleDetails="0" TblEditReturnPage="" TblMultiPageAdd="0" TblMultiPageEdit="0" TblMultiPageView="0" TblMultiPageSearch="0" TblCheckConcurrentUpdate="0" TblUserLevelPriv="1" TblDisplayRowCount="0" TblUseButtonsForLinks="1" TblUseDropDownForAction="1" TblUseDropDownForListOptions="1" TblMultiPageType="" TblUseDropDownForExport="1" LinkDBID="" LinkTableName="" LinkTableType="" TblPageCaptions="" />
   </Database>
   <Extension Name="Audit Trail" Template="" XmlFile="audittrail.xml" Enabled="1">
     <ExtProject>
@@ -233,7 +234,10 @@
         <ExtTable TblName="v_akun_jurnal">
           <Properties><![CDATA[[{"Id":"Add","Type":"Boolean","Value":"1"},{"Id":"Edit","Type":"Boolean","Value":"1"},{"Id":"Delete","Type":"Boolean","Value":"1"},{"Id":"View","Type":"Boolean","Value":"0"},{"Id":"ViewData","Type":"Boolean","Value":"0"},{"Id":"Search","Type":"Boolean","Value":"0"}]]]></Properties>
         </ExtTable>
-        <ExtTable TblName="r_bukubesar.php">
+        <ExtTable TblName="r_bukubesar0.php">
+          <Properties><![CDATA[[{"Id":"Add","Type":"Boolean","Value":"1"},{"Id":"Edit","Type":"Boolean","Value":"1"},{"Id":"Delete","Type":"Boolean","Value":"1"},{"Id":"View","Type":"Boolean","Value":"0"},{"Id":"ViewData","Type":"Boolean","Value":"0"},{"Id":"Search","Type":"Boolean","Value":"0"}]]]></Properties>
+        </ExtTable>
+        <ExtTable TblName="r_bukubesar2.php">
           <Properties><![CDATA[[{"Id":"Add","Type":"Boolean","Value":"1"},{"Id":"Edit","Type":"Boolean","Value":"1"},{"Id":"Delete","Type":"Boolean","Value":"1"},{"Id":"View","Type":"Boolean","Value":"0"},{"Id":"ViewData","Type":"Boolean","Value":"0"},{"Id":"Search","Type":"Boolean","Value":"0"}]]]></Properties>
         </ExtTable>
         <Properties><![CDATA[[]]]></Properties>
@@ -294,7 +298,10 @@
         <ExtTable TblName="v_akun_jurnal">
           <Properties><![CDATA[[{"Id":"ExportList","Type":"Boolean","Value":"0"},{"Id":"ExportView","Type":"Boolean","Value":"1"},{"Id":"PageBreakRecordCount","Type":"Integer","Value":0},{"Id":"PageOrientation","Type":"String","Value":"portrait"},{"Id":"PageSize","Type":"String","Value":"a4"}]]]></Properties>
         </ExtTable>
-        <ExtTable TblName="r_bukubesar.php">
+        <ExtTable TblName="r_bukubesar0.php">
+          <Properties><![CDATA[[{"Id":"ExportList","Type":"Boolean","Value":"0"},{"Id":"ExportView","Type":"Boolean","Value":"1"},{"Id":"PageBreakRecordCount","Type":"Integer","Value":0},{"Id":"PageOrientation","Type":"String","Value":"portrait"},{"Id":"PageSize","Type":"String","Value":"a4"}]]]></Properties>
+        </ExtTable>
+        <ExtTable TblName="r_bukubesar2.php">
           <Properties><![CDATA[[{"Id":"ExportList","Type":"Boolean","Value":"0"},{"Id":"ExportView","Type":"Boolean","Value":"1"},{"Id":"PageBreakRecordCount","Type":"Integer","Value":0},{"Id":"PageOrientation","Type":"String","Value":"portrait"},{"Id":"PageSize","Type":"String","Value":"a4"}]]]></Properties>
         </ExtTable>
         <Properties><![CDATA[[]]]></Properties>
@@ -433,8 +440,8 @@ function Database_Connecting(&$info) {
 	<head>
 	</head>
 	<body>
-<p>to do ::</p>
-<p>- tampilkan nilai total_detail di jurnal_master view dan list</p>
+<!--<p>to do ::</p>
+<p>- tampilkan nilai total_detail di jurnal_master view dan list</p>-->
 </br>
 &copy; 2017 Tetrasma. Dibuat oleh Selaras Solusindo. Hak cipta dilindungi Undang-Undang.
 	</body>
@@ -859,6 +866,38 @@ function GetNextNo_buktim() {
 	}
 	return $sNextKode;
 }
+
+function tgl_indo($tgl) {
+	$a_namabln = array(
+		1 => "Jan",
+		"Feb",
+		"Mar",
+		"Apr",
+		"Mei",
+		"Jun",
+		"Jul",
+		"Ags",
+		"Sep",
+		"Okt",
+		"Nov",
+		"Des");
+	$a_hari = array(
+		"Min",
+		"Sen",
+		"Sel",
+		"Rab",
+		"Kam",
+		"Jum",
+		"Sab");
+	$tgl_data = strtotime($tgl);
+	//$tgl_data = $tgl;
+	$tanggal = date("d", $tgl_data);
+	$bulan = $a_namabln[intval(date("m", $tgl_data))];
+	$tahun = date("Y", $tgl_data);
+	//$hari = date("w", $tgl);
+	// return $a_hari[date("w", $tgl_data)].", ".$tanggal." ".$bulan." ".$tahun;
+	return $tanggal." ".$bulan." ".$tahun;
+}
 ]]></CustomScript>
   <CustomScript ScriptType="Server" ScriptCodeType="Table" ScriptName="Row_Inserting" ScriptCtrlID="" ScriptL1Key="t_jurnalm" ScriptL2Key=""><![CDATA[// Row Inserting event
 function Row_Inserting($rsold, &$rsnew) {
@@ -948,7 +987,33 @@ function kredit_onfocus(event) {
 	return true;
 }
 ]]></CustomScript>
-  <CustomScript ScriptType="Template" ScriptCodeType="Table" ScriptName="Content" ScriptCtrlID="custom" ScriptL1Key="r_bukubesar.php" ScriptL2Key=""><![CDATA[<?php
+  <CustomScript ScriptType="Template" ScriptCodeType="Table" ScriptName="Content" ScriptCtrlID="custom" ScriptL1Key="r_bukubesar0.php" ScriptL2Key=""><![CDATA[<form id="myform" name="myform" class="form-horizontal" method="post" action="r_bukubesar1.php">
+	<div id="r_start" class="form-group">
+		<label for="start" class="col-sm-2 control-label ewLabel">Date Start</label>
+		<div class="col-sm-10">
+		  <span id="el_calendar_start">
+		  <input type="text" name="start" data-field="start" data-format="5" size="20" class="form-control" id="start">
+		  <script type="text/javascript">
+			ew_CreateCalendar("myform", "start", 5);
+		  </script>
+		  </span>
+		</div>
+	</div>
+	<div id="r_end" class="form-group">
+		<label for="end" class="col-sm-2 control-label ewLabel">Date End</label>
+		<div class="col-sm-10">
+		  <span id="el_calendar_end">
+		  <input type="text" name="end" data-field="end" data-format="5" size="20" class="form-control" id="end">
+		  <script type="text/javascript">
+			ew_CreateCalendar("myform", "end", 5);
+		  </script>
+		  </span>
+		</div>
+	</div>
+	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit">Submit</button>
+</form>
+]]></CustomScript>
+  <CustomScript ScriptType="Template" ScriptCodeType="Table" ScriptName="Content" ScriptCtrlID="custom" ScriptL1Key="r_bukubesar2.php" ScriptL2Key=""><![CDATA[<?php
 $q = "select sa_debet, sa_kredit, level4_nama from t_level4 where level4_id = '".$_GET["akun_id"]."'";
 $rs = Conn()->Execute($q);
 $sa_debet    = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_debet"]  != null ? $rs->fields["sa_debet"]  : 0);
@@ -958,19 +1023,36 @@ $level4_nama = ($rs && $rs->RecordCount() > 0 && $rs->fields["level4_nama"] != n
 //$s_kredit = $sa_kredit;
 $saldo = $sa_debet - $sa_kredit;
 
-$q = "select * from v_kasbank_memorial where akun_id = '".$_GET["akun_id"]."'";
+$q = "select * from v_kasbank_memorial where akun_id = '".$_GET["akun_id"]."'
+	and tgl between '".$_GET["start"]."' and '".$_GET["end"]."'";
 $rs = Conn()->Execute($q);
 ?>
-<p><?php echo "<b>Akun : ".$level4_nama."</b>";?></p>
+<table border="0" style="padding: 5px">
+	<tr>
+		<td style="padding: 5px;">Akun</td><td style="padding: 5px;">:</td><td style="padding: 5px;"><b><?php echo $level4_nama;?></b></td>
+	</tr>
+	<!--<tr>
+		<td colspan="3">&nbsp;</td>
+	</tr>-->
+	<tr>
+		<td style="padding: 5px;">Periode</td><td style="padding: 5px;">:</td><td style="padding: 5px;"><b><?php echo tgl_indo($_GET["start"])." s.d. ".tgl_indo($_GET["end"]);?></b></td>
+	</tr>
+	<tr>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+</table>
+<!--<p><?php echo "<b>Akun    : ".$level4_nama."</b>";?></p>
+<p><?php echo "<b>Periode : ".$_GET["start"]." s.d. ".$_GET["end"]."</b>";?></p>-->
 <table border="1" class="table ewTableSeparate">
 	<tr>
 		<th rowspan="2">Tanggal</th>
 		<th rowspan="2">Keterangan</th>
-		<th align="right" rowspan="2">Debet</th>
-		<th align="right" rowspan="2">Kredit</th>
+		<th align="center" colspan="2">Mutasi</th>
 		<th align="center" colspan="2">Saldo</th>
 	</tr>
 	<tr>
+		<th align="right">Debet</th>
+		<th align="right">Kredit</th>
 		<th align="right">Debet</th>
 		<th align="right">Kredit</th>
 	</tr>
@@ -1012,21 +1094,10 @@ while (!$rs->EOF) {
 ?>
 </table>
 ]]></CustomScript>
-  <Menu MenuID="10137" MenuText="v kasbank detail" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank_detail" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="100" />
-  <Menu MenuID="10138" MenuText="v kasbank jurnal" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank_jurnal" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="200" />
-  <Menu MenuID="10139" MenuText="v kasbank memorial" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank_memorial" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="300" />
-  <Menu MenuID="10140" MenuText="v memorial" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_memorial" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="400" />
-  <Menu MenuID="10141" MenuText="Buku Besar" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="r_bukubesar.php" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="500" />
-  <Menu MenuID="10131" MenuText="v saldo mutasi" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_saldo_mutasi" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="600" />
-  <Menu MenuID="10132" MenuText="v summary bukubesar" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_summary_bukubesar" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="700" />
-  <Menu MenuID="10133" MenuText="v summary bukubesar 1" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_summary_bukubesar_1" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="800" />
-  <Menu MenuID="10134" MenuText="v summary bukubesar 3" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_summary_bukubesar_3" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="900" />
-  <Menu MenuID="10135" MenuText="v summary bukubesar 4" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_summary_bukubesar_4" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1000" />
-  <Menu MenuID="10136" MenuText="v summary bukubesar 6" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_summary_bukubesar_6" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1100" />
-  <Menu MenuID="10130" MenuText="v kasbank" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1200" />
-  <Menu MenuID="22" MenuText="Home" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="home.php" MenuCustomUrl="0" MenuLevel="0" MenuShow="1" MenuDisplayOrder="1300" />
-  <Menu MenuID="10129" MenuText="v bukubesar" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_bukubesar" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1400" />
-  <Menu MenuID="10065" MenuText="Setup" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="8" MenuSecurity="" MenuUrl="" MenuCustomUrl="1" MenuLevel="0" MenuShow="1" MenuDisplayOrder="1500" />
+  <Menu MenuID="10143" MenuText="Buku Besar" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="r_bukubesar2.php" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="100" />
+  <Menu MenuID="10137" MenuText="v kasbank detail" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank_detail" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="200" />
+  <Menu MenuID="22" MenuText="Home" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="home.php" MenuCustomUrl="0" MenuLevel="0" MenuShow="1" MenuDisplayOrder="300" />
+  <Menu MenuID="10065" MenuText="Setup" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="8" MenuSecurity="" MenuUrl="" MenuCustomUrl="1" MenuLevel="0" MenuShow="1" MenuDisplayOrder="400" />
   <Menu MenuID="1" MenuText="Anggota" MenuParentID="10065" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_anggota" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="100" />
   <Menu MenuID="19" MenuText="Chart of Account" MenuParentID="10065" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="view_akun.php" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="200" />
   <Menu MenuID="7" MenuText="Lv. 1" MenuParentID="19" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_level1" MenuCustomUrl="0" MenuLevel="2" MenuShow="1" MenuDisplayOrder="100" />
@@ -1034,13 +1105,25 @@ while (!$rs->EOF) {
   <Menu MenuID="9" MenuText="Lv. 3" MenuParentID="19" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_level3" MenuCustomUrl="0" MenuLevel="2" MenuShow="1" MenuDisplayOrder="300" />
   <Menu MenuID="10" MenuText="Lv. 4" MenuParentID="19" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_level4" MenuCustomUrl="0" MenuLevel="2" MenuShow="1" MenuDisplayOrder="400" />
   <Menu MenuID="16" MenuText="User" MenuParentID="10065" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_user" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="300" />
-  <Menu MenuID="10106" MenuText="Input" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="8" MenuSecurity="" MenuUrl="" MenuCustomUrl="1" MenuLevel="0" MenuShow="1" MenuDisplayOrder="1600" />
+  <Menu MenuID="10138" MenuText="v kasbank jurnal" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank_jurnal" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="500" />
+  <Menu MenuID="10106" MenuText="Input" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="8" MenuSecurity="" MenuUrl="" MenuCustomUrl="1" MenuLevel="0" MenuShow="1" MenuDisplayOrder="600" />
   <Menu MenuID="20" MenuText="Jurnal Kas &amp; Bank" MenuParentID="10106" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_jurnal" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="100" />
   <Menu MenuID="27" MenuText="Jurnal Memorial" MenuParentID="10106" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_jurnalm" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="200" />
-  <Menu MenuID="10128" MenuText="Laporan" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="8" MenuSecurity="" MenuUrl="" MenuCustomUrl="1" MenuLevel="0" MenuShow="1" MenuDisplayOrder="1700" />
+  <Menu MenuID="10128" MenuText="Laporan" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="8" MenuSecurity="" MenuUrl="" MenuCustomUrl="1" MenuLevel="0" MenuShow="1" MenuDisplayOrder="700" />
   <Menu MenuID="10021" MenuText="Buku Besar" MenuParentID="10128" MenuGroup="0" MenuSource="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" MenuExtUrl="r_bukubesarsmry.php" MenuAnonymous="0" MenuSecurity="" MenuUrl="r_bukubesar" MenuCustomUrl="0" MenuLevel="1" MenuShow="0" MenuDisplayOrder="100" />
-  <Menu MenuID="10022" MenuText="r bukubesar 2" MenuParentID="10128" MenuGroup="0" MenuSource="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" MenuExtUrl="r_bukubesar2smry.php" MenuAnonymous="0" MenuSecurity="" MenuUrl="r_bukubesar2" MenuCustomUrl="0" MenuLevel="1" MenuShow="0" MenuDisplayOrder="200" />
-  <Menu MenuID="10029" MenuText="Buku Besar" MenuParentID="10128" MenuGroup="0" MenuSource="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" MenuExtUrl="r_summary_bukubesarsmry.php" MenuAnonymous="0" MenuSecurity="" MenuUrl="r_summary_bukubesar" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="300" />
+  <Menu MenuID="10142" MenuText="Buku Besar" MenuParentID="10128" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="r_bukubesar0.php" MenuCustomUrl="0" MenuLevel="1" MenuShow="1" MenuDisplayOrder="200" />
+  <Menu MenuID="10022" MenuText="r bukubesar 2" MenuParentID="10128" MenuGroup="0" MenuSource="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" MenuExtUrl="r_bukubesar2smry.php" MenuAnonymous="0" MenuSecurity="" MenuUrl="r_bukubesar2" MenuCustomUrl="0" MenuLevel="1" MenuShow="0" MenuDisplayOrder="300" />
+  <Menu MenuID="10029" MenuText="Buku Besar" MenuParentID="10128" MenuGroup="0" MenuSource="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" MenuExtUrl="r_summary_bukubesarsmry.php" MenuAnonymous="0" MenuSecurity="" MenuUrl="r_summary_bukubesar" MenuCustomUrl="0" MenuLevel="1" MenuShow="0" MenuDisplayOrder="400" />
+  <Menu MenuID="10139" MenuText="v kasbank memorial" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank_memorial" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="800" />
+  <Menu MenuID="10140" MenuText="v memorial" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_memorial" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="900" />
+  <Menu MenuID="10131" MenuText="v saldo mutasi" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_saldo_mutasi" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1000" />
+  <Menu MenuID="10132" MenuText="v summary bukubesar" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_summary_bukubesar" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1100" />
+  <Menu MenuID="10133" MenuText="v summary bukubesar 1" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_summary_bukubesar_1" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1200" />
+  <Menu MenuID="10134" MenuText="v summary bukubesar 3" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_summary_bukubesar_3" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1300" />
+  <Menu MenuID="10135" MenuText="v summary bukubesar 4" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_summary_bukubesar_4" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1400" />
+  <Menu MenuID="10136" MenuText="v summary bukubesar 6" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_summary_bukubesar_6" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1500" />
+  <Menu MenuID="10130" MenuText="v kasbank" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_kasbank" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1600" />
+  <Menu MenuID="10129" MenuText="v bukubesar" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_bukubesar" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1700" />
   <Menu MenuID="43" MenuText="v akun jurnal" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="v_akun_jurnal" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1800" />
   <Menu MenuID="26" MenuText="Detail Jurnal Memorial" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_detailm" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="1900" />
   <Menu MenuID="21" MenuText="Detail Jurnal Kas &amp; Bank" MenuParentID="-1" MenuGroup="0" MenuSource="" MenuExtUrl="" MenuAnonymous="0" MenuSecurity="" MenuUrl="t_detail" MenuCustomUrl="0" MenuLevel="0" MenuShow="0" MenuDisplayOrder="2000" />

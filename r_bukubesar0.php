@@ -14,9 +14,9 @@ ob_start(); // Turn on output buffering
 // Page class
 //
 
-$home_php = NULL; // Initialize page object first
+$r_bukubesar0_php = NULL; // Initialize page object first
 
-class chome_php {
+class cr_bukubesar0_php {
 
 	// Page ID
 	var $PageID = 'custom';
@@ -25,10 +25,10 @@ class chome_php {
 	var $ProjectID = "{D8E5AA29-C8A1-46A6-8DFF-08A223163C5D}";
 
 	// Table name
-	var $TableName = 'home.php';
+	var $TableName = 'r_bukubesar0.php';
 
 	// Page object name
-	var $PageObjName = 'home_php';
+	var $PageObjName = 'r_bukubesar0_php';
 
 	// Page name
 	function PageName() {
@@ -195,7 +195,7 @@ class chome_php {
 
 		// Table name (for backward compatibility)
 		if (!defined("EW_TABLE_NAME"))
-			define("EW_TABLE_NAME", 'home.php', TRUE);
+			define("EW_TABLE_NAME", 'r_bukubesar0.php', TRUE);
 
 		// Start timer
 		if (!isset($GLOBALS["gTimer"])) $GLOBALS["gTimer"] = new cTimer();
@@ -284,7 +284,7 @@ class chome_php {
 		global $Breadcrumb;
 		$Breadcrumb = new cBreadcrumb();
 		$url = substr(ew_CurrentUrl(), strrpos(ew_CurrentUrl(), "/")+1);
-		$Breadcrumb->Add("custom", "home_php", $url, "", "home_php", TRUE);
+		$Breadcrumb->Add("custom", "r_bukubesar0_php", $url, "", "r_bukubesar0_php", TRUE);
 	}
 }
 ?>
@@ -292,13 +292,13 @@ class chome_php {
 <?php
 
 // Create page object
-if (!isset($home_php)) $home_php = new chome_php();
+if (!isset($r_bukubesar0_php)) $r_bukubesar0_php = new cr_bukubesar0_php();
 
 // Page init
-$home_php->Page_Init();
+$r_bukubesar0_php->Page_Init();
 
 // Page main
-$home_php->Page_Main();
+$r_bukubesar0_php->Page_Main();
 
 // Global Page Rendering event (in userfn*.php)
 Page_Rendering();
@@ -311,18 +311,33 @@ Page_Rendering();
 <div class="clearfix"></div>
 </div>
 <?php } ?>
-<html>
-	<head>
-	</head>
-	<body>
-<!--<p>to do ::</p>
-<p>- tampilkan nilai total_detail di jurnal_master view dan list</p>-->
-</br>
-&copy; 2017 Tetrasma. Dibuat oleh Selaras Solusindo. Hak cipta dilindungi Undang-Undang.
-	</body>
-</html>
+<form id="myform" name="myform" class="form-horizontal" method="post" action="r_bukubesar1.php">
+	<div id="r_start" class="form-group">
+		<label for="start" class="col-sm-2 control-label ewLabel">Date Start</label>
+		<div class="col-sm-10">
+		  <span id="el_calendar_start">
+		  <input type="text" name="start" data-field="start" data-format="5" size="20" class="form-control" id="start">
+		  <script type="text/javascript">
+			ew_CreateCalendar("myform", "start", 5);
+		  </script>
+		  </span>
+		</div>
+	</div>
+	<div id="r_end" class="form-group">
+		<label for="end" class="col-sm-2 control-label ewLabel">Date End</label>
+		<div class="col-sm-10">
+		  <span id="el_calendar_end">
+		  <input type="text" name="end" data-field="end" data-format="5" size="20" class="form-control" id="end">
+		  <script type="text/javascript">
+			ew_CreateCalendar("myform", "end", 5);
+		  </script>
+		  </span>
+		</div>
+	</div>
+	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit">Submit</button>
+</form>
 <?php if (EW_DEBUG_ENABLED) echo ew_DebugMsg(); ?>
 <?php include_once "footer.php" ?>
 <?php
-$home_php->Page_Terminate();
+$r_bukubesar0_php->Page_Terminate();
 ?>

@@ -583,47 +583,14 @@
   <project>
     <phrase id="bodytitle" value="Tetrasma" />
     <phrase id="footertext" value="&amp;copy;2017 TETRASMA. All rights reserved." />
+    <menu id="10143">
+      <phrase id="menutext" value="Buku Besar" />
+    </menu>
     <menu id="10137">
       <phrase id="menutext" value="v kasbank detail" />
     </menu>
-    <menu id="10138">
-      <phrase id="menutext" value="v kasbank jurnal" />
-    </menu>
-    <menu id="10139">
-      <phrase id="menutext" value="v kasbank memorial" />
-    </menu>
-    <menu id="10140">
-      <phrase id="menutext" value="v memorial" />
-    </menu>
-    <menu id="10141">
-      <phrase id="menutext" value="Buku Besar" />
-    </menu>
-    <menu id="10131">
-      <phrase id="menutext" value="v saldo mutasi" />
-    </menu>
-    <menu id="10132">
-      <phrase id="menutext" value="v summary bukubesar" />
-    </menu>
-    <menu id="10133">
-      <phrase id="menutext" value="v summary bukubesar 1" />
-    </menu>
-    <menu id="10134">
-      <phrase id="menutext" value="v summary bukubesar 3" />
-    </menu>
-    <menu id="10135">
-      <phrase id="menutext" value="v summary bukubesar 4" />
-    </menu>
-    <menu id="10136">
-      <phrase id="menutext" value="v summary bukubesar 6" />
-    </menu>
-    <menu id="10130">
-      <phrase id="menutext" value="v kasbank" />
-    </menu>
     <menu id="22">
       <phrase id="menutext" value="Home" />
-    </menu>
-    <menu id="10129">
-      <phrase id="menutext" value="v bukubesar" />
     </menu>
     <menu id="10065">
       <phrase id="menutext" value="Setup" />
@@ -649,6 +616,9 @@
     <menu id="16">
       <phrase id="menutext" value="User" />
     </menu>
+    <menu id="10138">
+      <phrase id="menutext" value="v kasbank jurnal" />
+    </menu>
     <menu id="10106">
       <phrase id="menutext" value="Input" />
     </menu>
@@ -664,11 +634,44 @@
     <menu id="10021">
       <phrase id="menutext" value="Buku Besar" />
     </menu>
+    <menu id="10142">
+      <phrase id="menutext" value="Buku Besar" />
+    </menu>
     <menu id="10022">
       <phrase id="menutext" value="r bukubesar 2" />
     </menu>
     <menu id="10029">
       <phrase id="menutext" value="Buku Besar" />
+    </menu>
+    <menu id="10139">
+      <phrase id="menutext" value="v kasbank memorial" />
+    </menu>
+    <menu id="10140">
+      <phrase id="menutext" value="v memorial" />
+    </menu>
+    <menu id="10131">
+      <phrase id="menutext" value="v saldo mutasi" />
+    </menu>
+    <menu id="10132">
+      <phrase id="menutext" value="v summary bukubesar" />
+    </menu>
+    <menu id="10133">
+      <phrase id="menutext" value="v summary bukubesar 1" />
+    </menu>
+    <menu id="10134">
+      <phrase id="menutext" value="v summary bukubesar 3" />
+    </menu>
+    <menu id="10135">
+      <phrase id="menutext" value="v summary bukubesar 4" />
+    </menu>
+    <menu id="10136">
+      <phrase id="menutext" value="v summary bukubesar 6" />
+    </menu>
+    <menu id="10130">
+      <phrase id="menutext" value="v kasbank" />
+    </menu>
+    <menu id="10129">
+      <phrase id="menutext" value="v bukubesar" />
     </menu>
     <menu id="43">
       <phrase id="menutext" value="v akun jurnal" />
@@ -1335,7 +1338,10 @@
         <phrase id="fldcaption" value="sm kredit" />
       </field>
     </table>
-    <table id="r_bukubesar_php">
+    <table id="r_bukubesar0_php">
+      <phrase id="tblcaption" value="Periode Buku Besar" />
+    </table>
+    <table id="r_bukubesar2_php">
       <phrase id="tblcaption" value="Buku Besar" />
     </table>
   </project>

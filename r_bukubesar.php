@@ -329,11 +329,12 @@ $rs = Conn()->Execute($q);
 	<tr>
 		<th rowspan="2">Tanggal</th>
 		<th rowspan="2">Keterangan</th>
-		<th align="right" rowspan="2">Debet</th>
-		<th align="right" rowspan="2">Kredit</th>
+		<th align="center" colspan="2">Mutasi</th>
 		<th align="center" colspan="2">Saldo</th>
 	</tr>
 	<tr>
+		<th align="right">Debet</th>
+		<th align="right">Kredit</th>
 		<th align="right">Debet</th>
 		<th align="right">Kredit</th>
 	</tr>

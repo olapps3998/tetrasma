@@ -292,8 +292,10 @@ class cdefault {
 			$this->Page_Terminate("t_detailmlist.php");
 		if ($Security->AllowList(CurrentProjectID() . 't_jurnalm'))
 			$this->Page_Terminate("t_jurnalmlist.php");
-		if ($Security->AllowList(CurrentProjectID() . 'r_bukubesar.php'))
-			$this->Page_Terminate("r_bukubesar.php");
+		if ($Security->AllowList(CurrentProjectID() . 'r_bukubesar0.php'))
+			$this->Page_Terminate("r_bukubesar0.php");
+		if ($Security->AllowList(CurrentProjectID() . 'r_bukubesar2.php'))
+			$this->Page_Terminate("r_bukubesar2.php");
 		if ($Security->IsLoggedIn()) {
 			$this->setFailureMessage(ew_DeniedMsg() . "<br><br><a href=\"logout.php\">" . $Language->Phrase("BackToLogin") . "</a>");
 		} else {

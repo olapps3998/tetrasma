@@ -14,9 +14,9 @@ ob_start(); // Turn on output buffering
 // Page class
 //
 
-$home_php = NULL; // Initialize page object first
+$r_bukubesar2_php = NULL; // Initialize page object first
 
-class chome_php {
+class cr_bukubesar2_php {
 
 	// Page ID
 	var $PageID = 'custom';
@@ -25,10 +25,10 @@ class chome_php {
 	var $ProjectID = "{D8E5AA29-C8A1-46A6-8DFF-08A223163C5D}";
 
 	// Table name
-	var $TableName = 'home.php';
+	var $TableName = 'r_bukubesar2.php';
 
 	// Page object name
-	var $PageObjName = 'home_php';
+	var $PageObjName = 'r_bukubesar2_php';
 
 	// Page name
 	function PageName() {
@@ -195,7 +195,7 @@ class chome_php {
 
 		// Table name (for backward compatibility)
 		if (!defined("EW_TABLE_NAME"))
-			define("EW_TABLE_NAME", 'home.php', TRUE);
+			define("EW_TABLE_NAME", 'r_bukubesar2.php', TRUE);
 
 		// Start timer
 		if (!isset($GLOBALS["gTimer"])) $GLOBALS["gTimer"] = new cTimer();
@@ -284,7 +284,7 @@ class chome_php {
 		global $Breadcrumb;
 		$Breadcrumb = new cBreadcrumb();
 		$url = substr(ew_CurrentUrl(), strrpos(ew_CurrentUrl(), "/")+1);
-		$Breadcrumb->Add("custom", "home_php", $url, "", "home_php", TRUE);
+		$Breadcrumb->Add("custom", "r_bukubesar2_php", $url, "", "r_bukubesar2_php", TRUE);
 	}
 }
 ?>
@@ -292,13 +292,13 @@ class chome_php {
 <?php
 
 // Create page object
-if (!isset($home_php)) $home_php = new chome_php();
+if (!isset($r_bukubesar2_php)) $r_bukubesar2_php = new cr_bukubesar2_php();
 
 // Page init
-$home_php->Page_Init();
+$r_bukubesar2_php->Page_Init();
 
 // Page main
-$home_php->Page_Main();
+$r_bukubesar2_php->Page_Main();
 
 // Global Page Rendering event (in userfn*.php)
 Page_Rendering();
@@ -311,18 +311,88 @@ Page_Rendering();
 <div class="clearfix"></div>
 </div>
 <?php } ?>
-<html>
-	<head>
-	</head>
-	<body>
-<!--<p>to do ::</p>
-<p>- tampilkan nilai total_detail di jurnal_master view dan list</p>-->
-</br>
-&copy; 2017 Tetrasma. Dibuat oleh Selaras Solusindo. Hak cipta dilindungi Undang-Undang.
-	</body>
-</html>
+<?php
+$q = "select sa_debet, sa_kredit, level4_nama from t_level4 where level4_id = '".$_GET["akun_id"]."'";
+$rs = Conn()->Execute($q);
+$sa_debet    = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_debet"]  != null ? $rs->fields["sa_debet"]  : 0);
+$sa_kredit   = ($rs && $rs->RecordCount() > 0 && $rs->fields["sa_kredit"] != null ? $rs->fields["sa_kredit"] : 0);
+$level4_nama = ($rs && $rs->RecordCount() > 0 && $rs->fields["level4_nama"] != null ? $rs->fields["level4_nama"] : "-");
+//$s_debet  = $sa_debet;
+//$s_kredit = $sa_kredit;
+$saldo = $sa_debet - $sa_kredit;
+
+$q = "select * from v_kasbank_memorial where akun_id = '".$_GET["akun_id"]."'
+	and tgl between '".$_GET["start"]."' and '".$_GET["end"]."'";
+$rs = Conn()->Execute($q);
+?>
+<table border="0" style="padding: 5px">
+	<tr>
+		<td style="padding: 5px;">Akun</td><td style="padding: 5px;">:</td><td style="padding: 5px;"><b><?php echo $level4_nama;?></b></td>
+	</tr>
+	<!--<tr>
+		<td colspan="3">&nbsp;</td>
+	</tr>-->
+	<tr>
+		<td style="padding: 5px;">Periode</td><td style="padding: 5px;">:</td><td style="padding: 5px;"><b><?php echo tgl_indo($_GET["start"])." s.d. ".tgl_indo($_GET["end"]);?></b></td>
+	</tr>
+	<tr>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+</table>
+<!--<p><?php echo "<b>Akun    : ".$level4_nama."</b>";?></p>
+<p><?php echo "<b>Periode : ".$_GET["start"]." s.d. ".$_GET["end"]."</b>";?></p>-->
+<table border="1" class="table ewTableSeparate">
+	<tr>
+		<th rowspan="2">Tanggal</th>
+		<th rowspan="2">Keterangan</th>
+		<th align="center" colspan="2">Mutasi</th>
+		<th align="center" colspan="2">Saldo</th>
+	</tr>
+	<tr>
+		<th align="right">Debet</th>
+		<th align="right">Kredit</th>
+		<th align="right">Debet</th>
+		<th align="right">Kredit</th>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td>Saldo Awal</td>
+		<td align="right"><?php echo number_format($sa_debet);?></td>
+		<td align="right"><?php echo number_format($sa_kredit);?></td>
+		<?php if ($saldo >= 0) { ?>
+			<td align="right"><?php echo number_format($saldo);?></td>
+			<td align="right"><?php echo number_format(0);?></td>
+		<?php }
+		else { ?>
+			<td align="right"><?php echo number_format(0);?></td>
+			<td align="right"><?php echo number_format(abs($saldo));?></td>
+		<?php } ?>
+	</tr>
+<?php
+while (!$rs->EOF) {
+	?>
+	<tr>
+		<td><?php echo $rs->fields["tgl"];?></td>
+		<td><?php echo $rs->fields["ket"];?></td>
+		<td align="right"><?php echo number_format($rs->fields["debet"]);?></td>
+		<td align="right"><?php echo number_format($rs->fields["kredit"]);?></td>
+		<?php $saldo += $rs->fields["debet"] - $rs->fields["kredit"];?>
+		<?php if ($saldo >= 0) { ?>
+			<td align="right"><?php echo number_format($saldo);?></td>
+			<td align="right"><?php echo number_format(0);?></td>
+		<?php }
+		else { ?>
+			<td align="right"><?php echo number_format(0);?></td>
+			<td align="right"><?php echo number_format(abs($saldo));?></td>
+		<?php } ?>
+	</tr>
+	<?php
+	$rs->MoveNext();
+}
+?>
+</table>
 <?php if (EW_DEBUG_ENABLED) echo ew_DebugMsg(); ?>
 <?php include_once "footer.php" ?>
 <?php
-$home_php->Page_Terminate();
+$r_bukubesar2_php->Page_Terminate();
 ?>
