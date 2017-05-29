@@ -341,7 +341,7 @@ $q .= "year(tgl) = ".$_GET["tahun"].") b on a.level4_id = b.akun_id
 $rs = Conn()->Execute($q);
 ?>
 <h3>Laporan Laba Rugi</h3>
-<h4>Periode <?php echo $a_namabln[$_GET["bulan"]]." ".$_GET["tahun"];?></h4>
+<h4>Periode <?php echo ($_GET["bulan"] != 0 ? $a_namabln[$_GET["bulan"]] : "Tahun")." ".$_GET["tahun"];?></h4>
 <br>
 <table border="0" class="table ewTable">
 <?php
