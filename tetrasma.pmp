@@ -1043,7 +1043,8 @@ $rs = Conn()->Execute($q);
 </table>
 <!--<p><?php echo "<b>Akun    : ".$level4_nama."</b>";?></p>
 <p><?php echo "<b>Periode : ".$_GET["start"]." s.d. ".$_GET["end"]."</b>";?></p>-->
-<table border="1" class="table ewTableSeparate">
+<!--<table border="1" class="table ewTableSeparate">-->
+<table border="1" class="table ewTable">
 	<tr>
 		<th rowspan="2">Tanggal</th>
 		<th rowspan="2">Keterangan</th>
