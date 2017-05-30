@@ -291,6 +291,8 @@ class ct_level4_delete extends ct_level4 {
 		$this->sa_kredit->SetVisibility();
 		$this->jurnal->SetVisibility();
 		$this->jurnal_kode->SetVisibility();
+		$this->neraca->SetVisibility();
+		$this->labarugi->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -492,6 +494,8 @@ class ct_level4_delete extends ct_level4 {
 		$this->jurnal_kode->setDbValue($rs->fields('jurnal_kode'));
 		$this->sm_debet->setDbValue($rs->fields('sm_debet'));
 		$this->sm_kredit->setDbValue($rs->fields('sm_kredit'));
+		$this->neraca->setDbValue($rs->fields('neraca'));
+		$this->labarugi->setDbValue($rs->fields('labarugi'));
 	}
 
 	// Load DbValue from recordset
@@ -510,6 +514,8 @@ class ct_level4_delete extends ct_level4 {
 		$this->jurnal_kode->DbValue = $row['jurnal_kode'];
 		$this->sm_debet->DbValue = $row['sm_debet'];
 		$this->sm_kredit->DbValue = $row['sm_kredit'];
+		$this->neraca->DbValue = $row['neraca'];
+		$this->labarugi->DbValue = $row['labarugi'];
 	}
 
 	// Render row values based on field settings
@@ -546,6 +552,10 @@ class ct_level4_delete extends ct_level4 {
 
 		// sm_kredit
 		$this->sm_kredit->CellCssStyle = "white-space: nowrap;";
+
+		// neraca
+		// labarugi
+
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// level1_id
@@ -674,6 +684,22 @@ class ct_level4_delete extends ct_level4 {
 		}
 		$this->jurnal_kode->ViewCustomAttributes = "";
 
+		// neraca
+		if (strval($this->neraca->CurrentValue) <> "") {
+			$this->neraca->ViewValue = $this->neraca->OptionCaption($this->neraca->CurrentValue);
+		} else {
+			$this->neraca->ViewValue = NULL;
+		}
+		$this->neraca->ViewCustomAttributes = "";
+
+		// labarugi
+		if (strval($this->labarugi->CurrentValue) <> "") {
+			$this->labarugi->ViewValue = $this->labarugi->OptionCaption($this->labarugi->CurrentValue);
+		} else {
+			$this->labarugi->ViewValue = NULL;
+		}
+		$this->labarugi->ViewCustomAttributes = "";
+
 			// level1_id
 			$this->level1_id->LinkCustomAttributes = "";
 			$this->level1_id->HrefValue = "";
@@ -718,6 +744,16 @@ class ct_level4_delete extends ct_level4 {
 			$this->jurnal_kode->LinkCustomAttributes = "";
 			$this->jurnal_kode->HrefValue = "";
 			$this->jurnal_kode->TooltipValue = "";
+
+			// neraca
+			$this->neraca->LinkCustomAttributes = "";
+			$this->neraca->HrefValue = "";
+			$this->neraca->TooltipValue = "";
+
+			// labarugi
+			$this->labarugi->LinkCustomAttributes = "";
+			$this->labarugi->HrefValue = "";
+			$this->labarugi->TooltipValue = "";
 		}
 
 		// Call Row Rendered event
@@ -946,6 +982,10 @@ ft_level4delete.Lists["x_jurnal"] = {"LinkField":"","Ajax":null,"AutoFill":false
 ft_level4delete.Lists["x_jurnal"].Options = <?php echo json_encode($t_level4->jurnal->Options()) ?>;
 ft_level4delete.Lists["x_jurnal_kode"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 ft_level4delete.Lists["x_jurnal_kode"].Options = <?php echo json_encode($t_level4->jurnal_kode->Options()) ?>;
+ft_level4delete.Lists["x_neraca"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+ft_level4delete.Lists["x_neraca"].Options = <?php echo json_encode($t_level4->neraca->Options()) ?>;
+ft_level4delete.Lists["x_labarugi"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+ft_level4delete.Lists["x_labarugi"].Options = <?php echo json_encode($t_level4->labarugi->Options()) ?>;
 
 // Form object for search
 </script>
@@ -1004,6 +1044,12 @@ $t_level4_delete->ShowMessage();
 <?php } ?>
 <?php if ($t_level4->jurnal_kode->Visible) { // jurnal_kode ?>
 		<th><span id="elh_t_level4_jurnal_kode" class="t_level4_jurnal_kode"><?php echo $t_level4->jurnal_kode->FldCaption() ?></span></th>
+<?php } ?>
+<?php if ($t_level4->neraca->Visible) { // neraca ?>
+		<th><span id="elh_t_level4_neraca" class="t_level4_neraca"><?php echo $t_level4->neraca->FldCaption() ?></span></th>
+<?php } ?>
+<?php if ($t_level4->labarugi->Visible) { // labarugi ?>
+		<th><span id="elh_t_level4_labarugi" class="t_level4_labarugi"><?php echo $t_level4->labarugi->FldCaption() ?></span></th>
 <?php } ?>
 	</tr>
 	</thead>
@@ -1095,6 +1141,22 @@ while (!$t_level4_delete->Recordset->EOF) {
 <span id="el<?php echo $t_level4_delete->RowCnt ?>_t_level4_jurnal_kode" class="t_level4_jurnal_kode">
 <span<?php echo $t_level4->jurnal_kode->ViewAttributes() ?>>
 <?php echo $t_level4->jurnal_kode->ListViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($t_level4->neraca->Visible) { // neraca ?>
+		<td<?php echo $t_level4->neraca->CellAttributes() ?>>
+<span id="el<?php echo $t_level4_delete->RowCnt ?>_t_level4_neraca" class="t_level4_neraca">
+<span<?php echo $t_level4->neraca->ViewAttributes() ?>>
+<?php echo $t_level4->neraca->ListViewValue() ?></span>
+</span>
+</td>
+<?php } ?>
+<?php if ($t_level4->labarugi->Visible) { // labarugi ?>
+		<td<?php echo $t_level4->labarugi->CellAttributes() ?>>
+<span id="el<?php echo $t_level4_delete->RowCnt ?>_t_level4_labarugi" class="t_level4_labarugi">
+<span<?php echo $t_level4->labarugi->ViewAttributes() ?>>
+<?php echo $t_level4->labarugi->ListViewValue() ?></span>
 </span>
 </td>
 <?php } ?>

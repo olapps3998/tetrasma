@@ -422,6 +422,8 @@ class ct_level4_list extends ct_level4 {
 		$this->sa_kredit->SetVisibility();
 		$this->jurnal->SetVisibility();
 		$this->jurnal_kode->SetVisibility();
+		$this->neraca->SetVisibility();
+		$this->labarugi->SetVisibility();
 
 		// Global Page Loading event (in userfn*.php)
 		Page_Loading();
@@ -1176,6 +1178,10 @@ class ct_level4_list extends ct_level4 {
 			return FALSE;
 		if ($objForm->HasValue("x_jurnal_kode") && $objForm->HasValue("o_jurnal_kode") && $this->jurnal_kode->CurrentValue <> $this->jurnal_kode->OldValue)
 			return FALSE;
+		if ($objForm->HasValue("x_neraca") && $objForm->HasValue("o_neraca") && $this->neraca->CurrentValue <> $this->neraca->OldValue)
+			return FALSE;
+		if ($objForm->HasValue("x_labarugi") && $objForm->HasValue("o_labarugi") && $this->labarugi->CurrentValue <> $this->labarugi->OldValue)
+			return FALSE;
 		return TRUE;
 	}
 
@@ -1270,6 +1276,8 @@ class ct_level4_list extends ct_level4 {
 		$sFilterList = ew_Concat($sFilterList, $this->sa_kredit->AdvancedSearch->ToJSON(), ","); // Field sa_kredit
 		$sFilterList = ew_Concat($sFilterList, $this->jurnal->AdvancedSearch->ToJSON(), ","); // Field jurnal
 		$sFilterList = ew_Concat($sFilterList, $this->jurnal_kode->AdvancedSearch->ToJSON(), ","); // Field jurnal_kode
+		$sFilterList = ew_Concat($sFilterList, $this->neraca->AdvancedSearch->ToJSON(), ","); // Field neraca
+		$sFilterList = ew_Concat($sFilterList, $this->labarugi->AdvancedSearch->ToJSON(), ","); // Field labarugi
 		if ($this->BasicSearch->Keyword <> "") {
 			$sWrk = "\"" . EW_TABLE_BASIC_SEARCH . "\":\"" . ew_JsEncode2($this->BasicSearch->Keyword) . "\",\"" . EW_TABLE_BASIC_SEARCH_TYPE . "\":\"" . ew_JsEncode2($this->BasicSearch->Type) . "\"";
 			$sFilterList = ew_Concat($sFilterList, $sWrk, ",");
@@ -1393,6 +1401,22 @@ class ct_level4_list extends ct_level4 {
 		$this->jurnal_kode->AdvancedSearch->SearchValue2 = @$filter["y_jurnal_kode"];
 		$this->jurnal_kode->AdvancedSearch->SearchOperator2 = @$filter["w_jurnal_kode"];
 		$this->jurnal_kode->AdvancedSearch->Save();
+
+		// Field neraca
+		$this->neraca->AdvancedSearch->SearchValue = @$filter["x_neraca"];
+		$this->neraca->AdvancedSearch->SearchOperator = @$filter["z_neraca"];
+		$this->neraca->AdvancedSearch->SearchCondition = @$filter["v_neraca"];
+		$this->neraca->AdvancedSearch->SearchValue2 = @$filter["y_neraca"];
+		$this->neraca->AdvancedSearch->SearchOperator2 = @$filter["w_neraca"];
+		$this->neraca->AdvancedSearch->Save();
+
+		// Field labarugi
+		$this->labarugi->AdvancedSearch->SearchValue = @$filter["x_labarugi"];
+		$this->labarugi->AdvancedSearch->SearchOperator = @$filter["z_labarugi"];
+		$this->labarugi->AdvancedSearch->SearchCondition = @$filter["v_labarugi"];
+		$this->labarugi->AdvancedSearch->SearchValue2 = @$filter["y_labarugi"];
+		$this->labarugi->AdvancedSearch->SearchOperator2 = @$filter["w_labarugi"];
+		$this->labarugi->AdvancedSearch->Save();
 		$this->BasicSearch->setKeyword(@$filter[EW_TABLE_BASIC_SEARCH]);
 		$this->BasicSearch->setType(@$filter[EW_TABLE_BASIC_SEARCH_TYPE]);
 	}
@@ -1400,9 +1424,15 @@ class ct_level4_list extends ct_level4 {
 	// Return basic search SQL
 	function BasicSearchSQL($arKeywords, $type) {
 		$sWhere = "";
+		$this->BuildBasicSearchSQL($sWhere, $this->level1_id, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->level2_id, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->level3_id, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->level4_no, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->level4_nama, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->jurnal, $arKeywords, $type);
 		$this->BuildBasicSearchSQL($sWhere, $this->jurnal_kode, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->neraca, $arKeywords, $type);
+		$this->BuildBasicSearchSQL($sWhere, $this->labarugi, $arKeywords, $type);
 		return $sWhere;
 	}
 
@@ -1580,6 +1610,8 @@ class ct_level4_list extends ct_level4 {
 			$this->UpdateSort($this->sa_kredit, $bCtrl); // sa_kredit
 			$this->UpdateSort($this->jurnal, $bCtrl); // jurnal
 			$this->UpdateSort($this->jurnal_kode, $bCtrl); // jurnal_kode
+			$this->UpdateSort($this->neraca, $bCtrl); // neraca
+			$this->UpdateSort($this->labarugi, $bCtrl); // labarugi
 			$this->setStartRecordNumber(1); // Reset start position
 		}
 	}
@@ -1626,6 +1658,8 @@ class ct_level4_list extends ct_level4 {
 				$this->sa_kredit->setSort("");
 				$this->jurnal->setSort("");
 				$this->jurnal_kode->setSort("");
+				$this->neraca->setSort("");
+				$this->labarugi->setSort("");
 			}
 
 			// Reset start position
@@ -2158,6 +2192,10 @@ class ct_level4_list extends ct_level4 {
 		$this->jurnal->OldValue = $this->jurnal->CurrentValue;
 		$this->jurnal_kode->CurrentValue = NULL;
 		$this->jurnal_kode->OldValue = $this->jurnal_kode->CurrentValue;
+		$this->neraca->CurrentValue = 0;
+		$this->neraca->OldValue = $this->neraca->CurrentValue;
+		$this->labarugi->CurrentValue = 0;
+		$this->labarugi->OldValue = $this->labarugi->CurrentValue;
 	}
 
 	// Load basic search values
@@ -2208,6 +2246,14 @@ class ct_level4_list extends ct_level4 {
 			$this->jurnal_kode->setFormValue($objForm->GetValue("x_jurnal_kode"));
 		}
 		$this->jurnal_kode->setOldValue($objForm->GetValue("o_jurnal_kode"));
+		if (!$this->neraca->FldIsDetailKey) {
+			$this->neraca->setFormValue($objForm->GetValue("x_neraca"));
+		}
+		$this->neraca->setOldValue($objForm->GetValue("o_neraca"));
+		if (!$this->labarugi->FldIsDetailKey) {
+			$this->labarugi->setFormValue($objForm->GetValue("x_labarugi"));
+		}
+		$this->labarugi->setOldValue($objForm->GetValue("o_labarugi"));
 		if (!$this->level4_id->FldIsDetailKey && $this->CurrentAction <> "gridadd" && $this->CurrentAction <> "add")
 			$this->level4_id->setFormValue($objForm->GetValue("x_level4_id"));
 	}
@@ -2226,6 +2272,8 @@ class ct_level4_list extends ct_level4 {
 		$this->sa_kredit->CurrentValue = $this->sa_kredit->FormValue;
 		$this->jurnal->CurrentValue = $this->jurnal->FormValue;
 		$this->jurnal_kode->CurrentValue = $this->jurnal_kode->FormValue;
+		$this->neraca->CurrentValue = $this->neraca->FormValue;
+		$this->labarugi->CurrentValue = $this->labarugi->FormValue;
 	}
 
 	// Load recordset
@@ -2310,6 +2358,8 @@ class ct_level4_list extends ct_level4 {
 		$this->jurnal_kode->setDbValue($rs->fields('jurnal_kode'));
 		$this->sm_debet->setDbValue($rs->fields('sm_debet'));
 		$this->sm_kredit->setDbValue($rs->fields('sm_kredit'));
+		$this->neraca->setDbValue($rs->fields('neraca'));
+		$this->labarugi->setDbValue($rs->fields('labarugi'));
 	}
 
 	// Load DbValue from recordset
@@ -2328,6 +2378,8 @@ class ct_level4_list extends ct_level4 {
 		$this->jurnal_kode->DbValue = $row['jurnal_kode'];
 		$this->sm_debet->DbValue = $row['sm_debet'];
 		$this->sm_kredit->DbValue = $row['sm_kredit'];
+		$this->neraca->DbValue = $row['neraca'];
+		$this->labarugi->DbValue = $row['labarugi'];
 	}
 
 	// Load old record
@@ -2393,6 +2445,10 @@ class ct_level4_list extends ct_level4 {
 
 		// sm_kredit
 		$this->sm_kredit->CellCssStyle = "white-space: nowrap;";
+
+		// neraca
+		// labarugi
+
 		if ($this->RowType == EW_ROWTYPE_VIEW) { // View row
 
 		// level1_id
@@ -2521,6 +2577,22 @@ class ct_level4_list extends ct_level4 {
 		}
 		$this->jurnal_kode->ViewCustomAttributes = "";
 
+		// neraca
+		if (strval($this->neraca->CurrentValue) <> "") {
+			$this->neraca->ViewValue = $this->neraca->OptionCaption($this->neraca->CurrentValue);
+		} else {
+			$this->neraca->ViewValue = NULL;
+		}
+		$this->neraca->ViewCustomAttributes = "";
+
+		// labarugi
+		if (strval($this->labarugi->CurrentValue) <> "") {
+			$this->labarugi->ViewValue = $this->labarugi->OptionCaption($this->labarugi->CurrentValue);
+		} else {
+			$this->labarugi->ViewValue = NULL;
+		}
+		$this->labarugi->ViewCustomAttributes = "";
+
 			// level1_id
 			$this->level1_id->LinkCustomAttributes = "";
 			$this->level1_id->HrefValue = "";
@@ -2565,6 +2637,16 @@ class ct_level4_list extends ct_level4 {
 			$this->jurnal_kode->LinkCustomAttributes = "";
 			$this->jurnal_kode->HrefValue = "";
 			$this->jurnal_kode->TooltipValue = "";
+
+			// neraca
+			$this->neraca->LinkCustomAttributes = "";
+			$this->neraca->HrefValue = "";
+			$this->neraca->TooltipValue = "";
+
+			// labarugi
+			$this->labarugi->LinkCustomAttributes = "";
+			$this->labarugi->HrefValue = "";
+			$this->labarugi->TooltipValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_ADD) { // Add row
 
 			// level1_id
@@ -2691,6 +2773,14 @@ class ct_level4_list extends ct_level4 {
 			$this->jurnal_kode->EditCustomAttributes = "";
 			$this->jurnal_kode->EditValue = $this->jurnal_kode->Options(FALSE);
 
+			// neraca
+			$this->neraca->EditCustomAttributes = "";
+			$this->neraca->EditValue = $this->neraca->Options(FALSE);
+
+			// labarugi
+			$this->labarugi->EditCustomAttributes = "";
+			$this->labarugi->EditValue = $this->labarugi->Options(FALSE);
+
 			// Add refer script
 			// level1_id
 
@@ -2728,6 +2818,14 @@ class ct_level4_list extends ct_level4 {
 			// jurnal_kode
 			$this->jurnal_kode->LinkCustomAttributes = "";
 			$this->jurnal_kode->HrefValue = "";
+
+			// neraca
+			$this->neraca->LinkCustomAttributes = "";
+			$this->neraca->HrefValue = "";
+
+			// labarugi
+			$this->labarugi->LinkCustomAttributes = "";
+			$this->labarugi->HrefValue = "";
 		} elseif ($this->RowType == EW_ROWTYPE_EDIT) { // Edit row
 
 			// level1_id
@@ -2854,6 +2952,14 @@ class ct_level4_list extends ct_level4 {
 			$this->jurnal_kode->EditCustomAttributes = "";
 			$this->jurnal_kode->EditValue = $this->jurnal_kode->Options(FALSE);
 
+			// neraca
+			$this->neraca->EditCustomAttributes = "";
+			$this->neraca->EditValue = $this->neraca->Options(FALSE);
+
+			// labarugi
+			$this->labarugi->EditCustomAttributes = "";
+			$this->labarugi->EditValue = $this->labarugi->Options(FALSE);
+
 			// Edit refer script
 			// level1_id
 
@@ -2891,6 +2997,14 @@ class ct_level4_list extends ct_level4 {
 			// jurnal_kode
 			$this->jurnal_kode->LinkCustomAttributes = "";
 			$this->jurnal_kode->HrefValue = "";
+
+			// neraca
+			$this->neraca->LinkCustomAttributes = "";
+			$this->neraca->HrefValue = "";
+
+			// labarugi
+			$this->labarugi->LinkCustomAttributes = "";
+			$this->labarugi->HrefValue = "";
 		}
 		if ($this->RowType == EW_ROWTYPE_ADD ||
 			$this->RowType == EW_ROWTYPE_EDIT ||
@@ -3079,6 +3193,12 @@ class ct_level4_list extends ct_level4 {
 			// jurnal_kode
 			$this->jurnal_kode->SetDbValueDef($rsnew, $this->jurnal_kode->CurrentValue, NULL, $this->jurnal_kode->ReadOnly);
 
+			// neraca
+			$this->neraca->SetDbValueDef($rsnew, $this->neraca->CurrentValue, NULL, $this->neraca->ReadOnly);
+
+			// labarugi
+			$this->labarugi->SetDbValueDef($rsnew, $this->labarugi->CurrentValue, NULL, $this->labarugi->ReadOnly);
+
 			// Call Row Updating event
 			$bUpdateRow = $this->Row_Updating($rsold, $rsnew);
 			if ($bUpdateRow) {
@@ -3148,6 +3268,12 @@ class ct_level4_list extends ct_level4 {
 
 		// jurnal_kode
 		$this->jurnal_kode->SetDbValueDef($rsnew, $this->jurnal_kode->CurrentValue, NULL, FALSE);
+
+		// neraca
+		$this->neraca->SetDbValueDef($rsnew, $this->neraca->CurrentValue, NULL, strval($this->neraca->CurrentValue) == "");
+
+		// labarugi
+		$this->labarugi->SetDbValueDef($rsnew, $this->labarugi->CurrentValue, NULL, strval($this->labarugi->CurrentValue) == "");
 
 		// Call Row Inserting event
 		$rs = ($rsold == NULL) ? NULL : $rsold->fields;
@@ -3770,6 +3896,8 @@ ft_level4list.EmptyRow = function(infix) {
 	if (ew_ValueChanged(fobj, infix, "sa_kredit", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "jurnal", false)) return false;
 	if (ew_ValueChanged(fobj, infix, "jurnal_kode", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "neraca", false)) return false;
+	if (ew_ValueChanged(fobj, infix, "labarugi", false)) return false;
 	return true;
 }
 
@@ -3796,6 +3924,10 @@ ft_level4list.Lists["x_jurnal"] = {"LinkField":"","Ajax":null,"AutoFill":false,"
 ft_level4list.Lists["x_jurnal"].Options = <?php echo json_encode($t_level4->jurnal->Options()) ?>;
 ft_level4list.Lists["x_jurnal_kode"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
 ft_level4list.Lists["x_jurnal_kode"].Options = <?php echo json_encode($t_level4->jurnal_kode->Options()) ?>;
+ft_level4list.Lists["x_neraca"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+ft_level4list.Lists["x_neraca"].Options = <?php echo json_encode($t_level4->neraca->Options()) ?>;
+ft_level4list.Lists["x_labarugi"] = {"LinkField":"","Ajax":null,"AutoFill":false,"DisplayFields":["","","",""],"ParentFields":[],"ChildFields":[],"FilterFields":[],"Options":[],"Template":""};
+ft_level4list.Lists["x_labarugi"].Options = <?php echo json_encode($t_level4->labarugi->Options()) ?>;
 
 // Form object for search
 var CurrentSearchForm = ft_level4listsrch = new ew_Form("ft_level4listsrch");
@@ -4001,7 +4133,7 @@ $t_level4_list->ListOptions->Render("header", "left");
 		<th data-name="level1_id"><div id="elh_t_level4_level1_id" class="t_level4_level1_id"><div class="ewTableHeaderCaption"><?php echo $t_level4->level1_id->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="level1_id"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t_level4->SortUrl($t_level4->level1_id) ?>',2);"><div id="elh_t_level4_level1_id" class="t_level4_level1_id">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->level1_id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->level1_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->level1_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->level1_id->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->level1_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->level1_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
         </div></div></th>
 	<?php } ?>
 <?php } ?>		
@@ -4010,7 +4142,7 @@ $t_level4_list->ListOptions->Render("header", "left");
 		<th data-name="level2_id"><div id="elh_t_level4_level2_id" class="t_level4_level2_id"><div class="ewTableHeaderCaption"><?php echo $t_level4->level2_id->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="level2_id"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t_level4->SortUrl($t_level4->level2_id) ?>',2);"><div id="elh_t_level4_level2_id" class="t_level4_level2_id">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->level2_id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->level2_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->level2_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->level2_id->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->level2_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->level2_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
         </div></div></th>
 	<?php } ?>
 <?php } ?>		
@@ -4019,7 +4151,7 @@ $t_level4_list->ListOptions->Render("header", "left");
 		<th data-name="level3_id"><div id="elh_t_level4_level3_id" class="t_level4_level3_id"><div class="ewTableHeaderCaption"><?php echo $t_level4->level3_id->FldCaption() ?></div></div></th>
 	<?php } else { ?>
 		<th data-name="level3_id"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t_level4->SortUrl($t_level4->level3_id) ?>',2);"><div id="elh_t_level4_level3_id" class="t_level4_level3_id">
-			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->level3_id->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->level3_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->level3_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->level3_id->FldCaption() ?><?php echo $Language->Phrase("SrchLegend") ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->level3_id->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->level3_id->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
         </div></div></th>
 	<?php } ?>
 <?php } ?>		
@@ -4074,6 +4206,24 @@ $t_level4_list->ListOptions->Render("header", "left");
 	<?php } else { ?>
 		<th data-name="jurnal_kode"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t_level4->SortUrl($t_level4->jurnal_kode) ?>',2);"><div id="elh_t_level4_jurnal_kode" class="t_level4_jurnal_kode">
 			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->jurnal_kode->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->jurnal_kode->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->jurnal_kode->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+        </div></div></th>
+	<?php } ?>
+<?php } ?>		
+<?php if ($t_level4->neraca->Visible) { // neraca ?>
+	<?php if ($t_level4->SortUrl($t_level4->neraca) == "") { ?>
+		<th data-name="neraca"><div id="elh_t_level4_neraca" class="t_level4_neraca"><div class="ewTableHeaderCaption"><?php echo $t_level4->neraca->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="neraca"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t_level4->SortUrl($t_level4->neraca) ?>',2);"><div id="elh_t_level4_neraca" class="t_level4_neraca">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->neraca->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->neraca->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->neraca->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
+        </div></div></th>
+	<?php } ?>
+<?php } ?>		
+<?php if ($t_level4->labarugi->Visible) { // labarugi ?>
+	<?php if ($t_level4->SortUrl($t_level4->labarugi) == "") { ?>
+		<th data-name="labarugi"><div id="elh_t_level4_labarugi" class="t_level4_labarugi"><div class="ewTableHeaderCaption"><?php echo $t_level4->labarugi->FldCaption() ?></div></div></th>
+	<?php } else { ?>
+		<th data-name="labarugi"><div class="ewPointer" onclick="ew_Sort(event,'<?php echo $t_level4->SortUrl($t_level4->labarugi) ?>',2);"><div id="elh_t_level4_labarugi" class="t_level4_labarugi">
+			<div class="ewTableHeaderBtn"><span class="ewTableHeaderCaption"><?php echo $t_level4->labarugi->FldCaption() ?></span><span class="ewTableHeaderSort"><?php if ($t_level4->labarugi->getSort() == "ASC") { ?><span class="caret ewSortUp"></span><?php } elseif ($t_level4->labarugi->getSort() == "DESC") { ?><span class="caret"></span><?php } ?></span></div>
         </div></div></th>
 	<?php } ?>
 <?php } ?>		
@@ -4232,6 +4382,28 @@ ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_l
 </div></div>
 </span>
 <input type="hidden" data-table="t_level4" data-field="x_jurnal_kode" name="o<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" id="o<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" value="<?php echo ew_HtmlEncode($t_level4->jurnal_kode->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->neraca->Visible) { // neraca ?>
+		<td data-name="neraca">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_neraca" class="form-group t_level4_neraca">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_neraca" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_neraca" data-value-separator="<?php echo $t_level4->neraca->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_neraca" id="x<?php echo $t_level4_list->RowIndex ?>_neraca" value="{value}"<?php echo $t_level4->neraca->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_neraca" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->neraca->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_neraca") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_neraca" name="o<?php echo $t_level4_list->RowIndex ?>_neraca" id="o<?php echo $t_level4_list->RowIndex ?>_neraca" value="<?php echo ew_HtmlEncode($t_level4->neraca->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->labarugi->Visible) { // labarugi ?>
+		<td data-name="labarugi">
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_labarugi" class="form-group t_level4_labarugi">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_labarugi" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_labarugi" data-value-separator="<?php echo $t_level4->labarugi->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_labarugi" id="x<?php echo $t_level4_list->RowIndex ?>_labarugi" value="{value}"<?php echo $t_level4->labarugi->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_labarugi" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->labarugi->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_labarugi") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_labarugi" name="o<?php echo $t_level4_list->RowIndex ?>_labarugi" id="o<?php echo $t_level4_list->RowIndex ?>_labarugi" value="<?php echo ew_HtmlEncode($t_level4->labarugi->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php
@@ -4651,6 +4823,60 @@ ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_l
 <?php } ?>
 </td>
 	<?php } ?>
+	<?php if ($t_level4->neraca->Visible) { // neraca ?>
+		<td data-name="neraca"<?php echo $t_level4->neraca->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_neraca" class="form-group t_level4_neraca">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_neraca" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_neraca" data-value-separator="<?php echo $t_level4->neraca->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_neraca" id="x<?php echo $t_level4_list->RowIndex ?>_neraca" value="{value}"<?php echo $t_level4->neraca->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_neraca" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->neraca->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_neraca") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_neraca" name="o<?php echo $t_level4_list->RowIndex ?>_neraca" id="o<?php echo $t_level4_list->RowIndex ?>_neraca" value="<?php echo ew_HtmlEncode($t_level4->neraca->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_neraca" class="form-group t_level4_neraca">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_neraca" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_neraca" data-value-separator="<?php echo $t_level4->neraca->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_neraca" id="x<?php echo $t_level4_list->RowIndex ?>_neraca" value="{value}"<?php echo $t_level4->neraca->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_neraca" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->neraca->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_neraca") ?>
+</div></div>
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_neraca" class="t_level4_neraca">
+<span<?php echo $t_level4->neraca->ViewAttributes() ?>>
+<?php echo $t_level4->neraca->ListViewValue() ?></span>
+</span>
+<?php } ?>
+</td>
+	<?php } ?>
+	<?php if ($t_level4->labarugi->Visible) { // labarugi ?>
+		<td data-name="labarugi"<?php echo $t_level4->labarugi->CellAttributes() ?>>
+<?php if ($t_level4->RowType == EW_ROWTYPE_ADD) { // Add record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_labarugi" class="form-group t_level4_labarugi">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_labarugi" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_labarugi" data-value-separator="<?php echo $t_level4->labarugi->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_labarugi" id="x<?php echo $t_level4_list->RowIndex ?>_labarugi" value="{value}"<?php echo $t_level4->labarugi->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_labarugi" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->labarugi->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_labarugi") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_labarugi" name="o<?php echo $t_level4_list->RowIndex ?>_labarugi" id="o<?php echo $t_level4_list->RowIndex ?>_labarugi" value="<?php echo ew_HtmlEncode($t_level4->labarugi->OldValue) ?>">
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_EDIT) { // Edit record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_labarugi" class="form-group t_level4_labarugi">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_labarugi" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_labarugi" data-value-separator="<?php echo $t_level4->labarugi->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_labarugi" id="x<?php echo $t_level4_list->RowIndex ?>_labarugi" value="{value}"<?php echo $t_level4->labarugi->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_labarugi" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->labarugi->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_labarugi") ?>
+</div></div>
+</span>
+<?php } ?>
+<?php if ($t_level4->RowType == EW_ROWTYPE_VIEW) { // View record ?>
+<span id="el<?php echo $t_level4_list->RowCnt ?>_t_level4_labarugi" class="t_level4_labarugi">
+<span<?php echo $t_level4->labarugi->ViewAttributes() ?>>
+<?php echo $t_level4->labarugi->ListViewValue() ?></span>
+</span>
+<?php } ?>
+</td>
+	<?php } ?>
 <?php
 
 // Render list options (body, right)
@@ -4811,6 +5037,28 @@ ft_level4list.CreateAutoSuggest({"id":"x<?php echo $t_level4_list->RowIndex ?>_l
 </div></div>
 </span>
 <input type="hidden" data-table="t_level4" data-field="x_jurnal_kode" name="o<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" id="o<?php echo $t_level4_list->RowIndex ?>_jurnal_kode" value="<?php echo ew_HtmlEncode($t_level4->jurnal_kode->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->neraca->Visible) { // neraca ?>
+		<td data-name="neraca">
+<span id="el$rowindex$_t_level4_neraca" class="form-group t_level4_neraca">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_neraca" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_neraca" data-value-separator="<?php echo $t_level4->neraca->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_neraca" id="x<?php echo $t_level4_list->RowIndex ?>_neraca" value="{value}"<?php echo $t_level4->neraca->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_neraca" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->neraca->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_neraca") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_neraca" name="o<?php echo $t_level4_list->RowIndex ?>_neraca" id="o<?php echo $t_level4_list->RowIndex ?>_neraca" value="<?php echo ew_HtmlEncode($t_level4->neraca->OldValue) ?>">
+</td>
+	<?php } ?>
+	<?php if ($t_level4->labarugi->Visible) { // labarugi ?>
+		<td data-name="labarugi">
+<span id="el$rowindex$_t_level4_labarugi" class="form-group t_level4_labarugi">
+<div id="tp_x<?php echo $t_level4_list->RowIndex ?>_labarugi" class="ewTemplate"><input type="radio" data-table="t_level4" data-field="x_labarugi" data-value-separator="<?php echo $t_level4->labarugi->DisplayValueSeparatorAttribute() ?>" name="x<?php echo $t_level4_list->RowIndex ?>_labarugi" id="x<?php echo $t_level4_list->RowIndex ?>_labarugi" value="{value}"<?php echo $t_level4->labarugi->EditAttributes() ?>></div>
+<div id="dsl_x<?php echo $t_level4_list->RowIndex ?>_labarugi" data-repeatcolumn="5" class="ewItemList" style="display: none;"><div>
+<?php echo $t_level4->labarugi->RadioButtonListHtml(FALSE, "x{$t_level4_list->RowIndex}_labarugi") ?>
+</div></div>
+</span>
+<input type="hidden" data-table="t_level4" data-field="x_labarugi" name="o<?php echo $t_level4_list->RowIndex ?>_labarugi" id="o<?php echo $t_level4_list->RowIndex ?>_labarugi" value="<?php echo ew_HtmlEncode($t_level4->labarugi->OldValue) ?>">
 </td>
 	<?php } ?>
 <?php

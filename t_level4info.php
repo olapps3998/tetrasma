@@ -25,6 +25,8 @@ class ct_level4 extends cTable {
 	var $jurnal_kode;
 	var $sm_debet;
 	var $sm_kredit;
+	var $neraca;
+	var $labarugi;
 
 	//
 	// Table class constructor
@@ -126,6 +128,20 @@ class ct_level4 extends cTable {
 		$this->sm_kredit->Sortable = FALSE; // Allow sort
 		$this->sm_kredit->FldDefaultErrMsg = $Language->Phrase("IncorrectFloat");
 		$this->fields['sm_kredit'] = &$this->sm_kredit;
+
+		// neraca
+		$this->neraca = new cField('t_level4', 't_level4', 'x_neraca', 'neraca', '`neraca`', '`neraca`', 16, -1, FALSE, '`neraca`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'RADIO');
+		$this->neraca->Sortable = TRUE; // Allow sort
+		$this->neraca->OptionCount = 2;
+		$this->neraca->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['neraca'] = &$this->neraca;
+
+		// labarugi
+		$this->labarugi = new cField('t_level4', 't_level4', 'x_labarugi', 'labarugi', '`labarugi`', '`labarugi`', 16, -1, FALSE, '`labarugi`', FALSE, FALSE, FALSE, 'FORMATTED TEXT', 'RADIO');
+		$this->labarugi->Sortable = TRUE; // Allow sort
+		$this->labarugi->OptionCount = 2;
+		$this->labarugi->FldDefaultErrMsg = $Language->Phrase("IncorrectInteger");
+		$this->fields['labarugi'] = &$this->labarugi;
 	}
 
 	// Set Field Visibility
@@ -364,6 +380,8 @@ class ct_level4 extends cTable {
 			$sWhere = " " . str_replace(array("(",")"), array("",""), $sWhere) . " ";
 		if ($sOrderBy <> "")
 			$sOrderBy = " " . str_replace(array("(",")"), array("",""), $sOrderBy) . " ";
+		if ($this->BasicSearch->getKeyword() <> "")
+			return TRUE;
 		if ($this->level1_id->AdvancedSearch->SearchValue <> "" ||
 			$this->level1_id->AdvancedSearch->SearchValue2 <> "" ||
 			strpos($sWhere, " " . $this->level1_id->FldVirtualExpression . " ") !== FALSE)
@@ -724,6 +742,8 @@ class ct_level4 extends cTable {
 		$this->jurnal_kode->setDbValue($rs->fields('jurnal_kode'));
 		$this->sm_debet->setDbValue($rs->fields('sm_debet'));
 		$this->sm_kredit->setDbValue($rs->fields('sm_kredit'));
+		$this->neraca->setDbValue($rs->fields('neraca'));
+		$this->labarugi->setDbValue($rs->fields('labarugi'));
 	}
 
 	// Render list row values
@@ -751,7 +771,10 @@ class ct_level4 extends cTable {
 		// sm_kredit
 		$this->sm_kredit->CellCssStyle = "white-space: nowrap;";
 
+		// neraca
+		// labarugi
 		// level4_id
+
 		$this->level4_id->ViewValue = $this->level4_id->CurrentValue;
 		$this->level4_id->ViewCustomAttributes = "";
 
@@ -893,6 +916,22 @@ class ct_level4 extends cTable {
 		$this->sm_kredit->CellCssStyle .= "text-align: right;";
 		$this->sm_kredit->ViewCustomAttributes = "";
 
+		// neraca
+		if (strval($this->neraca->CurrentValue) <> "") {
+			$this->neraca->ViewValue = $this->neraca->OptionCaption($this->neraca->CurrentValue);
+		} else {
+			$this->neraca->ViewValue = NULL;
+		}
+		$this->neraca->ViewCustomAttributes = "";
+
+		// labarugi
+		if (strval($this->labarugi->CurrentValue) <> "") {
+			$this->labarugi->ViewValue = $this->labarugi->OptionCaption($this->labarugi->CurrentValue);
+		} else {
+			$this->labarugi->ViewValue = NULL;
+		}
+		$this->labarugi->ViewCustomAttributes = "";
+
 		// level4_id
 		$this->level4_id->LinkCustomAttributes = "";
 		$this->level4_id->HrefValue = "";
@@ -952,6 +991,16 @@ class ct_level4 extends cTable {
 		$this->sm_kredit->LinkCustomAttributes = "";
 		$this->sm_kredit->HrefValue = "";
 		$this->sm_kredit->TooltipValue = "";
+
+		// neraca
+		$this->neraca->LinkCustomAttributes = "";
+		$this->neraca->HrefValue = "";
+		$this->neraca->TooltipValue = "";
+
+		// labarugi
+		$this->labarugi->LinkCustomAttributes = "";
+		$this->labarugi->HrefValue = "";
+		$this->labarugi->TooltipValue = "";
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -1036,6 +1085,14 @@ class ct_level4 extends cTable {
 		$this->sm_kredit->PlaceHolder = ew_RemoveHtml($this->sm_kredit->FldCaption());
 		if (strval($this->sm_kredit->EditValue) <> "" && is_numeric($this->sm_kredit->EditValue)) $this->sm_kredit->EditValue = ew_FormatNumber($this->sm_kredit->EditValue, -2, -2, -2, -2);
 
+		// neraca
+		$this->neraca->EditCustomAttributes = "";
+		$this->neraca->EditValue = $this->neraca->Options(FALSE);
+
+		// labarugi
+		$this->labarugi->EditCustomAttributes = "";
+		$this->labarugi->EditValue = $this->labarugi->Options(FALSE);
+
 		// Call Row Rendered event
 		$this->Row_Rendered();
 	}
@@ -1072,6 +1129,8 @@ class ct_level4 extends cTable {
 					if ($this->sa_kredit->Exportable) $Doc->ExportCaption($this->sa_kredit);
 					if ($this->jurnal->Exportable) $Doc->ExportCaption($this->jurnal);
 					if ($this->jurnal_kode->Exportable) $Doc->ExportCaption($this->jurnal_kode);
+					if ($this->neraca->Exportable) $Doc->ExportCaption($this->neraca);
+					if ($this->labarugi->Exportable) $Doc->ExportCaption($this->labarugi);
 				} else {
 					if ($this->level1_id->Exportable) $Doc->ExportCaption($this->level1_id);
 					if ($this->level2_id->Exportable) $Doc->ExportCaption($this->level2_id);
@@ -1082,6 +1141,8 @@ class ct_level4 extends cTable {
 					if ($this->sa_kredit->Exportable) $Doc->ExportCaption($this->sa_kredit);
 					if ($this->jurnal->Exportable) $Doc->ExportCaption($this->jurnal);
 					if ($this->jurnal_kode->Exportable) $Doc->ExportCaption($this->jurnal_kode);
+					if ($this->neraca->Exportable) $Doc->ExportCaption($this->neraca);
+					if ($this->labarugi->Exportable) $Doc->ExportCaption($this->labarugi);
 				}
 				$Doc->EndExportRow();
 			}
@@ -1122,6 +1183,8 @@ class ct_level4 extends cTable {
 						if ($this->sa_kredit->Exportable) $Doc->ExportField($this->sa_kredit);
 						if ($this->jurnal->Exportable) $Doc->ExportField($this->jurnal);
 						if ($this->jurnal_kode->Exportable) $Doc->ExportField($this->jurnal_kode);
+						if ($this->neraca->Exportable) $Doc->ExportField($this->neraca);
+						if ($this->labarugi->Exportable) $Doc->ExportField($this->labarugi);
 					} else {
 						if ($this->level1_id->Exportable) $Doc->ExportField($this->level1_id);
 						if ($this->level2_id->Exportable) $Doc->ExportField($this->level2_id);
@@ -1132,6 +1195,8 @@ class ct_level4 extends cTable {
 						if ($this->sa_kredit->Exportable) $Doc->ExportField($this->sa_kredit);
 						if ($this->jurnal->Exportable) $Doc->ExportField($this->jurnal);
 						if ($this->jurnal_kode->Exportable) $Doc->ExportField($this->jurnal_kode);
+						if ($this->neraca->Exportable) $Doc->ExportField($this->neraca);
+						if ($this->labarugi->Exportable) $Doc->ExportField($this->labarugi);
 					}
 					$Doc->EndExportRow();
 				}

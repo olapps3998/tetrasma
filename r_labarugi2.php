@@ -313,7 +313,7 @@ Page_Rendering();
 <?php } ?>
 <?php
 $a_namabln = array(
-		1 => "Jan",
+	1 => "Jan",
 		"Feb",
 		"Mar",
 		"Apr",
@@ -325,6 +325,16 @@ $a_namabln = array(
 		"Okt",
 		"Nov",
 		"Des");
+?>
+
+<h3>Laporan Laba Rugi</h3>
+<h4>Periode <?php echo ($_GET["bulan"] != 0 ? $a_namabln[$_GET["bulan"]] : "Tahun")." ".$_GET["tahun"];?></h4>
+<br>
+<table border="0" class="table ewTable">
+
+<?php
+// akun pendapatan
+$pendapatan = 0;
 $q = "
 select
 	a.*
@@ -339,15 +349,8 @@ $q .= "
 $q .= "year(tgl) = ".$_GET["tahun"].") b on a.level4_id = b.akun_id
 ";
 $rs = Conn()->Execute($q);
-?>
-<h3>Laporan Laba Rugi</h3>
-<h4>Periode <?php echo ($_GET["bulan"] != 0 ? $a_namabln[$_GET["bulan"]] : "Tahun")." ".$_GET["tahun"];?></h4>
-<br>
-<table border="0" class="table ewTable">
-<?php
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];
-	$total = 0;
 	?>
 	<tr><td colspan="4"><?php echo $rs->fields["level1_nama"];?></td></tr>
 	<?php
@@ -362,15 +365,65 @@ if (!$rs->EOF) {
 		?>
 		<tr><td>&nbsp;</td><td><?php echo $nama_akun;?></td><td align="right"><?php echo number_format($subtotal);?></td><td>&nbsp;</td></tr>
 		<?php
-		$total += $subtotal;
+		$pendapatan += $subtotal;
 	}
 	?>
-	<tr><td colspan="3">Total Pendapatan</td><td align="right"><?php echo number_format($total);?></td></tr>
+	<tr><td colspan="3">Total Pendapatan</td><td align="right"><?php echo number_format($pendapatan);?></td></tr>
 	<?php
 }
 ?>
+
 <tr><td colspan="4">&nbsp;</td></tr>
+
 <?php
+// akun hpp
+$hpp = 0;
+$q = "
+select
+	a.*
+	, b.*
+from
+	v_summary_lr_5 a
+	left join (select * from v_saldo_mutasi_tgl where ";
+if ($_GET["bulan"] != 0) {
+$q .= "
+	month(tgl) = ".$_GET["bulan"]." and ";
+}
+$q .= "year(tgl) = ".$_GET["tahun"].") b on a.level4_id = b.akun_id
+";
+$rs = Conn()->Execute($q);
+if (!$rs->EOF) {
+	$level1_nama = $rs->fields["level1_nama"];	
+	?>
+	<tr><td colspan="4"><?php echo $rs->fields["level1_nama"];?></td></tr>
+	<?php
+	while (!$rs->EOF) {
+		$level4_id = $rs->fields["level4_id"];
+		$nama_akun = $rs->fields["nama_akun"];
+		$subtotal = 0;
+		while($level4_id == $rs->fields["level4_id"] and !$rs->EOF) {
+			$subtotal += $rs->fields["sm_debet"] - $rs->fields["sm_kredit"];
+			$rs->MoveNext();
+		}
+		?>
+		<tr><td>&nbsp;</td><td><?php echo $nama_akun;?></td><td align="right"><?php echo number_format($subtotal);?></td><td>&nbsp;</td></tr>
+		<?php
+		$hpp += $subtotal;
+	}
+	?>
+	<tr><td colspan="3">Total HPP</td><td align="right"><?php echo number_format($hpp);?></td></tr>
+	<?php
+}
+$laba_kotor = $pendapatan - $hpp;
+?>
+<tr><td colspan="4">&nbsp;</td></tr>
+<tr><td colspan="3">Laba Kotor</td><td align="right"><?php echo number_format($laba_kotor);?></td></tr>
+
+<tr><td colspan="4">&nbsp;</td></tr>
+
+<?php
+// akun biaya umum dan administrasi
+$biaya = 0;
 $q = "
 select
 	a.*
@@ -387,7 +440,6 @@ $q .= "year(tgl) = ".$_GET["tahun"].") b on a.level4_id = b.akun_id
 $rs = Conn()->Execute($q);
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];
-	$total2 = 0;
 	?>
 	<tr><td colspan="4"><?php echo $rs->fields["level1_nama"];?></td></tr>
 	<?php
@@ -402,16 +454,18 @@ if (!$rs->EOF) {
 		?>
 		<tr><td>&nbsp;</td><td><?php echo $nama_akun;?></td><td align="right"><?php echo number_format(abs($subtotal));?></td><td>&nbsp;</td></tr>
 		<?php
-		$total2 += $subtotal;
+		$biaya += $subtotal;
 	}
 	?>
-	<tr><td colspan="3">Total Biaya</td><td align="right"><?php echo number_format(abs($total2));?></td></tr>
+	<tr><td colspan="3">Total Biaya</td><td align="right"><?php echo number_format(abs($biaya));?></td></tr>
 	<?php
 }
 ?>
+
 <tr><td colspan="4">&nbsp;</td></tr>
+
 <?php
-$lr = $total - abs($total2);
+$lr = $laba_kotor - abs($biaya);
 if ($lr == 0) {
 	?>
 	<tr><td colspan="3">Laba / Rugi</td><td align="right"><?php echo number_format($lr);?></td></tr>

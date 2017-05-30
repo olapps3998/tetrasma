@@ -929,6 +929,20 @@
       <field id="sm_kredit">
         <phrase id="fldcaption" value="Saldo Mutasi Kredit" />
       </field>
+      <field id="neraca">
+        <phrase id="fldcaption" value="Neraca" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="Tidak" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="Ya" />
+      </field>
+      <field id="labarugi">
+        <phrase id="fldcaption" value="Laba / Rugi" />
+        <phrase id="fldtagvalue1" value="0" />
+        <phrase id="fldtagcaption1" value="Tidak" />
+        <phrase id="fldtagvalue2" value="1" />
+        <phrase id="fldtagcaption2" value="Ya" />
+      </field>
     </table>
     <table id="t_user">
       <phrase id="tblcaption" value="User" />
@@ -1066,6 +1080,12 @@
       </field>
       <field id="nama_akun">
         <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="neraca">
+        <phrase id="fldcaption" value="neraca" />
+      </field>
+      <field id="labarugi">
+        <phrase id="fldcaption" value="labarugi" />
       </field>
     </table>
     <table id="v_bukubesar">

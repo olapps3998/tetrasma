@@ -7,7 +7,9 @@ Select t_level4.level4_id As level4_id,
   Concat(t_level1.level1_no, '.', t_level2.level2_no, '.', t_level3.level3_no,
   '.', t_level4.level4_no, ' - ', t_level4.level4_nama) As no_nama_akun,
   t_level4.jurnal As jurnal,
-  t_level4.jurnal_kode As jurnal_kode
+  t_level4.jurnal_kode As jurnal_kode,
+  neraca,
+  labarugi
 From ((t_level4
   Join t_level1 On t_level4.level1_id = t_level1.level1_id)
   Join t_level2 On t_level4.level2_id = t_level2.level2_id)
@@ -212,7 +214,7 @@ SELECT a.level1_nama AS level1_nama,
   b.level4_id AS level4_id
 FROM t_level1 a
   LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
-WHERE a.level1_no = 4
+WHERE a.level1_no = 4 AND b.labarugi = 1
 ORDER BY b.no_akun;
 
 create view v_summary_lr_6 as
@@ -221,5 +223,14 @@ SELECT a.level1_nama AS level1_nama,
   b.level4_id AS level4_id
 FROM t_level1 a
   LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
-WHERE a.level1_no = 6
+WHERE a.level1_no = 6 AND b.labarugi = 1
+ORDER BY b.no_akun;
+
+create view v_summary_lr_5 as
+SELECT a.level1_nama AS level1_nama,
+  b.nama_akun AS nama_akun,
+  b.level4_id AS level4_id
+FROM t_level1 a
+  LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
+WHERE a.level1_no = 5 AND b.labarugi = 1
 ORDER BY b.no_akun;
