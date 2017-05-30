@@ -1197,7 +1197,16 @@ while (!$rs->EOF) {
 	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit">Submit</button>
 </form>
 ]]></CustomScript>
-  <CustomScript ScriptType="Template" ScriptCodeType="Table" ScriptName="Content" ScriptCtrlID="custom" ScriptL1Key="r_labarugi2.php" ScriptL2Key=""><![CDATA[<?php
+  <CustomScript ScriptType="Template" ScriptCodeType="Table" ScriptName="Content" ScriptCtrlID="custom" ScriptL1Key="r_labarugi2.php" ScriptL2Key=""><![CDATA[<style>
+td {
+	padding: 3px;
+}
+table {
+	width: 50%;
+}
+tr:nth-child(even) {background-color: #f2f2f2}
+</style>
+<?php
 $a_namabln = array(
 	1 => "Jan",
 		"Feb",
@@ -1216,7 +1225,8 @@ $a_namabln = array(
 <h3>Laporan Laba Rugi</h3>
 <h4>Periode <?php echo ($_GET["bulan"] != 0 ? $a_namabln[$_GET["bulan"]] : "Tahun")." ".$_GET["tahun"];?></h4>
 <br>
-<table border="0" class="table ewTable">
+<!--<table border="0" width="37%">--> <!--class="table ewTable">-->
+<table> <!--class="table ewTable">-->
 
 <?php
 // akun pendapatan
@@ -1238,7 +1248,7 @@ $rs = Conn()->Execute($q);
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];
 	?>
-	<tr><td colspan="4"><?php echo $rs->fields["level1_nama"];?></td></tr>
+	<tr><td colspan="4"><b><?php echo $rs->fields["level1_nama"];?></b></td></tr>
 	<?php
 	while (!$rs->EOF) {
 		$level4_id = $rs->fields["level4_id"];
@@ -1249,12 +1259,13 @@ if (!$rs->EOF) {
 			$rs->MoveNext();
 		}
 		?>
-		<tr><td>&nbsp;</td><td><?php echo $nama_akun;?></td><td align="right"><?php echo number_format($subtotal);?></td><td>&nbsp;</td></tr>
+		<!--<tr><td width="2%">&nbsp;</td><td width="15%"><?php echo $nama_akun;?></td><td width="10%" align="right"><?php echo number_format($subtotal);?></td><td width="10%">&nbsp;</td></tr>-->
+		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo number_format($subtotal);?></td><td>&nbsp;</td></tr>
 		<?php
 		$pendapatan += $subtotal;
 	}
 	?>
-	<tr><td colspan="3">Total Pendapatan</td><td align="right"><?php echo number_format($pendapatan);?></td></tr>
+	<tr><td colspan="3"><b>Total Pendapatan</b></td><td align="right"><b><?php echo number_format($pendapatan);?></b></td></tr>
 	<?php
 }
 ?>
@@ -1281,7 +1292,7 @@ $rs = Conn()->Execute($q);
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];	
 	?>
-	<tr><td colspan="4"><?php echo $rs->fields["level1_nama"];?></td></tr>
+	<tr><td colspan="4"><b><?php echo $rs->fields["level1_nama"];?></b></td></tr>
 	<?php
 	while (!$rs->EOF) {
 		$level4_id = $rs->fields["level4_id"];
@@ -1297,13 +1308,13 @@ if (!$rs->EOF) {
 		$hpp += $subtotal;
 	}
 	?>
-	<tr><td colspan="3">Total HPP</td><td align="right"><?php echo number_format($hpp);?></td></tr>
+	<tr><td colspan="3"><b>Total HPP</b></td><td align="right"><b><?php echo number_format($hpp);?></b></td></tr>
 	<?php
 }
 $laba_kotor = $pendapatan - $hpp;
 ?>
 <tr><td colspan="4">&nbsp;</td></tr>
-<tr><td colspan="3">Laba Kotor</td><td align="right"><?php echo number_format($laba_kotor);?></td></tr>
+<tr><td colspan="3"><b>Laba Kotor</b></td><td align="right"><b><?php echo number_format($laba_kotor);?></b></td></tr>
 
 <tr><td colspan="4">&nbsp;</td></tr>
 
@@ -1327,7 +1338,7 @@ $rs = Conn()->Execute($q);
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];
 	?>
-	<tr><td colspan="4"><?php echo $rs->fields["level1_nama"];?></td></tr>
+	<tr><td colspan="4"><b><?php echo $rs->fields["level1_nama"];?></b></td></tr>
 	<?php
 	while (!$rs->EOF) {
 		$level4_id = $rs->fields["level4_id"];
@@ -1343,7 +1354,7 @@ if (!$rs->EOF) {
 		$biaya += $subtotal;
 	}
 	?>
-	<tr><td colspan="3">Total Biaya</td><td align="right"><?php echo number_format(abs($biaya));?></td></tr>
+	<tr><td colspan="3"><b>Total Biaya</b></td><td align="right"><b><?php echo number_format(abs($biaya));?></b></td></tr>
 	<?php
 }
 ?>
@@ -1354,17 +1365,17 @@ if (!$rs->EOF) {
 $lr = $laba_kotor - abs($biaya);
 if ($lr == 0) {
 	?>
-	<tr><td colspan="3">Laba / Rugi</td><td align="right"><?php echo number_format($lr);?></td></tr>
+	<tr><td colspan="3"><b>Laba / Rugi</b></td><td align="right"><b><?php echo number_format($lr);?></b></td></tr>
 	<?php
 }
 elseif ($lr > 0) {
 	?>
-	<tr><td colspan="3">Laba</td><td align="right"><?php echo number_format($lr);?></td></tr>
+	<tr><td colspan="3"><b>Laba</b></td><td align="right"><b><?php echo number_format($lr);?></b></td></tr>
 	<?php
 }
 elseif ($lr < 0) {
 	?>
-	<tr><td colspan="3">Rugi</td><td align="right"><?php echo "(".number_format(abs($lr)).")";?></td></tr>
+	<tr><td colspan="3"><b>Rugi</b></td><td align="right"><b><?php echo "(".number_format(abs($lr)).")";?></b></td></tr>
 	<?php
 }
 ?>
