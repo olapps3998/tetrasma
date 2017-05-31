@@ -312,14 +312,15 @@ Page_Rendering();
 </div>
 <?php } ?>
 <style>
-td {
-	padding: 3px;
-}
-table {
-	width: 50%;
-}
-tr:nth-child(even) {background-color: #f2f2f2}
+	td {
+		padding: 3px;
+	}
+	table {
+		width: 50%;
+	}
+	tr:nth-child(even) {background-color: #f2f2f2}
 </style>
+
 <?php
 $a_namabln = array(
 	1 => "Jan",
@@ -339,8 +340,8 @@ $a_namabln = array(
 <h3>Laporan Laba Rugi</h3>
 <h4>Periode <?php echo ($_GET["bulan"] != 0 ? $a_namabln[$_GET["bulan"]] : "Tahun")." ".$_GET["tahun"];?></h4>
 <br>
-<!--<table border="0" width="37%">--> <!--class="table ewTable">-->
-<table> <!--class="table ewTable">-->
+
+<table>
 
 <?php
 // akun pendapatan
@@ -373,7 +374,6 @@ if (!$rs->EOF) {
 			$rs->MoveNext();
 		}
 		?>
-		<!--<tr><td width="2%">&nbsp;</td><td width="15%"><?php echo $nama_akun;?></td><td width="10%" align="right"><?php echo number_format($subtotal);?></td><td width="10%">&nbsp;</td></tr>-->
 		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo number_format($subtotal);?></td><td>&nbsp;</td></tr>
 		<?php
 		$pendapatan += $subtotal;
@@ -484,12 +484,12 @@ if ($lr == 0) {
 }
 elseif ($lr > 0) {
 	?>
-	<tr><td colspan="3"><b>Laba</b></td><td align="right"><b><?php echo number_format($lr);?></b></td></tr>
+	<tr><td colspan="3"><b>Laba / Rugi</b></td><td align="right"><b><?php echo number_format($lr);?></b></td></tr>
 	<?php
 }
 elseif ($lr < 0) {
 	?>
-	<tr><td colspan="3"><b>Rugi</b></td><td align="right"><b><?php echo "(".number_format(abs($lr)).")";?></b></td></tr>
+	<tr><td colspan="3"><b>Laba / Rugi</b></td><td align="right"><b><?php echo "(".number_format(abs($lr)).")";?></b></td></tr>
 	<?php
 }
 ?>
