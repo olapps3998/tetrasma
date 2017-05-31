@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<configuration date="2017/05/30" author="e.World Technology Ltd.">
-  <project id="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" file="D:\xampp\htdocs\tetrasma\tetrasma.prp" name="tetrasma" product="PHPReportMaker" version="10.0" datetime="2017/05/30 16:05:07" languagefolder="phprptlang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
+<configuration date="2017/05/31" author="e.World Technology Ltd.">
+  <project id="{0947E56A-59DA-4545-A2FF-20A7F7239C7D}" file="D:\xampp\htdocs\tetrasma\tetrasma.prp" name="tetrasma" product="PHPReportMaker" version="10.0" datetime="2017/05/31 20:14:21" languagefolder="phprptlang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
     <table id="audittrail" name="audittrail" caption="audittrail" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_anggota" name="t_anggota" caption="t anggota" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_detail" name="t_detail" caption="t detail" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
@@ -29,5 +29,6 @@
     <table id="v_saldo_mutasi_tgl" name="v_saldo_mutasi_tgl" caption="v saldo mutasi tgl" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_summary_lr_4" name="v_summary_lr_4" caption="v summary lr 4" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_summary_lr_6" name="v_summary_lr_6" caption="v summary lr 6" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="v_summary_lr_5" name="v_summary_lr_5" caption="v summary lr 5" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
   </project>
 </configuration>
