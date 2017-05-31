@@ -1,3 +1,6 @@
+
+
+-- 1
 -- untuk keperluan view akun keseluruhan
 CREATE VIEW `v_akun_jurnal` AS
 Select t_level4.level4_id As level4_id,
@@ -15,6 +18,8 @@ From ((t_level4
   Join t_level2 On t_level4.level2_id = t_level2.level2_id)
   Join t_level3 On t_level4.level3_id = t_level3.level3_id;
 
+  
+-- 2
 -- untuk data jurnal kas dan bank
 CREATE VIEW `v_kasbank_jurnal` AS  
 Select Null As detail_id,
@@ -29,6 +34,8 @@ Select Null As detail_id,
   End) As kredit
 From t_jurnal;
 
+
+-- 3
 CREATE VIEW `v_kasbank_detail` AS
 Select a.detail_id As detail_id,
   a.jurnal_id As jurnal_id,
@@ -40,7 +47,9 @@ Select a.detail_id As detail_id,
   (Case When (a.dk = 1) Then a.nilai Else 0 End) As kredit
 From t_detail a
   Left Join t_jurnal b On a.jurnal_id = b.jurnal_id;
+
   
+-- 4
 CREATE VIEW `v_kasbank` AS
 Select v_kasbank_jurnal.detail_id As detail_id,
   v_kasbank_jurnal.jurnal_id As jurnal_id,
@@ -62,6 +71,8 @@ Select v_kasbank_detail.detail_id As detail_id,
   v_kasbank_detail.kredit As kredit
 From v_kasbank_detail;
 
+
+-- 5
 -- untuk detail data jurnal memorial
 CREATE VIEW `v_memorial` AS
 Select a.detailm_id As detailm_id,
@@ -76,6 +87,7 @@ From t_detailm a
   Left Join t_jurnalm b On a.jurnalm_id = b.jurnalm_id;
 
   
+-- 6
 -- untuk semua data jurnal, gabungan antara jurnal kas & bank dan jurnal memorial
 CREATE VIEW `v_kasbank_memorial` AS
 Select v_kasbank.detail_id As detail_id,
@@ -98,6 +110,8 @@ Select v_memorial.detailm_id As detailm_id,
   v_memorial.nilaim_kredit As nilaim_kredit
 From v_memorial;
 
+
+-- 7
 -- untuk laporan buku besar, tapi keliatannya masih salah
 CREATE VIEW `v_bukubesar` AS
 SELECT a.detail_id AS detail_id,
@@ -118,7 +132,9 @@ SELECT a.detail_id AS detail_id,
 FROM (v_kasbank_memorial a
   LEFT JOIN t_level4 b ON a.akun_id = b.level4_id)
   LEFT JOIN v_akun_jurnal c ON a.akun_id = c.level4_id;
+
   
+-- 8  
 create view v_saldo_mutasi as
 SELECT v_kasbank_memorial.akun_id AS akun_id,
   (CASE
@@ -132,6 +148,8 @@ SELECT v_kasbank_memorial.akun_id AS akun_id,
 FROM v_kasbank_memorial
 GROUP BY v_kasbank_memorial.akun_id;
 
+
+-- 9
 create view v_summary_bukubesar_1 as
 SELECT c.level1_nama AS level1_nama,
   a.nama_akun AS nama_akun,
@@ -144,6 +162,8 @@ FROM (v_akun_jurnal a
 WHERE Left(a.no_akun, 1) = '1'
 ORDER BY a.no_akun;
 
+
+-- 10
 create view v_summary_bukubesar_6 as
 SELECT c.level1_nama AS level1_nama,
   a.nama_akun AS nama_akun,
@@ -156,6 +176,8 @@ FROM (v_akun_jurnal a
 WHERE Left(a.no_akun, 1) = '6'
 ORDER BY a.no_akun;
 
+
+-- 11
 create view v_summary_bukubesar_3 as
 SELECT c.level1_nama AS level1_nama,
   a.nama_akun AS nama_akun,
@@ -168,6 +190,8 @@ FROM (v_akun_jurnal a
 WHERE Left(a.no_akun, 1) = '3'
 ORDER BY a.no_akun;
 
+
+-- 12
 create view v_summary_bukubesar_4 as
 SELECT c.level1_nama AS level1_nama,
   a.nama_akun AS nama_akun,
@@ -180,6 +204,8 @@ FROM (v_akun_jurnal a
 WHERE Left(a.no_akun, 1) = '4'
 ORDER BY a.no_akun;
 
+
+-- 13
 create view v_summary_bukubesar as
 Select *
 From v_summary_bukubesar_1
@@ -193,6 +219,8 @@ union
 Select *
 From v_summary_bukubesar_4;
 
+
+-- 14
 create view v_saldo_mutasi_tgl as
 SELECT v_kasbank_memorial.akun_id AS akun_id,
   v_kasbank_memorial.tgl AS tgl,
@@ -207,7 +235,9 @@ SELECT v_kasbank_memorial.akun_id AS akun_id,
 FROM v_kasbank_memorial
 GROUP BY v_kasbank_memorial.akun_id,
   v_kasbank_memorial.tgl;
+
   
+-- 15  
 create view v_summary_lr_4 as
 SELECT a.level1_nama AS level1_nama,
   b.nama_akun AS nama_akun,
@@ -217,6 +247,8 @@ FROM t_level1 a
 WHERE a.level1_no = 4 AND b.labarugi = 1
 ORDER BY b.no_akun;
 
+
+-- 16
 create view v_summary_lr_6 as
 SELECT a.level1_nama AS level1_nama,
   b.nama_akun AS nama_akun,
@@ -226,6 +258,8 @@ FROM t_level1 a
 WHERE a.level1_no = 6 AND b.labarugi = 1
 ORDER BY b.no_akun;
 
+
+-- 17
 create view v_summary_lr_5 as
 SELECT a.level1_nama AS level1_nama,
   b.nama_akun AS nama_akun,
@@ -234,3 +268,117 @@ FROM t_level1 a
   LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
 WHERE a.level1_no = 5 AND b.labarugi = 1
 ORDER BY b.no_akun;
+
+
+-- 18
+create view v_akun_1 as
+SELECT a.level1_nama AS level1_nama,
+  b.nama_akun AS nama_akun,
+  b.level4_id AS level4_id
+FROM t_level1 a
+  LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
+WHERE a.level1_no = 1
+ORDER BY b.no_akun;
+
+
+-- 19
+create view v_akun_1_sum as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  b.akun_id AS akun_id,
+  b.tgl AS tgl,
+  b.sm_debet AS sm_debet,
+  b.sm_kredit AS sm_kredit
+FROM v_akun_1 a
+  LEFT JOIN v_saldo_mutasi_tgl b ON a.level4_id = b.akun_id;
+
+  
+-- 20  
+create view v_akun_1_sum_nrc as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  a.akun_id AS akun_id,
+  a.tgl AS tgl,
+  a.sm_debet AS sm_debet,
+  a.sm_kredit AS sm_kredit
+FROM v_akun_1_sum a
+  LEFT JOIN t_level4 b ON a.level4_id = b.level4_id
+WHERE b.neraca = 1;
+
+
+-- 21
+create view v_akun_2 as
+SELECT a.level1_nama AS level1_nama,
+  b.nama_akun AS nama_akun,
+  b.level4_id AS level4_id
+FROM t_level1 a
+  LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
+WHERE a.level1_no = 2
+ORDER BY b.no_akun;
+
+
+-- 22
+create view v_akun_2_sum as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  b.akun_id AS akun_id,
+  b.tgl AS tgl,
+  b.sm_debet AS sm_debet,
+  b.sm_kredit AS sm_kredit
+FROM v_akun_2 a
+  LEFT JOIN v_saldo_mutasi_tgl b ON a.level4_id = b.akun_id;
+
+  
+-- 23
+create view v_akun_2_sum_nrc as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  a.akun_id AS akun_id,
+  a.tgl AS tgl,
+  a.sm_debet AS sm_debet,
+  a.sm_kredit AS sm_kredit
+FROM v_akun_2_sum a
+  LEFT JOIN t_level4 b ON a.level4_id = b.level4_id
+WHERE b.neraca = 1;
+
+
+-- 24
+create view v_akun_3 as
+SELECT a.level1_nama AS level1_nama,
+  b.nama_akun AS nama_akun,
+  b.level4_id AS level4_id
+FROM t_level1 a
+  LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
+WHERE a.level1_no = 3
+ORDER BY b.no_akun;
+
+
+-- 25
+create view v_akun_3_sum as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  b.akun_id AS akun_id,
+  b.tgl AS tgl,
+  b.sm_debet AS sm_debet,
+  b.sm_kredit AS sm_kredit
+FROM v_akun_3 a
+  LEFT JOIN v_saldo_mutasi_tgl b ON a.level4_id = b.akun_id;
+
+  
+-- 26  
+create view v_akun_3_sum_nrc as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  a.akun_id AS akun_id,
+  a.tgl AS tgl,
+  a.sm_debet AS sm_debet,
+  a.sm_kredit AS sm_kredit
+FROM v_akun_3_sum a
+  LEFT JOIN t_level4 b ON a.level4_id = b.level4_id
+WHERE b.neraca = 1;
