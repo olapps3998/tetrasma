@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 01, 2017 at 04:23 AM
+-- Generation Time: Jun 01, 2017 at 04:24 AM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
@@ -1103,6 +1103,888 @@ CREATE TABLE IF NOT EXISTS `t_user` (
 
 INSERT INTO `t_user` (`user_id`, `username`, `password`, `userlevel`) VALUES
 (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', -1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_1`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_1` AS select `a`.`level1_nama` AS `level1_nama`,`b`.`nama_akun` AS `nama_akun`,`b`.`level4_id` AS `level4_id` from (`db_tetrasma`.`t_level1` `a` left join `db_tetrasma`.`v_akun_jurnal` `b` on((`a`.`level1_no` = left(`b`.`no_akun`,1)))) where (`a`.`level1_no` = 1) order by `b`.`no_akun`;
+
+--
+-- Dumping data for table `v_akun_1`
+--
+
+INSERT INTO `v_akun_1` (`level1_nama`, `nama_akun`, `level4_id`) VALUES
+('Aktiva', 'Kas', 1),
+('Aktiva', 'Bank BCA', 2),
+('Aktiva', 'Bank Mandiri', 3),
+('Aktiva', 'Pinjaman yang diberikan', 4),
+('Aktiva', 'Asuransi dibayar dimuka', 5),
+('Aktiva', 'Beban dibayar dimuka', 6),
+('Aktiva', 'Penyisihan piutang tak tertagih', 7),
+('Aktiva', 'Pendapatan ymh diterima', 8),
+('Aktiva', 'Aktiva lain', 9),
+('Aktiva', 'Tanah', 10),
+('Aktiva', 'Bangunan', 11),
+('Aktiva', 'Akumulasi Penyusutan Bangunan', 12),
+('Aktiva', 'Peralatan / Mebel', 13),
+('Aktiva', 'Akumulasi Penyusutan Peralatan / Mebel', 14),
+('Aktiva', 'Inventaris Kantor', 15),
+('Aktiva', 'Akumulasi Penyusutan Inventaris Kantor', 16);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_1_sum`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_1_sum` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`b`.`akun_id` AS `akun_id`,`b`.`tgl` AS `tgl`,`b`.`sm_debet` AS `sm_debet`,`b`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_1` `a` left join `db_tetrasma`.`v_saldo_mutasi_tgl` `b` on((`a`.`level4_id` = `b`.`akun_id`)));
+
+--
+-- Dumping data for table `v_akun_1_sum`
+--
+
+INSERT INTO `v_akun_1_sum` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Aktiva', 'Kas', 1, 1, '2017-05-06', '30000', '0'),
+('Aktiva', 'Kas', 1, 1, '2017-05-31', '75000', '0'),
+('Aktiva', 'Bank BCA', 2, 2, '2017-05-06', '15000', '0'),
+('Aktiva', 'Bank Mandiri', 3, NULL, NULL, NULL, NULL),
+('Aktiva', 'Pinjaman yang diberikan', 4, NULL, NULL, NULL, NULL),
+('Aktiva', 'Asuransi dibayar dimuka', 5, NULL, NULL, NULL, NULL),
+('Aktiva', 'Beban dibayar dimuka', 6, NULL, NULL, NULL, NULL),
+('Aktiva', 'Penyisihan piutang tak tertagih', 7, NULL, NULL, NULL, NULL),
+('Aktiva', 'Pendapatan ymh diterima', 8, NULL, NULL, NULL, NULL),
+('Aktiva', 'Aktiva lain', 9, NULL, NULL, NULL, NULL),
+('Aktiva', 'Tanah', 10, NULL, NULL, NULL, NULL),
+('Aktiva', 'Bangunan', 11, NULL, NULL, NULL, NULL),
+('Aktiva', 'Akumulasi Penyusutan Bangunan', 12, NULL, NULL, NULL, NULL),
+('Aktiva', 'Peralatan / Mebel', 13, NULL, NULL, NULL, NULL),
+('Aktiva', 'Akumulasi Penyusutan Peralatan / Mebel', 14, NULL, NULL, NULL, NULL),
+('Aktiva', 'Inventaris Kantor', 15, NULL, NULL, NULL, NULL),
+('Aktiva', 'Akumulasi Penyusutan Inventaris Kantor', 16, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_1_sum_nrc`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_1_sum_nrc` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`a`.`akun_id` AS `akun_id`,`a`.`tgl` AS `tgl`,`a`.`sm_debet` AS `sm_debet`,`a`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_1_sum` `a` left join `db_tetrasma`.`t_level4` `b` on((`a`.`level4_id` = `b`.`level4_id`))) where (`b`.`neraca` = 1);
+
+--
+-- Dumping data for table `v_akun_1_sum_nrc`
+--
+
+INSERT INTO `v_akun_1_sum_nrc` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Aktiva', 'Kas', 1, 1, '2017-05-06', '30000', '0'),
+('Aktiva', 'Kas', 1, 1, '2017-05-31', '75000', '0'),
+('Aktiva', 'Bank BCA', 2, 2, '2017-05-06', '15000', '0'),
+('Aktiva', 'Bank Mandiri', 3, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_2`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_2` AS select `a`.`level1_nama` AS `level1_nama`,`b`.`nama_akun` AS `nama_akun`,`b`.`level4_id` AS `level4_id` from (`db_tetrasma`.`t_level1` `a` left join `db_tetrasma`.`v_akun_jurnal` `b` on((`a`.`level1_no` = left(`b`.`no_akun`,1)))) where (`a`.`level1_no` = 2) order by `b`.`no_akun`;
+
+--
+-- Dumping data for table `v_akun_2`
+--
+
+INSERT INTO `v_akun_2` (`level1_nama`, `nama_akun`, `level4_id`) VALUES
+('Hutang', 'Simpanan Sukarela', 17),
+('Hutang', 'Simpanan Berjangka', 18),
+('Hutang', 'Simpanan Karyawan', 19),
+('Hutang', 'Hutang Bank', 20),
+('Hutang', 'Beban YMH Dibayar', 21),
+('Hutang', 'Hutang Lain-Lain', 22),
+('Hutang', 'Hutang Sewa', 23);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_2_sum`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_2_sum` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`b`.`akun_id` AS `akun_id`,`b`.`tgl` AS `tgl`,`b`.`sm_debet` AS `sm_debet`,`b`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_2` `a` left join `db_tetrasma`.`v_saldo_mutasi_tgl` `b` on((`a`.`level4_id` = `b`.`akun_id`)));
+
+--
+-- Dumping data for table `v_akun_2_sum`
+--
+
+INSERT INTO `v_akun_2_sum` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Hutang', 'Simpanan Sukarela', 17, 17, '2017-05-06', '0', '30000'),
+('Hutang', 'Simpanan Sukarela', 17, 17, '2017-05-31', '0', '75000'),
+('Hutang', 'Simpanan Berjangka', 18, NULL, NULL, NULL, NULL),
+('Hutang', 'Simpanan Karyawan', 19, NULL, NULL, NULL, NULL),
+('Hutang', 'Hutang Bank', 20, NULL, NULL, NULL, NULL),
+('Hutang', 'Beban YMH Dibayar', 21, NULL, NULL, NULL, NULL),
+('Hutang', 'Hutang Lain-Lain', 22, NULL, NULL, NULL, NULL),
+('Hutang', 'Hutang Sewa', 23, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_2_sum_nrc`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_2_sum_nrc` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`a`.`akun_id` AS `akun_id`,`a`.`tgl` AS `tgl`,`a`.`sm_debet` AS `sm_debet`,`a`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_2_sum` `a` left join `db_tetrasma`.`t_level4` `b` on((`a`.`level4_id` = `b`.`level4_id`))) where (`b`.`neraca` = 1);
+
+--
+-- Dumping data for table `v_akun_2_sum_nrc`
+--
+
+INSERT INTO `v_akun_2_sum_nrc` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Hutang', 'Simpanan Sukarela', 17, 17, '2017-05-06', '0', '30000'),
+('Hutang', 'Simpanan Sukarela', 17, 17, '2017-05-31', '0', '75000');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_3`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_3` AS select `a`.`level1_nama` AS `level1_nama`,`b`.`nama_akun` AS `nama_akun`,`b`.`level4_id` AS `level4_id` from (`db_tetrasma`.`t_level1` `a` left join `db_tetrasma`.`v_akun_jurnal` `b` on((`a`.`level1_no` = left(`b`.`no_akun`,1)))) where (`a`.`level1_no` = 3) order by `b`.`no_akun`;
+
+--
+-- Dumping data for table `v_akun_3`
+--
+
+INSERT INTO `v_akun_3` (`level1_nama`, `nama_akun`, `level4_id`) VALUES
+('Modal', 'Simpanan Pokok', 24),
+('Modal', 'Simpanan Wajib', 25),
+('Modal', 'Donasi', 26),
+('Modal', 'Modal Penyertaan', 27),
+('Modal', 'Cad. Tujuan Resiko', 28),
+('Modal', 'Laba Periode Berjalan', 29),
+('Modal', 'Cadangan SHU', 30);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_3_sum`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_3_sum` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`b`.`akun_id` AS `akun_id`,`b`.`tgl` AS `tgl`,`b`.`sm_debet` AS `sm_debet`,`b`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_3` `a` left join `db_tetrasma`.`v_saldo_mutasi_tgl` `b` on((`a`.`level4_id` = `b`.`akun_id`)));
+
+--
+-- Dumping data for table `v_akun_3_sum`
+--
+
+INSERT INTO `v_akun_3_sum` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Modal', 'Simpanan Pokok', 24, NULL, NULL, NULL, NULL),
+('Modal', 'Simpanan Wajib', 25, NULL, NULL, NULL, NULL),
+('Modal', 'Donasi', 26, NULL, NULL, NULL, NULL),
+('Modal', 'Modal Penyertaan', 27, NULL, NULL, NULL, NULL),
+('Modal', 'Cad. Tujuan Resiko', 28, NULL, NULL, NULL, NULL),
+('Modal', 'Laba Periode Berjalan', 29, NULL, NULL, NULL, NULL),
+('Modal', 'Cadangan SHU', 30, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_3_sum_nrc`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_3_sum_nrc` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`a`.`akun_id` AS `akun_id`,`a`.`tgl` AS `tgl`,`a`.`sm_debet` AS `sm_debet`,`a`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_3_sum` `a` left join `db_tetrasma`.`t_level4` `b` on((`a`.`level4_id` = `b`.`level4_id`))) where (`b`.`neraca` = 1);
+
+--
+-- Dumping data for table `v_akun_3_sum_nrc`
+--
+
+INSERT INTO `v_akun_3_sum_nrc` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Modal', 'Simpanan Pokok', 24, NULL, NULL, NULL, NULL),
+('Modal', 'Simpanan Wajib', 25, NULL, NULL, NULL, NULL),
+('Modal', 'Donasi', 26, NULL, NULL, NULL, NULL),
+('Modal', 'Modal Penyertaan', 27, NULL, NULL, NULL, NULL),
+('Modal', 'Cad. Tujuan Resiko', 28, NULL, NULL, NULL, NULL),
+('Modal', 'Laba Periode Berjalan', 29, NULL, NULL, NULL, NULL),
+('Modal', 'Cadangan SHU', 30, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_4`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_4` AS select `a`.`level1_nama` AS `level1_nama`,`b`.`nama_akun` AS `nama_akun`,`b`.`level4_id` AS `level4_id` from (`db_tetrasma`.`t_level1` `a` left join `db_tetrasma`.`v_akun_jurnal` `b` on((`a`.`level1_no` = left(`b`.`no_akun`,1)))) where (`a`.`level1_no` = 4) order by `b`.`no_akun`;
+
+--
+-- Dumping data for table `v_akun_4`
+--
+
+INSERT INTO `v_akun_4` (`level1_nama`, `nama_akun`, `level4_id`) VALUES
+('Pendapatan', 'Pendapatan Bunga', 31),
+('Pendapatan', 'Pendapatan Provisi', 32),
+('Pendapatan', 'Pendapatan Administrasi', 33),
+('Pendapatan', 'Pendapatan Lainnya', 34);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_4_sum`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_4_sum` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`b`.`akun_id` AS `akun_id`,`b`.`tgl` AS `tgl`,`b`.`sm_debet` AS `sm_debet`,`b`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_4` `a` left join `db_tetrasma`.`v_saldo_mutasi_tgl` `b` on((`a`.`level4_id` = `b`.`akun_id`)));
+
+--
+-- Dumping data for table `v_akun_4_sum`
+--
+
+INSERT INTO `v_akun_4_sum` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Pendapatan', 'Pendapatan Bunga', 31, NULL, NULL, NULL, NULL),
+('Pendapatan', 'Pendapatan Provisi', 32, NULL, NULL, NULL, NULL),
+('Pendapatan', 'Pendapatan Administrasi', 33, NULL, NULL, NULL, NULL),
+('Pendapatan', 'Pendapatan Lainnya', 34, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_4_sum_lr`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_4_sum_lr` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`a`.`akun_id` AS `akun_id`,`a`.`tgl` AS `tgl`,`a`.`sm_debet` AS `sm_debet`,`a`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_4_sum` `a` left join `db_tetrasma`.`t_level4` `b` on((`a`.`level4_id` = `b`.`level4_id`))) where (`b`.`labarugi` = 1);
+
+--
+-- Dumping data for table `v_akun_4_sum_lr`
+--
+
+INSERT INTO `v_akun_4_sum_lr` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Pendapatan', 'Pendapatan Bunga', 31, NULL, NULL, NULL, NULL),
+('Pendapatan', 'Pendapatan Provisi', 32, NULL, NULL, NULL, NULL),
+('Pendapatan', 'Pendapatan Administrasi', 33, NULL, NULL, NULL, NULL),
+('Pendapatan', 'Pendapatan Lainnya', 34, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_5`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_5` AS select `a`.`level1_nama` AS `level1_nama`,`b`.`nama_akun` AS `nama_akun`,`b`.`level4_id` AS `level4_id` from (`db_tetrasma`.`t_level1` `a` left join `db_tetrasma`.`v_akun_jurnal` `b` on((`a`.`level1_no` = left(`b`.`no_akun`,1)))) where (`a`.`level1_no` = 5) order by `b`.`no_akun`;
+
+--
+-- Dumping data for table `v_akun_5`
+--
+
+INSERT INTO `v_akun_5` (`level1_nama`, `nama_akun`, `level4_id`) VALUES
+('HPP', 'Biaya Langsung', 35);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_5_sum`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_5_sum` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`b`.`akun_id` AS `akun_id`,`b`.`tgl` AS `tgl`,`b`.`sm_debet` AS `sm_debet`,`b`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_5` `a` left join `db_tetrasma`.`v_saldo_mutasi_tgl` `b` on((`a`.`level4_id` = `b`.`akun_id`)));
+
+--
+-- Dumping data for table `v_akun_5_sum`
+--
+
+INSERT INTO `v_akun_5_sum` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('HPP', 'Biaya Langsung', 35, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_5_sum_lr`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_5_sum_lr` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`a`.`akun_id` AS `akun_id`,`a`.`tgl` AS `tgl`,`a`.`sm_debet` AS `sm_debet`,`a`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_5_sum` `a` left join `db_tetrasma`.`t_level4` `b` on((`a`.`level4_id` = `b`.`level4_id`))) where (`b`.`labarugi` = 1);
+
+--
+-- Dumping data for table `v_akun_5_sum_lr`
+--
+
+INSERT INTO `v_akun_5_sum_lr` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('HPP', 'Biaya Langsung', 35, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_6`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_6` AS select `a`.`level1_nama` AS `level1_nama`,`b`.`nama_akun` AS `nama_akun`,`b`.`level4_id` AS `level4_id` from (`db_tetrasma`.`t_level1` `a` left join `db_tetrasma`.`v_akun_jurnal` `b` on((`a`.`level1_no` = left(`b`.`no_akun`,1)))) where (`a`.`level1_no` = 6) order by `b`.`no_akun`;
+
+--
+-- Dumping data for table `v_akun_6`
+--
+
+INSERT INTO `v_akun_6` (`level1_nama`, `nama_akun`, `level4_id`) VALUES
+('Biaya', 'Bunga Simpanan', 36),
+('Biaya', 'Bunga Bank', 37),
+('Biaya', 'Bunga Simpanan Lain-Lain', 38),
+('Biaya', 'Bunga Simpanan Berjangka', 39),
+('Biaya', 'Bunga Simpanan Khusus', 40),
+('Biaya', 'Biaya Penysh. Piut. Tak Tertg.', 41),
+('Biaya', 'Biaya Asuransi', 42),
+('Biaya', 'Biaya Audit', 43),
+('Biaya', 'Biaya Pajak', 44),
+('Biaya', 'Biaya Keu. Lain-Lain', 45),
+('Biaya', 'Biaya Rapat Pengurus', 46),
+('Biaya', 'Biaya Rapat Anggota', 47),
+('Biaya', 'Biaya Perjalanan Dinas', 48),
+('Biaya', 'Biaya Diklat', 49),
+('Biaya', 'Biaya Honorarium Pengurus', 50),
+('Biaya', 'Biaya Pembinaan', 51),
+('Biaya', 'Biaya Org. Lain-Lain', 52),
+('Biaya', 'Gaji Karyawan', 53),
+('Biaya', 'Tunjangan', 54),
+('Biaya', 'Konsumsi', 55),
+('Biaya', 'Biaya Transport Dinas', 56),
+('Biaya', 'Biaya Pendidikan', 57),
+('Biaya', 'Biaya Alat Tulis', 59),
+('Biaya', 'Biaya Listrik', 60),
+('Biaya', 'Biaya Telepon', 61),
+('Biaya', 'Biaya Air', 62),
+('Biaya', 'Biaya Kary. Lain-Lain', 58);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_6_sum`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_6_sum` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`b`.`akun_id` AS `akun_id`,`b`.`tgl` AS `tgl`,`b`.`sm_debet` AS `sm_debet`,`b`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_6` `a` left join `db_tetrasma`.`v_saldo_mutasi_tgl` `b` on((`a`.`level4_id` = `b`.`akun_id`)));
+
+--
+-- Dumping data for table `v_akun_6_sum`
+--
+
+INSERT INTO `v_akun_6_sum` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Biaya', 'Bunga Simpanan', 36, NULL, NULL, NULL, NULL),
+('Biaya', 'Bunga Bank', 37, NULL, NULL, NULL, NULL),
+('Biaya', 'Bunga Simpanan Lain-Lain', 38, NULL, NULL, NULL, NULL),
+('Biaya', 'Bunga Simpanan Berjangka', 39, NULL, NULL, NULL, NULL),
+('Biaya', 'Bunga Simpanan Khusus', 40, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Penysh. Piut. Tak Tertg.', 41, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Asuransi', 42, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Audit', 43, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Pajak', 44, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Keu. Lain-Lain', 45, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Rapat Pengurus', 46, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Rapat Anggota', 47, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Perjalanan Dinas', 48, 48, '2017-05-06', '0', '15000'),
+('Biaya', 'Biaya Diklat', 49, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Honorarium Pengurus', 50, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Pembinaan', 51, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Org. Lain-Lain', 52, NULL, NULL, NULL, NULL),
+('Biaya', 'Gaji Karyawan', 53, NULL, NULL, NULL, NULL),
+('Biaya', 'Tunjangan', 54, NULL, NULL, NULL, NULL),
+('Biaya', 'Konsumsi', 55, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Transport Dinas', 56, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Pendidikan', 57, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Alat Tulis', 59, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Listrik', 60, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Telepon', 61, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Air', 62, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Kary. Lain-Lain', 58, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_6_sum_lr`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_6_sum_lr` AS select `a`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,`a`.`level4_id` AS `level4_id`,`a`.`akun_id` AS `akun_id`,`a`.`tgl` AS `tgl`,`a`.`sm_debet` AS `sm_debet`,`a`.`sm_kredit` AS `sm_kredit` from (`db_tetrasma`.`v_akun_6_sum` `a` left join `db_tetrasma`.`t_level4` `b` on((`a`.`level4_id` = `b`.`level4_id`))) where (`b`.`labarugi` = 1);
+
+--
+-- Dumping data for table `v_akun_6_sum_lr`
+--
+
+INSERT INTO `v_akun_6_sum_lr` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Biaya', 'Biaya Perjalanan Dinas', 48, 48, '2017-05-06', '0', '15000'),
+('Biaya', 'Biaya Transport Dinas', 56, NULL, NULL, NULL, NULL),
+('Biaya', 'Biaya Listrik', 60, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_akun_jurnal`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_akun_jurnal` AS select `db_tetrasma`.`t_level4`.`level4_id` AS `level4_id`,concat(`db_tetrasma`.`t_level1`.`level1_no`,'.',`db_tetrasma`.`t_level2`.`level2_no`,'.',`db_tetrasma`.`t_level3`.`level3_no`,'.',`db_tetrasma`.`t_level4`.`level4_no`) AS `no_akun`,`db_tetrasma`.`t_level4`.`level4_nama` AS `nama_akun`,concat(`db_tetrasma`.`t_level1`.`level1_no`,'.',`db_tetrasma`.`t_level2`.`level2_no`,'.',`db_tetrasma`.`t_level3`.`level3_no`,'.',`db_tetrasma`.`t_level4`.`level4_no`,' - ',`db_tetrasma`.`t_level4`.`level4_nama`) AS `no_nama_akun`,`db_tetrasma`.`t_level4`.`jurnal` AS `jurnal`,`db_tetrasma`.`t_level4`.`jurnal_kode` AS `jurnal_kode`,`db_tetrasma`.`t_level4`.`neraca` AS `neraca`,`db_tetrasma`.`t_level4`.`labarugi` AS `labarugi` from (((`db_tetrasma`.`t_level4` join `db_tetrasma`.`t_level1` on((`db_tetrasma`.`t_level4`.`level1_id` = `db_tetrasma`.`t_level1`.`level1_id`))) join `db_tetrasma`.`t_level2` on((`db_tetrasma`.`t_level4`.`level2_id` = `db_tetrasma`.`t_level2`.`level2_id`))) join `db_tetrasma`.`t_level3` on((`db_tetrasma`.`t_level4`.`level3_id` = `db_tetrasma`.`t_level3`.`level3_id`)));
+
+--
+-- Dumping data for table `v_akun_jurnal`
+--
+
+INSERT INTO `v_akun_jurnal` (`level4_id`, `no_akun`, `nama_akun`, `no_nama_akun`, `jurnal`, `jurnal_kode`, `neraca`, `labarugi`) VALUES
+(1, '1.1.1.01', 'Kas', '1.1.1.01 - Kas', 1, 'K', 1, 0),
+(2, '1.1.2.01', 'Bank BCA', '1.1.2.01 - Bank BCA', 1, 'B', 1, 0),
+(3, '1.1.2.02', 'Bank Mandiri', '1.1.2.02 - Bank Mandiri', 1, 'B', 1, 0),
+(4, '1.1.3.01', 'Pinjaman yang diberikan', '1.1.3.01 - Pinjaman yang diberikan', 0, NULL, 0, 0),
+(5, '1.1.3.02', 'Asuransi dibayar dimuka', '1.1.3.02 - Asuransi dibayar dimuka', 0, NULL, 0, 0),
+(6, '1.1.3.03', 'Beban dibayar dimuka', '1.1.3.03 - Beban dibayar dimuka', 0, NULL, 0, 0),
+(7, '1.1.3.04', 'Penyisihan piutang tak tertagih', '1.1.3.04 - Penyisihan piutang tak tertagih', 0, NULL, 0, 0),
+(8, '1.1.3.05', 'Pendapatan ymh diterima', '1.1.3.05 - Pendapatan ymh diterima', 0, NULL, 0, 0),
+(9, '1.1.4.01', 'Aktiva lain', '1.1.4.01 - Aktiva lain', 0, NULL, 0, 0),
+(10, '1.2.1.01', 'Tanah', '1.2.1.01 - Tanah', 0, NULL, 0, 0),
+(11, '1.2.1.02', 'Bangunan', '1.2.1.02 - Bangunan', 0, NULL, 0, 0),
+(12, '1.2.1.03', 'Akumulasi Penyusutan Bangunan', '1.2.1.03 - Akumulasi Penyusutan Bangunan', 0, NULL, 0, 0),
+(13, '1.2.1.04', 'Peralatan / Mebel', '1.2.1.04 - Peralatan / Mebel', 0, NULL, 0, 0),
+(14, '1.2.1.05', 'Akumulasi Penyusutan Peralatan / Mebel', '1.2.1.05 - Akumulasi Penyusutan Peralatan / Mebel', 0, NULL, 0, 0),
+(15, '1.2.1.06', 'Inventaris Kantor', '1.2.1.06 - Inventaris Kantor', 0, NULL, 0, 0),
+(16, '1.2.1.07', 'Akumulasi Penyusutan Inventaris Kantor', '1.2.1.07 - Akumulasi Penyusutan Inventaris Kantor', 0, NULL, 0, 0),
+(17, '2.1.1.01', 'Simpanan Sukarela', '2.1.1.01 - Simpanan Sukarela', 0, NULL, 1, 0),
+(18, '2.1.1.02', 'Simpanan Berjangka', '2.1.1.02 - Simpanan Berjangka', 0, NULL, 0, 0),
+(19, '2.1.1.03', 'Simpanan Karyawan', '2.1.1.03 - Simpanan Karyawan', 0, NULL, 0, 0),
+(20, '2.1.1.04', 'Hutang Bank', '2.1.1.04 - Hutang Bank', 0, NULL, 0, 0),
+(21, '2.1.1.05', 'Beban YMH Dibayar', '2.1.1.05 - Beban YMH Dibayar', 0, NULL, 0, 0),
+(22, '2.1.1.99', 'Hutang Lain-Lain', '2.1.1.99 - Hutang Lain-Lain', 0, NULL, 0, 0),
+(23, '2.1.2.01', 'Hutang Sewa', '2.1.2.01 - Hutang Sewa', 0, NULL, 0, 0),
+(24, '3.1.1.01', 'Simpanan Pokok', '3.1.1.01 - Simpanan Pokok', 0, NULL, 1, 0),
+(25, '3.1.1.02', 'Simpanan Wajib', '3.1.1.02 - Simpanan Wajib', 0, NULL, 1, 0),
+(26, '3.1.1.03', 'Donasi', '3.1.1.03 - Donasi', 0, NULL, 1, 0),
+(27, '3.1.1.04', 'Modal Penyertaan', '3.1.1.04 - Modal Penyertaan', 0, NULL, 1, 0),
+(28, '3.1.1.05', 'Cad. Tujuan Resiko', '3.1.1.05 - Cad. Tujuan Resiko', 0, NULL, 1, 0),
+(29, '3.1.2.01', 'Laba Periode Berjalan', '3.1.2.01 - Laba Periode Berjalan', 0, NULL, 1, 0),
+(30, '3.1.2.02', 'Cadangan SHU', '3.1.2.02 - Cadangan SHU', 0, NULL, 1, 0),
+(31, '4.1.1.01', 'Pendapatan Bunga', '4.1.1.01 - Pendapatan Bunga', 0, NULL, 0, 1),
+(32, '4.1.1.02', 'Pendapatan Provisi', '4.1.1.02 - Pendapatan Provisi', 0, NULL, 0, 1),
+(33, '4.1.1.03', 'Pendapatan Administrasi', '4.1.1.03 - Pendapatan Administrasi', 0, NULL, 0, 1),
+(34, '4.1.1.99', 'Pendapatan Lainnya', '4.1.1.99 - Pendapatan Lainnya', 0, NULL, 0, 1),
+(35, '5.1.1.01', 'Biaya Langsung', '5.1.1.01 - Biaya Langsung', 0, NULL, 0, 1),
+(36, '6.1.1.01', 'Bunga Simpanan', '6.1.1.01 - Bunga Simpanan', 0, NULL, 0, 0),
+(37, '6.1.1.02', 'Bunga Bank', '6.1.1.02 - Bunga Bank', 0, NULL, 0, 0),
+(38, '6.1.1.03', 'Bunga Simpanan Lain-Lain', '6.1.1.03 - Bunga Simpanan Lain-Lain', 0, NULL, 0, 0),
+(39, '6.1.1.04', 'Bunga Simpanan Berjangka', '6.1.1.04 - Bunga Simpanan Berjangka', 0, NULL, 0, 0),
+(40, '6.1.1.05', 'Bunga Simpanan Khusus', '6.1.1.05 - Bunga Simpanan Khusus', 0, NULL, 0, 0),
+(41, '6.1.1.06', 'Biaya Penysh. Piut. Tak Tertg.', '6.1.1.06 - Biaya Penysh. Piut. Tak Tertg.', 0, NULL, 0, 0),
+(42, '6.1.1.07', 'Biaya Asuransi', '6.1.1.07 - Biaya Asuransi', 0, NULL, 0, 0),
+(43, '6.1.1.08', 'Biaya Audit', '6.1.1.08 - Biaya Audit', 0, NULL, 0, 0),
+(44, '6.1.1.09', 'Biaya Pajak', '6.1.1.09 - Biaya Pajak', 0, NULL, 0, 0),
+(45, '6.1.1.99', 'Biaya Keu. Lain-Lain', '6.1.1.99 - Biaya Keu. Lain-Lain', 0, NULL, 0, 0),
+(46, '6.1.2.01', 'Biaya Rapat Pengurus', '6.1.2.01 - Biaya Rapat Pengurus', 0, NULL, 0, 0),
+(47, '6.1.2.02', 'Biaya Rapat Anggota', '6.1.2.02 - Biaya Rapat Anggota', 0, NULL, 0, 0),
+(48, '6.1.2.03', 'Biaya Perjalanan Dinas', '6.1.2.03 - Biaya Perjalanan Dinas', 0, NULL, 0, 1),
+(49, '6.1.2.04', 'Biaya Diklat', '6.1.2.04 - Biaya Diklat', 0, NULL, 0, 0),
+(50, '6.1.2.05', 'Biaya Honorarium Pengurus', '6.1.2.05 - Biaya Honorarium Pengurus', 0, NULL, 0, 0),
+(51, '6.1.2.06', 'Biaya Pembinaan', '6.1.2.06 - Biaya Pembinaan', 0, NULL, 0, 0),
+(52, '6.1.2.99', 'Biaya Org. Lain-Lain', '6.1.2.99 - Biaya Org. Lain-Lain', 0, NULL, 0, 0),
+(53, '6.1.3.01', 'Gaji Karyawan', '6.1.3.01 - Gaji Karyawan', 0, NULL, 0, 0),
+(54, '6.1.3.02', 'Tunjangan', '6.1.3.02 - Tunjangan', 0, NULL, 0, 0),
+(55, '6.1.3.03', 'Konsumsi', '6.1.3.03 - Konsumsi', 0, NULL, 0, 0),
+(56, '6.1.3.04', 'Biaya Transport Dinas', '6.1.3.04 - Biaya Transport Dinas', 0, NULL, 0, 1),
+(57, '6.1.3.05', 'Biaya Pendidikan', '6.1.3.05 - Biaya Pendidikan', 0, NULL, 0, 0),
+(58, '6.1.4.99', 'Biaya Kary. Lain-Lain', '6.1.4.99 - Biaya Kary. Lain-Lain', 0, NULL, 0, 0),
+(59, '6.1.4.01', 'Biaya Alat Tulis', '6.1.4.01 - Biaya Alat Tulis', 0, NULL, 0, 0),
+(60, '6.1.4.02', 'Biaya Listrik', '6.1.4.02 - Biaya Listrik', 0, NULL, 0, 1),
+(61, '6.1.4.03', 'Biaya Telepon', '6.1.4.03 - Biaya Telepon', 0, NULL, 0, 0),
+(62, '6.1.4.04', 'Biaya Air', '6.1.4.04 - Biaya Air', 0, NULL, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_bukubesar`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_bukubesar` AS select `a`.`detail_id` AS `detail_id`,`a`.`jurnal_id` AS `jurnal_id`,`a`.`no_bukti` AS `no_bukti`,`a`.`tgl` AS `tgl`,`a`.`ket` AS `ket`,`a`.`akun_id` AS `akun_id`,`a`.`debet` AS `debet`,`a`.`kredit` AS `kredit`,`c`.`no_akun` AS `no_akun`,`c`.`nama_akun` AS `nama_akun`,`c`.`no_nama_akun` AS `no_nama_akun`,`b`.`sa_debet` AS `sa_debet`,`b`.`sa_kredit` AS `sa_kredit`,`b`.`sm_debet` AS `sm_debet`,`b`.`sm_kredit` AS `sm_kredit` from ((`db_tetrasma`.`v_kasbank_memorial` `a` left join `db_tetrasma`.`t_level4` `b` on((`a`.`akun_id` = `b`.`level4_id`))) left join `db_tetrasma`.`v_akun_jurnal` `c` on((`a`.`akun_id` = `c`.`level4_id`)));
+
+--
+-- Dumping data for table `v_bukubesar`
+--
+
+INSERT INTO `v_bukubesar` (`detail_id`, `jurnal_id`, `no_bukti`, `tgl`, `ket`, `akun_id`, `debet`, `kredit`, `no_akun`, `nama_akun`, `no_nama_akun`, `sa_debet`, `sa_kredit`, `sm_debet`, `sm_kredit`) VALUES
+(NULL, 1, 'KM0010517', '2017-05-06', 'x', 1, 10000, 0, '1.1.1.01', 'Kas', '1.1.1.01 - Kas', 0.00, 0.00, NULL, 0.00),
+(NULL, 2, 'KM0020517', '2017-05-06', 'y', 1, 20000, 0, '1.1.1.01', 'Kas', '1.1.1.01 - Kas', 0.00, 0.00, NULL, 0.00),
+(NULL, 3, 'KM0030517', '2017-05-31', 'coba data', 1, 75000, 0, '1.1.1.01', 'Kas', '1.1.1.01 - Kas', 0.00, 0.00, NULL, 0.00),
+(1, 1, 'KM0010517', '2017-05-06', 'x', 17, 0, 10000, '2.1.1.01', 'Simpanan Sukarela', '2.1.1.01 - Simpanan Sukarela', NULL, 0.00, NULL, 0.00),
+(2, 2, 'KM0020517', '2017-05-06', 'y', 17, 0, 20000, '2.1.1.01', 'Simpanan Sukarela', '2.1.1.01 - Simpanan Sukarela', NULL, 0.00, NULL, 0.00),
+(3, 3, 'KM0030517', '2017-05-31', 'coba data', 17, 0, 75000, '2.1.1.01', 'Simpanan Sukarela', '2.1.1.01 - Simpanan Sukarela', NULL, 0.00, NULL, 0.00),
+(1, 1, 'JM0010517', '2017-05-06', 'z', 2, 15000, 0, '1.1.2.01', 'Bank BCA', '1.1.2.01 - Bank BCA', NULL, 0.00, NULL, 0.00),
+(2, 1, 'JM0010517', '2017-05-06', 'z', 48, 0, 15000, '6.1.2.03', 'Biaya Perjalanan Dinas', '6.1.2.03 - Biaya Perjalanan Dinas', NULL, 0.00, NULL, 0.00);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_kasbank`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_kasbank` AS select `v_kasbank_jurnal`.`detail_id` AS `detail_id`,`v_kasbank_jurnal`.`jurnal_id` AS `jurnal_id`,`v_kasbank_jurnal`.`no_bukti` AS `no_bukti`,`v_kasbank_jurnal`.`tgl` AS `tgl`,`v_kasbank_jurnal`.`ket` AS `ket`,`v_kasbank_jurnal`.`akun_id` AS `akun_id`,`v_kasbank_jurnal`.`debet` AS `debet`,`v_kasbank_jurnal`.`kredit` AS `kredit` from `db_tetrasma`.`v_kasbank_jurnal` union select `v_kasbank_detail`.`detail_id` AS `detail_id`,`v_kasbank_detail`.`jurnal_id` AS `jurnal_id`,`v_kasbank_detail`.`no_bukti` AS `no_bukti`,`v_kasbank_detail`.`tgl` AS `tgl`,`v_kasbank_detail`.`ket` AS `ket`,`v_kasbank_detail`.`akun_id` AS `akun_id`,`v_kasbank_detail`.`debet` AS `debet`,`v_kasbank_detail`.`kredit` AS `kredit` from `db_tetrasma`.`v_kasbank_detail`;
+
+--
+-- Dumping data for table `v_kasbank`
+--
+
+INSERT INTO `v_kasbank` (`detail_id`, `jurnal_id`, `no_bukti`, `tgl`, `ket`, `akun_id`, `debet`, `kredit`) VALUES
+(NULL, 1, 'KM0010517', '2017-05-06', 'x', 1, 10000, 0),
+(NULL, 2, 'KM0020517', '2017-05-06', 'y', 1, 20000, 0),
+(NULL, 3, 'KM0030517', '2017-05-31', 'coba data', 1, 75000, 0),
+(1, 1, 'KM0010517', '2017-05-06', 'x', 17, 0, 10000),
+(2, 2, 'KM0020517', '2017-05-06', 'y', 17, 0, 20000),
+(3, 3, 'KM0030517', '2017-05-31', 'coba data', 17, 0, 75000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_kasbank_detail`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_kasbank_detail` AS select `a`.`detail_id` AS `detail_id`,`a`.`jurnal_id` AS `jurnal_id`,`b`.`no_bukti` AS `no_bukti`,`b`.`tgl` AS `tgl`,`b`.`ket` AS `ket`,`a`.`akun_id` AS `akun_id`,(case when (`a`.`dk` = 0) then `a`.`nilai` else 0 end) AS `debet`,(case when (`a`.`dk` = 1) then `a`.`nilai` else 0 end) AS `kredit` from (`db_tetrasma`.`t_detail` `a` left join `db_tetrasma`.`t_jurnal` `b` on((`a`.`jurnal_id` = `b`.`jurnal_id`)));
+
+--
+-- Dumping data for table `v_kasbank_detail`
+--
+
+INSERT INTO `v_kasbank_detail` (`detail_id`, `jurnal_id`, `no_bukti`, `tgl`, `ket`, `akun_id`, `debet`, `kredit`) VALUES
+(1, 1, 'KM0010517', '2017-05-06', 'x', 17, 0, 10000),
+(2, 2, 'KM0020517', '2017-05-06', 'y', 17, 0, 20000),
+(3, 3, 'KM0030517', '2017-05-31', 'coba data', 17, 0, 75000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_kasbank_jurnal`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_kasbank_jurnal` AS select NULL AS `detail_id`,`db_tetrasma`.`t_jurnal`.`jurnal_id` AS `jurnal_id`,`db_tetrasma`.`t_jurnal`.`no_bukti` AS `no_bukti`,`db_tetrasma`.`t_jurnal`.`tgl` AS `tgl`,`db_tetrasma`.`t_jurnal`.`ket` AS `ket`,`db_tetrasma`.`t_jurnal`.`akun_id` AS `akun_id`,(case when (`db_tetrasma`.`t_jurnal`.`jenis_jurnal` = 'M') then `db_tetrasma`.`t_jurnal`.`nilai` else 0 end) AS `debet`,(case when (`db_tetrasma`.`t_jurnal`.`jenis_jurnal` <> 'M') then `db_tetrasma`.`t_jurnal`.`nilai` else 0 end) AS `kredit` from `db_tetrasma`.`t_jurnal`;
+
+--
+-- Dumping data for table `v_kasbank_jurnal`
+--
+
+INSERT INTO `v_kasbank_jurnal` (`detail_id`, `jurnal_id`, `no_bukti`, `tgl`, `ket`, `akun_id`, `debet`, `kredit`) VALUES
+(NULL, 1, 'KM0010517', '2017-05-06', 'x', 1, 10000, 0),
+(NULL, 2, 'KM0020517', '2017-05-06', 'y', 1, 20000, 0),
+(NULL, 3, 'KM0030517', '2017-05-31', 'coba data', 1, 75000, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_kasbank_memorial`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_kasbank_memorial` AS select `v_kasbank`.`detail_id` AS `detail_id`,`v_kasbank`.`jurnal_id` AS `jurnal_id`,`v_kasbank`.`no_bukti` AS `no_bukti`,`v_kasbank`.`tgl` AS `tgl`,`v_kasbank`.`ket` AS `ket`,`v_kasbank`.`akun_id` AS `akun_id`,`v_kasbank`.`debet` AS `debet`,`v_kasbank`.`kredit` AS `kredit` from `db_tetrasma`.`v_kasbank` union select `v_memorial`.`detailm_id` AS `detailm_id`,`v_memorial`.`jurnalm_id` AS `jurnalm_id`,`v_memorial`.`no_buktim` AS `no_buktim`,`v_memorial`.`tglm` AS `tglm`,`v_memorial`.`ketm` AS `ketm`,`v_memorial`.`akunm_id` AS `akunm_id`,`v_memorial`.`nilaim_debet` AS `nilaim_debet`,`v_memorial`.`nilaim_kredit` AS `nilaim_kredit` from `db_tetrasma`.`v_memorial`;
+
+--
+-- Dumping data for table `v_kasbank_memorial`
+--
+
+INSERT INTO `v_kasbank_memorial` (`detail_id`, `jurnal_id`, `no_bukti`, `tgl`, `ket`, `akun_id`, `debet`, `kredit`) VALUES
+(NULL, 1, 'KM0010517', '2017-05-06', 'x', 1, 10000, 0),
+(NULL, 2, 'KM0020517', '2017-05-06', 'y', 1, 20000, 0),
+(NULL, 3, 'KM0030517', '2017-05-31', 'coba data', 1, 75000, 0),
+(1, 1, 'KM0010517', '2017-05-06', 'x', 17, 0, 10000),
+(2, 2, 'KM0020517', '2017-05-06', 'y', 17, 0, 20000),
+(3, 3, 'KM0030517', '2017-05-31', 'coba data', 17, 0, 75000),
+(1, 1, 'JM0010517', '2017-05-06', 'z', 2, 15000, 0),
+(2, 1, 'JM0010517', '2017-05-06', 'z', 48, 0, 15000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_memorial`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_memorial` AS select `a`.`detailm_id` AS `detailm_id`,`a`.`jurnalm_id` AS `jurnalm_id`,`b`.`no_buktim` AS `no_buktim`,`b`.`tglm` AS `tglm`,`b`.`ketm` AS `ketm`,`a`.`akunm_id` AS `akunm_id`,`a`.`nilaim_debet` AS `nilaim_debet`,`a`.`nilaim_kredit` AS `nilaim_kredit` from (`db_tetrasma`.`t_detailm` `a` left join `db_tetrasma`.`t_jurnalm` `b` on((`a`.`jurnalm_id` = `b`.`jurnalm_id`)));
+
+--
+-- Dumping data for table `v_memorial`
+--
+
+INSERT INTO `v_memorial` (`detailm_id`, `jurnalm_id`, `no_buktim`, `tglm`, `ketm`, `akunm_id`, `nilaim_debet`, `nilaim_kredit`) VALUES
+(1, 1, 'JM0010517', '2017-05-06', 'z', 2, 15000, 0),
+(2, 1, 'JM0010517', '2017-05-06', 'z', 48, 0, 15000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_neraca`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_neraca` AS select `v_akun_1_sum_nrc`.`level1_nama` AS `level1_nama`,`v_akun_1_sum_nrc`.`nama_akun` AS `nama_akun`,`v_akun_1_sum_nrc`.`level4_id` AS `level4_id`,`v_akun_1_sum_nrc`.`akun_id` AS `akun_id`,`v_akun_1_sum_nrc`.`tgl` AS `tgl`,`v_akun_1_sum_nrc`.`sm_debet` AS `sm_debet`,`v_akun_1_sum_nrc`.`sm_kredit` AS `sm_kredit` from `db_tetrasma`.`v_akun_1_sum_nrc` union select `v_akun_2_sum_nrc`.`level1_nama` AS `level1_nama`,`v_akun_2_sum_nrc`.`nama_akun` AS `nama_akun`,`v_akun_2_sum_nrc`.`level4_id` AS `level4_id`,`v_akun_2_sum_nrc`.`akun_id` AS `akun_id`,`v_akun_2_sum_nrc`.`tgl` AS `tgl`,`v_akun_2_sum_nrc`.`sm_debet` AS `sm_debet`,`v_akun_2_sum_nrc`.`sm_kredit` AS `sm_kredit` from `db_tetrasma`.`v_akun_2_sum_nrc` union select `v_akun_3_sum_nrc`.`level1_nama` AS `level1_nama`,`v_akun_3_sum_nrc`.`nama_akun` AS `nama_akun`,`v_akun_3_sum_nrc`.`level4_id` AS `level4_id`,`v_akun_3_sum_nrc`.`akun_id` AS `akun_id`,`v_akun_3_sum_nrc`.`tgl` AS `tgl`,`v_akun_3_sum_nrc`.`sm_debet` AS `sm_debet`,`v_akun_3_sum_nrc`.`sm_kredit` AS `sm_kredit` from `db_tetrasma`.`v_akun_3_sum_nrc`;
+
+--
+-- Dumping data for table `v_neraca`
+--
+
+INSERT INTO `v_neraca` (`level1_nama`, `nama_akun`, `level4_id`, `akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+('Aktiva', 'Kas', 1, 1, '2017-05-06', '30000', '0'),
+('Aktiva', 'Kas', 1, 1, '2017-05-31', '75000', '0'),
+('Aktiva', 'Bank BCA', 2, 2, '2017-05-06', '15000', '0'),
+('Aktiva', 'Bank Mandiri', 3, NULL, NULL, NULL, NULL),
+('Hutang', 'Simpanan Sukarela', 17, 17, '2017-05-06', '0', '30000'),
+('Hutang', 'Simpanan Sukarela', 17, 17, '2017-05-31', '0', '75000'),
+('Modal', 'Simpanan Pokok', 24, NULL, NULL, NULL, NULL),
+('Modal', 'Simpanan Wajib', 25, NULL, NULL, NULL, NULL),
+('Modal', 'Donasi', 26, NULL, NULL, NULL, NULL),
+('Modal', 'Modal Penyertaan', 27, NULL, NULL, NULL, NULL),
+('Modal', 'Cad. Tujuan Resiko', 28, NULL, NULL, NULL, NULL),
+('Modal', 'Laba Periode Berjalan', 29, NULL, NULL, NULL, NULL),
+('Modal', 'Cadangan SHU', 30, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_saldo_mutasi`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_saldo_mutasi` AS select `v_kasbank_memorial`.`akun_id` AS `akun_id`,(case when ((sum(`v_kasbank_memorial`.`debet`) - sum(`v_kasbank_memorial`.`kredit`)) >= 0) then (sum(`v_kasbank_memorial`.`debet`) - sum(`v_kasbank_memorial`.`kredit`)) else 0 end) AS `sm_debet`,(case when ((sum(`v_kasbank_memorial`.`debet`) - sum(`v_kasbank_memorial`.`kredit`)) < 0) then abs((sum(`v_kasbank_memorial`.`debet`) - sum(`v_kasbank_memorial`.`kredit`))) else 0 end) AS `sm_kredit` from `db_tetrasma`.`v_kasbank_memorial` group by `v_kasbank_memorial`.`akun_id`;
+
+--
+-- Dumping data for table `v_saldo_mutasi`
+--
+
+INSERT INTO `v_saldo_mutasi` (`akun_id`, `sm_debet`, `sm_kredit`) VALUES
+(1, '105000', '0'),
+(2, '15000', '0'),
+(17, '0', '105000'),
+(48, '0', '15000');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_saldo_mutasi_tgl`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_saldo_mutasi_tgl` AS select `v_kasbank_memorial`.`akun_id` AS `akun_id`,`v_kasbank_memorial`.`tgl` AS `tgl`,(case when ((sum(`v_kasbank_memorial`.`debet`) - sum(`v_kasbank_memorial`.`kredit`)) >= 0) then (sum(`v_kasbank_memorial`.`debet`) - sum(`v_kasbank_memorial`.`kredit`)) else 0 end) AS `sm_debet`,(case when ((sum(`v_kasbank_memorial`.`debet`) - sum(`v_kasbank_memorial`.`kredit`)) < 0) then abs((sum(`v_kasbank_memorial`.`debet`) - sum(`v_kasbank_memorial`.`kredit`))) else 0 end) AS `sm_kredit` from `db_tetrasma`.`v_kasbank_memorial` group by `v_kasbank_memorial`.`akun_id`,`v_kasbank_memorial`.`tgl`;
+
+--
+-- Dumping data for table `v_saldo_mutasi_tgl`
+--
+
+INSERT INTO `v_saldo_mutasi_tgl` (`akun_id`, `tgl`, `sm_debet`, `sm_kredit`) VALUES
+(1, '2017-05-06', '30000', '0'),
+(1, '2017-05-31', '75000', '0'),
+(2, '2017-05-06', '15000', '0'),
+(17, '2017-05-06', '0', '30000'),
+(17, '2017-05-31', '0', '75000'),
+(48, '2017-05-06', '0', '15000');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_summary_bukubesar`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_summary_bukubesar` AS select `v_summary_bukubesar_1`.`level1_nama` AS `level1_nama`,`v_summary_bukubesar_1`.`nama_akun` AS `nama_akun`,`v_summary_bukubesar_1`.`sm_debet` AS `sm_debet`,`v_summary_bukubesar_1`.`sm_kredit` AS `sm_kredit`,`v_summary_bukubesar_1`.`akun_id` AS `akun_id` from `db_tetrasma`.`v_summary_bukubesar_1` union select `v_summary_bukubesar_6`.`level1_nama` AS `level1_nama`,`v_summary_bukubesar_6`.`nama_akun` AS `nama_akun`,`v_summary_bukubesar_6`.`sm_debet` AS `sm_debet`,`v_summary_bukubesar_6`.`sm_kredit` AS `sm_kredit`,`v_summary_bukubesar_6`.`akun_id` AS `akun_id` from `db_tetrasma`.`v_summary_bukubesar_6` union select `v_summary_bukubesar_3`.`level1_nama` AS `level1_nama`,`v_summary_bukubesar_3`.`nama_akun` AS `nama_akun`,`v_summary_bukubesar_3`.`sm_debet` AS `sm_debet`,`v_summary_bukubesar_3`.`sm_kredit` AS `sm_kredit`,`v_summary_bukubesar_3`.`akun_id` AS `akun_id` from `db_tetrasma`.`v_summary_bukubesar_3` union select `v_summary_bukubesar_4`.`level1_nama` AS `level1_nama`,`v_summary_bukubesar_4`.`nama_akun` AS `nama_akun`,`v_summary_bukubesar_4`.`sm_debet` AS `sm_debet`,`v_summary_bukubesar_4`.`sm_kredit` AS `sm_kredit`,`v_summary_bukubesar_4`.`akun_id` AS `akun_id` from `db_tetrasma`.`v_summary_bukubesar_4`;
+
+--
+-- Dumping data for table `v_summary_bukubesar`
+--
+
+INSERT INTO `v_summary_bukubesar` (`level1_nama`, `nama_akun`, `sm_debet`, `sm_kredit`, `akun_id`) VALUES
+('Aktiva', 'Kas', '105000', '0', 1),
+('Aktiva', 'Bank BCA', '15000', '0', 2),
+('Aktiva', 'Bank Mandiri', '0', '0', NULL),
+('Aktiva', 'Pinjaman yang diberikan', '0', '0', NULL),
+('Aktiva', 'Asuransi dibayar dimuka', '0', '0', NULL),
+('Aktiva', 'Beban dibayar dimuka', '0', '0', NULL),
+('Aktiva', 'Penyisihan piutang tak tertagih', '0', '0', NULL),
+('Aktiva', 'Pendapatan ymh diterima', '0', '0', NULL),
+('Aktiva', 'Aktiva lain', '0', '0', NULL),
+('Aktiva', 'Tanah', '0', '0', NULL),
+('Aktiva', 'Bangunan', '0', '0', NULL),
+('Aktiva', 'Akumulasi Penyusutan Bangunan', '0', '0', NULL),
+('Aktiva', 'Peralatan / Mebel', '0', '0', NULL),
+('Aktiva', 'Akumulasi Penyusutan Peralatan / Mebel', '0', '0', NULL),
+('Aktiva', 'Inventaris Kantor', '0', '0', NULL),
+('Aktiva', 'Akumulasi Penyusutan Inventaris Kantor', '0', '0', NULL),
+('Biaya', 'Bunga Simpanan', '0', '0', NULL),
+('Biaya', 'Bunga Bank', '0', '0', NULL),
+('Biaya', 'Bunga Simpanan Lain-Lain', '0', '0', NULL),
+('Biaya', 'Bunga Simpanan Berjangka', '0', '0', NULL),
+('Biaya', 'Bunga Simpanan Khusus', '0', '0', NULL),
+('Biaya', 'Biaya Penysh. Piut. Tak Tertg.', '0', '0', NULL),
+('Biaya', 'Biaya Asuransi', '0', '0', NULL),
+('Biaya', 'Biaya Audit', '0', '0', NULL),
+('Biaya', 'Biaya Pajak', '0', '0', NULL),
+('Biaya', 'Biaya Keu. Lain-Lain', '0', '0', NULL),
+('Biaya', 'Biaya Rapat Pengurus', '0', '0', NULL),
+('Biaya', 'Biaya Rapat Anggota', '0', '0', NULL),
+('Biaya', 'Biaya Perjalanan Dinas', '0', '15000', 48),
+('Biaya', 'Biaya Diklat', '0', '0', NULL),
+('Biaya', 'Biaya Honorarium Pengurus', '0', '0', NULL),
+('Biaya', 'Biaya Pembinaan', '0', '0', NULL),
+('Biaya', 'Biaya Org. Lain-Lain', '0', '0', NULL),
+('Biaya', 'Gaji Karyawan', '0', '0', NULL),
+('Biaya', 'Tunjangan', '0', '0', NULL),
+('Biaya', 'Konsumsi', '0', '0', NULL),
+('Biaya', 'Biaya Transport Dinas', '0', '0', NULL),
+('Biaya', 'Biaya Pendidikan', '0', '0', NULL),
+('Biaya', 'Biaya Kary. Lain-Lain', '0', '0', NULL),
+('Biaya', 'Biaya Alat Tulis', '0', '0', NULL),
+('Biaya', 'Biaya Listrik', '0', '0', NULL),
+('Biaya', 'Biaya Telepon', '0', '0', NULL),
+('Biaya', 'Biaya Air', '0', '0', NULL),
+('Modal', 'Simpanan Pokok', '0', '0', NULL),
+('Modal', 'Simpanan Wajib', '0', '0', NULL),
+('Modal', 'Donasi', '0', '0', NULL),
+('Modal', 'Modal Penyertaan', '0', '0', NULL),
+('Modal', 'Cad. Tujuan Resiko', '0', '0', NULL),
+('Modal', 'Laba Periode Berjalan', '0', '0', NULL),
+('Modal', 'Cadangan SHU', '0', '0', NULL),
+('Pendapatan', 'Pendapatan Bunga', '0', '0', NULL),
+('Pendapatan', 'Pendapatan Provisi', '0', '0', NULL),
+('Pendapatan', 'Pendapatan Administrasi', '0', '0', NULL),
+('Pendapatan', 'Pendapatan Lainnya', '0', '0', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_summary_bukubesar_1`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_summary_bukubesar_1` AS select `c`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,(case when isnull(`b`.`sm_debet`) then 0 else `b`.`sm_debet` end) AS `sm_debet`,(case when isnull(`b`.`sm_kredit`) then 0 else `b`.`sm_kredit` end) AS `sm_kredit`,`b`.`akun_id` AS `akun_id` from ((`db_tetrasma`.`v_akun_jurnal` `a` left join `db_tetrasma`.`v_saldo_mutasi` `b` on((`a`.`level4_id` = `b`.`akun_id`))) left join `db_tetrasma`.`t_level1` `c` on((`c`.`level1_id` = left(`a`.`no_akun`,1)))) where (left(`a`.`no_akun`,1) = '1') order by `a`.`no_akun`;
+
+--
+-- Dumping data for table `v_summary_bukubesar_1`
+--
+
+INSERT INTO `v_summary_bukubesar_1` (`level1_nama`, `nama_akun`, `sm_debet`, `sm_kredit`, `akun_id`) VALUES
+('Aktiva', 'Kas', '105000', '0', 1),
+('Aktiva', 'Bank BCA', '15000', '0', 2),
+('Aktiva', 'Bank Mandiri', '0', '0', NULL),
+('Aktiva', 'Pinjaman yang diberikan', '0', '0', NULL),
+('Aktiva', 'Asuransi dibayar dimuka', '0', '0', NULL),
+('Aktiva', 'Beban dibayar dimuka', '0', '0', NULL),
+('Aktiva', 'Penyisihan piutang tak tertagih', '0', '0', NULL),
+('Aktiva', 'Pendapatan ymh diterima', '0', '0', NULL),
+('Aktiva', 'Aktiva lain', '0', '0', NULL),
+('Aktiva', 'Tanah', '0', '0', NULL),
+('Aktiva', 'Bangunan', '0', '0', NULL),
+('Aktiva', 'Akumulasi Penyusutan Bangunan', '0', '0', NULL),
+('Aktiva', 'Peralatan / Mebel', '0', '0', NULL),
+('Aktiva', 'Akumulasi Penyusutan Peralatan / Mebel', '0', '0', NULL),
+('Aktiva', 'Inventaris Kantor', '0', '0', NULL),
+('Aktiva', 'Akumulasi Penyusutan Inventaris Kantor', '0', '0', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_summary_bukubesar_3`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_summary_bukubesar_3` AS select `c`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,(case when isnull(`b`.`sm_debet`) then 0 else `b`.`sm_debet` end) AS `sm_debet`,(case when isnull(`b`.`sm_kredit`) then 0 else `b`.`sm_kredit` end) AS `sm_kredit`,`b`.`akun_id` AS `akun_id` from ((`db_tetrasma`.`v_akun_jurnal` `a` left join `db_tetrasma`.`v_saldo_mutasi` `b` on((`a`.`level4_id` = `b`.`akun_id`))) left join `db_tetrasma`.`t_level1` `c` on((`c`.`level1_id` = left(`a`.`no_akun`,1)))) where (left(`a`.`no_akun`,1) = '3') order by `a`.`no_akun`;
+
+--
+-- Dumping data for table `v_summary_bukubesar_3`
+--
+
+INSERT INTO `v_summary_bukubesar_3` (`level1_nama`, `nama_akun`, `sm_debet`, `sm_kredit`, `akun_id`) VALUES
+('Modal', 'Simpanan Pokok', '0', '0', NULL),
+('Modal', 'Simpanan Wajib', '0', '0', NULL),
+('Modal', 'Donasi', '0', '0', NULL),
+('Modal', 'Modal Penyertaan', '0', '0', NULL),
+('Modal', 'Cad. Tujuan Resiko', '0', '0', NULL),
+('Modal', 'Laba Periode Berjalan', '0', '0', NULL),
+('Modal', 'Cadangan SHU', '0', '0', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_summary_bukubesar_4`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_summary_bukubesar_4` AS select `c`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,(case when isnull(`b`.`sm_debet`) then 0 else `b`.`sm_debet` end) AS `sm_debet`,(case when isnull(`b`.`sm_kredit`) then 0 else `b`.`sm_kredit` end) AS `sm_kredit`,`b`.`akun_id` AS `akun_id` from ((`db_tetrasma`.`v_akun_jurnal` `a` left join `db_tetrasma`.`v_saldo_mutasi` `b` on((`a`.`level4_id` = `b`.`akun_id`))) left join `db_tetrasma`.`t_level1` `c` on((`c`.`level1_id` = left(`a`.`no_akun`,1)))) where (left(`a`.`no_akun`,1) = '4') order by `a`.`no_akun`;
+
+--
+-- Dumping data for table `v_summary_bukubesar_4`
+--
+
+INSERT INTO `v_summary_bukubesar_4` (`level1_nama`, `nama_akun`, `sm_debet`, `sm_kredit`, `akun_id`) VALUES
+('Pendapatan', 'Pendapatan Bunga', '0', '0', NULL),
+('Pendapatan', 'Pendapatan Provisi', '0', '0', NULL),
+('Pendapatan', 'Pendapatan Administrasi', '0', '0', NULL),
+('Pendapatan', 'Pendapatan Lainnya', '0', '0', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_summary_bukubesar_6`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_summary_bukubesar_6` AS select `c`.`level1_nama` AS `level1_nama`,`a`.`nama_akun` AS `nama_akun`,(case when isnull(`b`.`sm_debet`) then 0 else `b`.`sm_debet` end) AS `sm_debet`,(case when isnull(`b`.`sm_kredit`) then 0 else `b`.`sm_kredit` end) AS `sm_kredit`,`b`.`akun_id` AS `akun_id` from ((`db_tetrasma`.`v_akun_jurnal` `a` left join `db_tetrasma`.`v_saldo_mutasi` `b` on((`a`.`level4_id` = `b`.`akun_id`))) left join `db_tetrasma`.`t_level1` `c` on((`c`.`level1_id` = left(`a`.`no_akun`,1)))) where (left(`a`.`no_akun`,1) = '6') order by `a`.`no_akun`;
+
+--
+-- Dumping data for table `v_summary_bukubesar_6`
+--
+
+INSERT INTO `v_summary_bukubesar_6` (`level1_nama`, `nama_akun`, `sm_debet`, `sm_kredit`, `akun_id`) VALUES
+('Biaya', 'Bunga Simpanan', '0', '0', NULL),
+('Biaya', 'Bunga Bank', '0', '0', NULL),
+('Biaya', 'Bunga Simpanan Lain-Lain', '0', '0', NULL),
+('Biaya', 'Bunga Simpanan Berjangka', '0', '0', NULL),
+('Biaya', 'Bunga Simpanan Khusus', '0', '0', NULL),
+('Biaya', 'Biaya Penysh. Piut. Tak Tertg.', '0', '0', NULL),
+('Biaya', 'Biaya Asuransi', '0', '0', NULL),
+('Biaya', 'Biaya Audit', '0', '0', NULL),
+('Biaya', 'Biaya Pajak', '0', '0', NULL),
+('Biaya', 'Biaya Keu. Lain-Lain', '0', '0', NULL),
+('Biaya', 'Biaya Rapat Pengurus', '0', '0', NULL),
+('Biaya', 'Biaya Rapat Anggota', '0', '0', NULL),
+('Biaya', 'Biaya Perjalanan Dinas', '0', '15000', 48),
+('Biaya', 'Biaya Diklat', '0', '0', NULL),
+('Biaya', 'Biaya Honorarium Pengurus', '0', '0', NULL),
+('Biaya', 'Biaya Pembinaan', '0', '0', NULL),
+('Biaya', 'Biaya Org. Lain-Lain', '0', '0', NULL),
+('Biaya', 'Gaji Karyawan', '0', '0', NULL),
+('Biaya', 'Tunjangan', '0', '0', NULL),
+('Biaya', 'Konsumsi', '0', '0', NULL),
+('Biaya', 'Biaya Transport Dinas', '0', '0', NULL),
+('Biaya', 'Biaya Pendidikan', '0', '0', NULL),
+('Biaya', 'Biaya Alat Tulis', '0', '0', NULL),
+('Biaya', 'Biaya Listrik', '0', '0', NULL),
+('Biaya', 'Biaya Telepon', '0', '0', NULL),
+('Biaya', 'Biaya Air', '0', '0', NULL),
+('Biaya', 'Biaya Kary. Lain-Lain', '0', '0', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_summary_lr_4`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_summary_lr_4` AS select `a`.`level1_nama` AS `level1_nama`,`b`.`nama_akun` AS `nama_akun`,`b`.`level4_id` AS `level4_id` from (`db_tetrasma`.`t_level1` `a` left join `db_tetrasma`.`v_akun_jurnal` `b` on((`a`.`level1_no` = left(`b`.`no_akun`,1)))) where ((`a`.`level1_no` = 4) and (`b`.`labarugi` = 1)) order by `b`.`no_akun`;
+
+--
+-- Dumping data for table `v_summary_lr_4`
+--
+
+INSERT INTO `v_summary_lr_4` (`level1_nama`, `nama_akun`, `level4_id`) VALUES
+('Pendapatan', 'Pendapatan Bunga', 31),
+('Pendapatan', 'Pendapatan Provisi', 32),
+('Pendapatan', 'Pendapatan Administrasi', 33),
+('Pendapatan', 'Pendapatan Lainnya', 34);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_summary_lr_5`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_summary_lr_5` AS select `a`.`level1_nama` AS `level1_nama`,`b`.`nama_akun` AS `nama_akun`,`b`.`level4_id` AS `level4_id` from (`db_tetrasma`.`t_level1` `a` left join `db_tetrasma`.`v_akun_jurnal` `b` on((`a`.`level1_no` = left(`b`.`no_akun`,1)))) where ((`a`.`level1_no` = 5) and (`b`.`labarugi` = 1)) order by `b`.`no_akun`;
+
+--
+-- Dumping data for table `v_summary_lr_5`
+--
+
+INSERT INTO `v_summary_lr_5` (`level1_nama`, `nama_akun`, `level4_id`) VALUES
+('HPP', 'Biaya Langsung', 35);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `v_summary_lr_6`
+--
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_tetrasma`.`v_summary_lr_6` AS select `a`.`level1_nama` AS `level1_nama`,`b`.`nama_akun` AS `nama_akun`,`b`.`level4_id` AS `level4_id` from (`db_tetrasma`.`t_level1` `a` left join `db_tetrasma`.`v_akun_jurnal` `b` on((`a`.`level1_no` = left(`b`.`no_akun`,1)))) where ((`a`.`level1_no` = 6) and (`b`.`labarugi` = 1)) order by `b`.`no_akun`;
+
+--
+-- Dumping data for table `v_summary_lr_6`
+--
+
+INSERT INTO `v_summary_lr_6` (`level1_nama`, `nama_akun`, `level4_id`) VALUES
+('Biaya', 'Biaya Perjalanan Dinas', 48),
+('Biaya', 'Biaya Transport Dinas', 56),
+('Biaya', 'Biaya Listrik', 60);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

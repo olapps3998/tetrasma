@@ -382,3 +382,149 @@ SELECT a.level1_nama AS level1_nama,
 FROM v_akun_3_sum a
   LEFT JOIN t_level4 b ON a.level4_id = b.level4_id
 WHERE b.neraca = 1;
+
+
+-- 27
+create view v_akun_4 as
+SELECT a.level1_nama AS level1_nama,
+  b.nama_akun AS nama_akun,
+  b.level4_id AS level4_id
+FROM t_level1 a
+  LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
+WHERE a.level1_no = 4
+ORDER BY b.no_akun;
+
+
+-- 28
+create view v_akun_4_sum as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  b.akun_id AS akun_id,
+  b.tgl AS tgl,
+  b.sm_debet AS sm_debet,
+  b.sm_kredit AS sm_kredit
+FROM v_akun_4 a
+  LEFT JOIN v_saldo_mutasi_tgl b ON a.level4_id = b.akun_id;
+
+  
+-- 29
+create view v_akun_4_sum_lr as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  a.akun_id AS akun_id,
+  a.tgl AS tgl,
+  a.sm_debet AS sm_debet,
+  a.sm_kredit AS sm_kredit
+FROM v_akun_4_sum a
+  LEFT JOIN t_level4 b ON a.level4_id = b.level4_id
+WHERE b.labarugi = 1;
+
+
+-- 30
+create view v_akun_5 as
+SELECT a.level1_nama AS level1_nama,
+  b.nama_akun AS nama_akun,
+  b.level4_id AS level4_id
+FROM t_level1 a
+  LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
+WHERE a.level1_no = 5
+ORDER BY b.no_akun;
+
+
+-- 31
+create view v_akun_5_sum as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  b.akun_id AS akun_id,
+  b.tgl AS tgl,
+  b.sm_debet AS sm_debet,
+  b.sm_kredit AS sm_kredit
+FROM v_akun_5 a
+  LEFT JOIN v_saldo_mutasi_tgl b ON a.level4_id = b.akun_id;
+
+  
+-- 32
+create view v_akun_5_sum_lr as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  a.akun_id AS akun_id,
+  a.tgl AS tgl,
+  a.sm_debet AS sm_debet,
+  a.sm_kredit AS sm_kredit
+FROM v_akun_5_sum a
+  LEFT JOIN t_level4 b ON a.level4_id = b.level4_id
+WHERE b.labarugi = 1;
+
+
+-- 33
+create view v_akun_6 as
+SELECT a.level1_nama AS level1_nama,
+  b.nama_akun AS nama_akun,
+  b.level4_id AS level4_id
+FROM t_level1 a
+  LEFT JOIN v_akun_jurnal b ON a.level1_no = Left(b.no_akun, 1)
+WHERE a.level1_no = 6
+ORDER BY b.no_akun;
+
+
+-- 34
+create view v_akun_6_sum as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  b.akun_id AS akun_id,
+  b.tgl AS tgl,
+  b.sm_debet AS sm_debet,
+  b.sm_kredit AS sm_kredit
+FROM v_akun_6 a
+  LEFT JOIN v_saldo_mutasi_tgl b ON a.level4_id = b.akun_id;
+
+  
+-- 35
+create view v_akun_6_sum_lr as
+SELECT a.level1_nama AS level1_nama,
+  a.nama_akun AS nama_akun,
+  a.level4_id AS level4_id,
+  a.akun_id AS akun_id,
+  a.tgl AS tgl,
+  a.sm_debet AS sm_debet,
+  a.sm_kredit AS sm_kredit
+FROM v_akun_6_sum a
+  LEFT JOIN t_level4 b ON a.level4_id = b.level4_id
+WHERE b.labarugi = 1;
+
+
+-- 36
+create view v_neraca as
+SELECT v_akun_1_sum_nrc.level1_nama AS level1_nama,
+  v_akun_1_sum_nrc.nama_akun AS nama_akun,
+  v_akun_1_sum_nrc.level4_id AS level4_id,
+  v_akun_1_sum_nrc.akun_id AS akun_id,
+  v_akun_1_sum_nrc.tgl AS tgl,
+  v_akun_1_sum_nrc.sm_debet AS sm_debet,
+  v_akun_1_sum_nrc.sm_kredit AS sm_kredit
+FROM v_akun_1_sum_nrc
+UNION
+SELECT v_akun_2_sum_nrc.level1_nama AS level1_nama,
+  v_akun_2_sum_nrc.nama_akun AS nama_akun,
+  v_akun_2_sum_nrc.level4_id AS level4_id,
+  v_akun_2_sum_nrc.akun_id AS akun_id,
+  v_akun_2_sum_nrc.tgl AS tgl,
+  v_akun_2_sum_nrc.sm_debet AS sm_debet,
+  v_akun_2_sum_nrc.sm_kredit AS sm_kredit
+FROM v_akun_2_sum_nrc
+UNION
+SELECT v_akun_3_sum_nrc.level1_nama AS level1_nama,
+  v_akun_3_sum_nrc.nama_akun AS nama_akun,
+  v_akun_3_sum_nrc.level4_id AS level4_id,
+  v_akun_3_sum_nrc.akun_id AS akun_id,
+  v_akun_3_sum_nrc.tgl AS tgl,
+  v_akun_3_sum_nrc.sm_debet AS sm_debet,
+  v_akun_3_sum_nrc.sm_kredit AS sm_kredit
+FROM v_akun_3_sum_nrc;
+
+
