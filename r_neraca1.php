@@ -323,18 +323,18 @@ Page_Rendering();
 
 <?php
 $a_namabln = array(
-	1 => "Jan",
-		"Feb",
-		"Mar",
-		"Apr",
+	1 => "Januari",
+		"Februari",
+		"Maret",
+		"April",
 		"Mei",
-		"Jun",
-		"Jul",
-		"Ags",
-		"Sep",
-		"Okt",
-		"Nov",
-		"Des");
+		"Juni",
+		"Juli",
+		"Agustus",
+		"September",
+		"Oktober",
+		"November",
+		"Desember");
 ?>
 
 <h3>Laporan Neraca</h3>
@@ -346,10 +346,14 @@ $a_namabln = array(
 <?php
 // akun aktiva
 $aktiva = 0;
-$q = "select * from v_akun_1_sum_nrc where ";
+$q = "select * from v_akun_1_nrc_sum where ";
 if ($_POST["bulan"] != 0) {$q .= "month(tgl) = ".$_POST["bulan"]." and ";}
-$q .= "year(tgl) = ".$_POST["tahun"];
+$q .= "year(tgl) = ".$_POST["tahun"]; //echo $q;
 $rs = Conn()->Execute($q);
+if($rs->RecordCount() == 0) {
+	$q = "select * from v_akun_1_nrc";
+	$rs = Conn()->Execute($q);
+}
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];
 	?>
@@ -358,18 +362,22 @@ if (!$rs->EOF) {
 	while (!$rs->EOF) {
 		$level4_id = $rs->fields["level4_id"];
 		$nama_akun = $rs->fields["nama_akun"];
-		$subtotal = 0;
+		$subtotal = $rs->fields["sa_debet"] - $rs->fields["sa_kredit"];
 		while($level4_id == $rs->fields["level4_id"] and !$rs->EOF) {
 			$subtotal += $rs->fields["sm_debet"] - $rs->fields["sm_kredit"];
 			$rs->MoveNext();
 		}
+		$kb = ""; $kt = "";
+		if ($subtotal < 0) {
+			$kb = "("; $kt = ")";
+		}
 		?>
-		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo number_format($subtotal);?></td><td>&nbsp;</td></tr>
+		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo $kb.number_format(abs($subtotal)).$kt;?></td><td>&nbsp;</td></tr>
 		<?php
 		$aktiva += $subtotal;
 	}
 	?>
-	<tr><td colspan="3"><b>Total Aktiva</b></td><td align="right"><b><?php echo number_format($aktiva);?></b></td></tr>
+	<tr><td colspan="3"><b>Total <?php echo $level1_nama;?></b></td><td align="right"><b><?php echo number_format($aktiva);?></b></td></tr>
 	<?php
 }
 ?>
@@ -379,10 +387,14 @@ if (!$rs->EOF) {
 <?php
 // akun pasiva
 $pasiva = 0;
-$q = "select * from v_akun_2_sum_nrc where ";
+$q = "select * from v_akun_2_nrc_sum where ";
 if ($_POST["bulan"] != 0) {$q .= "month(tgl) = ".$_POST["bulan"]." and ";}
 $q .= "year(tgl) = ".$_POST["tahun"];
 $rs = Conn()->Execute($q);
+if($rs->RecordCount() == 0) {
+	$q = "select * from v_akun_2_nrc";
+	$rs = Conn()->Execute($q);
+}
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];
 	?>
@@ -391,18 +403,23 @@ if (!$rs->EOF) {
 	while (!$rs->EOF) {
 		$level4_id = $rs->fields["level4_id"];
 		$nama_akun = $rs->fields["nama_akun"];
-		$subtotal = 0;
+		//$subtotal = 0;
+		$subtotal = $rs->fields["sa_debet"] - $rs->fields["sa_kredit"];
 		while($level4_id == $rs->fields["level4_id"] and !$rs->EOF) {
 			$subtotal += $rs->fields["sm_debet"] - $rs->fields["sm_kredit"];
 			$rs->MoveNext();
 		}
+		$kb = ""; $kt = "";
+		if ($subtotal < 0) {
+			//$kb = "("; $kt = ")";
+		}
 		?>
-		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo number_format($subtotal);?></td><td>&nbsp;</td></tr>
+		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo $kb.number_format(abs($subtotal)).$kt;?></td><td>&nbsp;</td></tr>
 		<?php
 		$pasiva += $subtotal;
 	}
 	?>
-	<tr><td colspan="3"><b>Total Pasiva</b></td><td align="right"><b><?php echo number_format($pasiva);?></b></td></tr>
+	<tr><td colspan="3"><b>Total <?php echo $level1_nama;?></b></td><td align="right"><b><?php echo number_format(abs($pasiva));?></b></td></tr>
 	<?php
 }
 ?>
@@ -412,10 +429,14 @@ if (!$rs->EOF) {
 <?php
 // akun modal
 $modal = 0;
-$q = "select * from v_akun_3_sum_nrc where ";
+$q = "select * from v_akun_3_nrc_sum where ";
 if ($_POST["bulan"] != 0) {$q .= "month(tgl) = ".$_POST["bulan"]." and ";}
 $q .= "year(tgl) = ".$_POST["tahun"];
 $rs = Conn()->Execute($q);
+if($rs->RecordCount() == 0) {
+	$q = "select * from v_akun_3_nrc";
+	$rs = Conn()->Execute($q);
+}
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];
 	?>
@@ -424,21 +445,28 @@ if (!$rs->EOF) {
 	while (!$rs->EOF) {
 		$level4_id = $rs->fields["level4_id"];
 		$nama_akun = $rs->fields["nama_akun"];
-		$subtotal = 0;
+		//$subtotal = 0;
+		$subtotal = $rs->fields["sa_debet"] - $rs->fields["sa_kredit"];
 		while($level4_id == $rs->fields["level4_id"] and !$rs->EOF) {
 			$subtotal += $rs->fields["sm_debet"] - $rs->fields["sm_kredit"];
 			$rs->MoveNext();
 		}
+		$kb = ""; $kt = "";
+		if ($subtotal < 0) {
+			//$kb = "("; $kt = ")";
+		}
 		?>
-		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo number_format($subtotal);?></td><td>&nbsp;</td></tr>
+		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo $kb.number_format(abs($subtotal)).$kt;?></td><td>&nbsp;</td></tr>
 		<?php
 		$modal += $subtotal;
 	}
 	?>
-	<tr><td colspan="3"><b>Total Pasiva</b></td><td align="right"><b><?php echo number_format($modal);?></b></td></tr>
+	<tr><td colspan="3"><b>Total <?php echo $level1_nama;?></b></td><td align="right"><b><?php echo number_format(abs($modal));?></b></td></tr>
 	<?php
 }
 ?>
+<tr><td colspan="4">&nbsp;</td></tr>
+<tr><td colspan="3"><b>Total Pasiva</b></td><td align="right"><b><?php echo number_format(abs($pasiva)+abs($modal));?></b></td></tr>
 </table>
 <?php if (EW_DEBUG_ENABLED) echo ew_DebugMsg(); ?>
 <?php include_once "footer.php" ?>

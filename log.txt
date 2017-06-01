@@ -1,3 +1,39 @@
+12:36 AM 6/2/2017
+- v_akun_1_sum_nrc masih salah;
+
+
+12:28 AM 6/2/2017
+- buat tabel baru :: t_setup, yang isinya antara lain :
+	- setup akun laba rugi
+	- gimana struktur tabel nya ?
+	t_setup
+	-------
+	
+	setup_id  setup_ket                    setup_nilai
+	--------  ---------------------------  -----------
+
+
+11:10 PM 6/1/2017
+- masih bingung mau mulai dari mana
+- mulai dari mana untuk menyelesaikan neraca
+- belum lagi terselesaikan masalah untuk otomasi saldo buku besar per akun atau saldo laba rugi dan saldo neraca
+- belum lagi masalah penempatan saldo mutasi per periode
+- dibuat per periode ? atau langsung aja ? saat dibutuhkan maka baru dihitung ?
+- saldo awal :: sampai kapanpun tidak akan berubah
+- keliatannya perlu dibuatkan tanggal awal periode keuangan
+- agar tidak perlu lagi membuatkan saat ditanyakan nanti
+- tapi nantilah setelah laporan neraca terselesaikan
+
+
+4:39 PM 6/1/2017
+- gimana cara menampung saldo bulan berjalan ? apa menggunakan trigger ? atau constrain ?
+- atau manual dengan cara ada proses posting untuk memindah saldo buku besar ke tabel level_4 ?
+- banyak metode, hanya saja :: masih belum menemukan yang terbaik
+- agar saat dibutuhkan :: nilai sudah tersedia, misal :: nilai laba rugi periode kapanpun, nilai neraca periode kapan pun,
+nilai saldo mutasi periode kapanpun :: semua mudah terlacak, tidak harus melalui proses posting dan lain2 ... sehingga rumit
+- ada yang mudah kenapa cari yang susah ...
+
+
 -----------------
 4:08 PM 2/18/2017
 -----------------
