@@ -1759,14 +1759,21 @@ $a_namabln = array(
 <?php
 // akun aktiva
 $aktiva = 0;
-$q = "select * from v_akun_1_nrc_sum where ";
-if ($_POST["bulan"] != 0) {$q .= "month(tgl) = ".$_POST["bulan"]." and ";}
-$q .= "year(tgl) = ".$_POST["tahun"]; //echo $q;
+
+$q = "
+	select
+		a.*
+		, b.sm_debet
+		, b.sm_kredit
+	from
+		v_akun_1_nrc a
+		left join (select * from v_saldo_mutasi_tgl where ";
+	if ($_POST["bulan"] != 0) {
+		$q .= "month(tgl) = ".$_POST["bulan"]." and ";
+	}
+	$q .= "year(tgl) = ".$_POST["tahun"].") b on a.level4_id = b.akun_id";
 $rs = Conn()->Execute($q);
-if($rs->RecordCount() == 0) {
-	$q = "select * from v_akun_1_nrc";
-	$rs = Conn()->Execute($q);
-}
+
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];
 	?>
@@ -1800,14 +1807,30 @@ if (!$rs->EOF) {
 <?php
 // akun pasiva
 $pasiva = 0;
-$q = "select * from v_akun_2_nrc_sum where ";
+
+/*$q = "select * from v_akun_2_nrc_sum where ";
 if ($_POST["bulan"] != 0) {$q .= "month(tgl) = ".$_POST["bulan"]." and ";}
-$q .= "year(tgl) = ".$_POST["tahun"];
+$q .= "year(tgl) = ".$_POST["tahun"]." or tgl is null";
 $rs = Conn()->Execute($q);
 if($rs->RecordCount() == 0) {
 	$q = "select * from v_akun_2_nrc";
 	$rs = Conn()->Execute($q);
-}
+}*/
+
+$q = "
+	select
+		a.*
+		, b.sm_debet
+		, b.sm_kredit
+	from
+		v_akun_2_nrc a
+		left join (select * from v_saldo_mutasi_tgl where ";
+	if ($_POST["bulan"] != 0) {
+		$q .= "month(tgl) = ".$_POST["bulan"]." and ";
+	}
+	$q .= "year(tgl) = ".$_POST["tahun"].") b on a.level4_id = b.akun_id";
+$rs = Conn()->Execute($q);
+
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];
 	?>
@@ -1842,14 +1865,30 @@ if (!$rs->EOF) {
 <?php
 // akun modal
 $modal = 0;
-$q = "select * from v_akun_3_nrc_sum where ";
+
+/*$q = "select * from v_akun_3_nrc_sum where ";
 if ($_POST["bulan"] != 0) {$q .= "month(tgl) = ".$_POST["bulan"]." and ";}
-$q .= "year(tgl) = ".$_POST["tahun"];
+$q .= "year(tgl) = ".$_POST["tahun"]." or tgl is null";
 $rs = Conn()->Execute($q);
 if($rs->RecordCount() == 0) {
 	$q = "select * from v_akun_3_nrc";
 	$rs = Conn()->Execute($q);
-}
+}*/
+
+$q = "
+	select
+		a.*
+		, b.sm_debet
+		, b.sm_kredit
+	from
+		v_akun_3_nrc a
+		left join (select * from v_saldo_mutasi_tgl where ";
+	if ($_POST["bulan"] != 0) {
+		$q .= "month(tgl) = ".$_POST["bulan"]." and ";
+	}
+	$q .= "year(tgl) = ".$_POST["tahun"].") b on a.level4_id = b.akun_id";
+$rs = Conn()->Execute($q);
+
 if (!$rs->EOF) {
 	$level1_nama = $rs->fields["level1_nama"];
 	?>
