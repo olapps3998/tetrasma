@@ -1,3 +1,11 @@
+5:25 PM 6/2/2017
+- dicoba buat view yang langsung menghasilkan saldo mutasi
+  view langsung dibuat selama setahun selama tahun berjalan
+  
+  
+
+
+
 12:36 AM 6/2/2017
 - v_akun_1_sum_nrc masih salah;
 
