@@ -345,6 +345,7 @@ $tahun = $_POST["tahun"];
 <?php
 // akun aktiva
 $aktiva = 0;
+$subtotal = 0;
 
 $q = "
 	select * from v_akun_saldo
@@ -364,13 +365,13 @@ if (!$rs->EOF) {
 		if ($bulan == 0) {
 			for ($i = 1; $i <= 12; $i++) {
 				$saldo_sblm += $rs->fields["saldo_".substr("00".$i,-2)];
-			} //echo $saldo_sblm;
+			}
 			$subtotal = $rs->fields["saldo_awal"] + $saldo_sblm;
 		}
 		else {
 			for ($i = 1; $i < $_POST["bulan"]; $i++) {
 				$saldo_sblm += $rs->fields["saldo_".substr("00".$i,-2)];
-			} //echo $saldo_sblm;
+			}
 			$subtotal = $rs->fields["saldo_awal"] + $saldo_sblm + $rs->fields["saldo_".substr("00".$bulan,-2)];
 		}
 		?>
@@ -390,28 +391,14 @@ if (!$rs->EOF) {
 <?php
 // akun pasiva
 $pasiva = 0;
-
-/*$q = "select * from v_akun_2_nrc_sum where ";
-if ($_POST["bulan"] != 0) {$q .= "month(tgl) = ".$_POST["bulan"]." and ";}
-$q .= "year(tgl) = ".$_POST["tahun"]." or tgl is null";
-$rs = Conn()->Execute($q);
-if($rs->RecordCount() == 0) {
-	$q = "select * from v_akun_2_nrc";
-	$rs = Conn()->Execute($q);
-}*/
+$subtotal = 0;
 
 $q = "
-	select
-		a.*
-		, b.sm_debet
-		, b.sm_kredit
-	from
-		v_akun_2_nrc a
-		left join (select * from v_saldo_mutasi_tgl where ";
-	if ($_POST["bulan"] != 0) {
-		$q .= "month(tgl) = ".$_POST["bulan"]." and ";
-	}
-	$q .= "year(tgl) = ".$_POST["tahun"].") b on a.level4_id = b.akun_id";
+	select * from v_akun_saldo
+	where
+		neraca = 1 and left(no_akun, 1) = '2'
+	order by no_akun
+";
 $rs = Conn()->Execute($q);
 
 if (!$rs->EOF) {
@@ -420,22 +407,24 @@ if (!$rs->EOF) {
 	<tr><td colspan="4"><b><?php echo $rs->fields["level1_nama"];?></b></td></tr>
 	<?php
 	while (!$rs->EOF) {
-		$level4_id = $rs->fields["level4_id"];
-		$nama_akun = $rs->fields["nama_akun"];
-		//$subtotal = 0;
-		$subtotal = $rs->fields["sa_debet"] - $rs->fields["sa_kredit"];
-		while($level4_id == $rs->fields["level4_id"] and !$rs->EOF) {
-			$subtotal += $rs->fields["sm_debet"] - $rs->fields["sm_kredit"];
-			$rs->MoveNext();
+		$saldo_sblm = 0;
+		if ($bulan == 0) {
+			for ($i = 1; $i <= 12; $i++) {
+				$saldo_sblm += $rs->fields["saldo_".substr("00".$i,-2)];
+			}
+			$subtotal = $rs->fields["saldo_awal"] + $saldo_sblm;
 		}
-		$kb = ""; $kt = "";
-		if ($subtotal < 0) {
-			//$kb = "("; $kt = ")";
+		else {
+			for ($i = 1; $i < $_POST["bulan"]; $i++) {
+				$saldo_sblm += $rs->fields["saldo_".substr("00".$i,-2)];
+			}
+			$subtotal = $rs->fields["saldo_awal"] + $saldo_sblm + $rs->fields["saldo_".substr("00".$bulan,-2)];
 		}
 		?>
-		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo $kb.number_format(abs($subtotal)).$kt;?></td><td>&nbsp;</td></tr>
+		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $rs->fields["nama_akun"];?></td><td align="right"><?php echo $kb.number_format(abs($subtotal)).$kt;?></td><td>&nbsp;</td></tr>
 		<?php
 		$pasiva += $subtotal;
+		$rs->MoveNext();
 	}
 	?>
 	<tr><td colspan="3"><b>Total <?php echo $level1_nama;?></b></td><td align="right"><b><?php echo number_format(abs($pasiva));?></b></td></tr>
@@ -448,28 +437,14 @@ if (!$rs->EOF) {
 <?php
 // akun modal
 $modal = 0;
-
-/*$q = "select * from v_akun_3_nrc_sum where ";
-if ($_POST["bulan"] != 0) {$q .= "month(tgl) = ".$_POST["bulan"]." and ";}
-$q .= "year(tgl) = ".$_POST["tahun"]." or tgl is null";
-$rs = Conn()->Execute($q);
-if($rs->RecordCount() == 0) {
-	$q = "select * from v_akun_3_nrc";
-	$rs = Conn()->Execute($q);
-}*/
+$subtotal = 0;
 
 $q = "
-	select
-		a.*
-		, b.sm_debet
-		, b.sm_kredit
-	from
-		v_akun_3_nrc a
-		left join (select * from v_saldo_mutasi_tgl where ";
-	if ($_POST["bulan"] != 0) {
-		$q .= "month(tgl) = ".$_POST["bulan"]." and ";
-	}
-	$q .= "year(tgl) = ".$_POST["tahun"].") b on a.level4_id = b.akun_id";
+	select * from v_akun_saldo
+	where
+		neraca = 1 and left(no_akun, 1) = '3'
+	order by no_akun
+";
 $rs = Conn()->Execute($q);
 
 if (!$rs->EOF) {
@@ -478,22 +453,24 @@ if (!$rs->EOF) {
 	<tr><td colspan="4"><b><?php echo $rs->fields["level1_nama"];?></b></td></tr>
 	<?php
 	while (!$rs->EOF) {
-		$level4_id = $rs->fields["level4_id"];
-		$nama_akun = $rs->fields["nama_akun"];
-		//$subtotal = 0;
-		$subtotal = $rs->fields["sa_debet"] - $rs->fields["sa_kredit"];
-		while($level4_id == $rs->fields["level4_id"] and !$rs->EOF) {
-			$subtotal += $rs->fields["sm_debet"] - $rs->fields["sm_kredit"];
-			$rs->MoveNext();
+		$saldo_sblm = 0;
+		if ($bulan == 0) {
+			for ($i = 1; $i <= 12; $i++) {
+				$saldo_sblm += $rs->fields["saldo_".substr("00".$i,-2)];
+			}
+			$subtotal = $rs->fields["saldo_awal"] + $saldo_sblm;
 		}
-		$kb = ""; $kt = "";
-		if ($subtotal < 0) {
-			//$kb = "("; $kt = ")";
+		else {
+			for ($i = 1; $i < $_POST["bulan"]; $i++) {
+				$saldo_sblm += $rs->fields["saldo_".substr("00".$i,-2)];
+			}
+			$subtotal = $rs->fields["saldo_awal"] + $saldo_sblm + $rs->fields["saldo_".substr("00".$bulan,-2)];
 		}
 		?>
-		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo $kb.number_format(abs($subtotal)).$kt;?></td><td>&nbsp;</td></tr>
+		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $rs->fields["nama_akun"];?></td><td align="right"><?php echo $kb.number_format(abs($subtotal)).$kt;?></td><td>&nbsp;</td></tr>
 		<?php
 		$modal += $subtotal;
+		$rs->MoveNext();
 	}
 	?>
 	<tr><td colspan="3"><b>Total <?php echo $level1_nama;?></b></td><td align="right"><b><?php echo number_format(abs($modal));?></b></td></tr>

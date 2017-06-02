@@ -302,8 +302,6 @@ class cdefault {
 			$this->Page_Terminate("r_labarugi2.php");
 		if ($Security->AllowList(CurrentProjectID() . 'r_neraca0.php'))
 			$this->Page_Terminate("r_neraca0.php");
-		if ($Security->AllowList(CurrentProjectID() . 'r_neraca1.php'))
-			$this->Page_Terminate("r_neraca1.php");
 		if ($Security->AllowList(CurrentProjectID() . 'r_neraca2.php'))
 			$this->Page_Terminate("r_neraca2.php");
 		if ($Security->IsLoggedIn()) {

@@ -586,14 +586,8 @@
     <menu id="10171">
       <phrase id="menutext" value="v labarugi" />
     </menu>
-    <menu id="10172">
-      <phrase id="menutext" value="v akun 1 nrc" />
-    </menu>
     <menu id="22">
       <phrase id="menutext" value="Home" />
-    </menu>
-    <menu id="10173">
-      <phrase id="menutext" value="v akun 1 nrc sum" />
     </menu>
     <menu id="10065">
       <phrase id="menutext" value="Setup" />
@@ -619,9 +613,6 @@
     <menu id="16">
       <phrase id="menutext" value="User" />
     </menu>
-    <menu id="10174">
-      <phrase id="menutext" value="v akun 2 nrc" />
-    </menu>
     <menu id="10106">
       <phrase id="menutext" value="Input" />
     </menu>
@@ -630,9 +621,6 @@
     </menu>
     <menu id="27">
       <phrase id="menutext" value="Jurnal Memorial" />
-    </menu>
-    <menu id="10175">
-      <phrase id="menutext" value="v akun 2 nrc sum" />
     </menu>
     <menu id="10128">
       <phrase id="menutext" value="Laporan" />
@@ -657,12 +645,6 @@
     </menu>
     <menu id="10029">
       <phrase id="menutext" value="Buku Besar" />
-    </menu>
-    <menu id="10176">
-      <phrase id="menutext" value="v akun 3 nrc" />
-    </menu>
-    <menu id="10177">
-      <phrase id="menutext" value="v akun 3 nrc sum" />
     </menu>
     <menu id="10178">
       <phrase id="menutext" value="v akun saldo" />
@@ -709,32 +691,11 @@
     <menu id="10147">
       <phrase id="menutext" value="v summary lr 4" />
     </menu>
-    <menu id="10170">
-      <phrase id="menutext" value="Neraca" />
-    </menu>
     <menu id="10148">
       <phrase id="menutext" value="v summary lr 6" />
     </menu>
     <menu id="10149">
       <phrase id="menutext" value="v summary lr 5" />
-    </menu>
-    <menu id="10150">
-      <phrase id="menutext" value="v akun 1" />
-    </menu>
-    <menu id="10151">
-      <phrase id="menutext" value="v akun 1 sum" />
-    </menu>
-    <menu id="10153">
-      <phrase id="menutext" value="v akun 2" />
-    </menu>
-    <menu id="10154">
-      <phrase id="menutext" value="v akun 2 sum" />
-    </menu>
-    <menu id="10156">
-      <phrase id="menutext" value="v akun 3" />
-    </menu>
-    <menu id="10157">
-      <phrase id="menutext" value="v akun 3 sum" />
     </menu>
     <menu id="10160">
       <phrase id="menutext" value="v akun 6 sum lr" />
@@ -1559,150 +1520,6 @@
         <phrase id="fldcaption" value="level 4 id" />
       </field>
     </table>
-    <table id="v_akun_1">
-      <phrase id="tblcaption" value="v akun 1" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-    </table>
-    <table id="v_akun_1_sum">
-      <phrase id="tblcaption" value="v akun 1 sum" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="akun_id">
-        <phrase id="fldcaption" value="akun id" />
-      </field>
-      <field id="tgl">
-        <phrase id="fldcaption" value="tgl" />
-      </field>
-      <field id="sm_debet">
-        <phrase id="fldcaption" value="sm debet" />
-      </field>
-      <field id="sm_kredit">
-        <phrase id="fldcaption" value="sm kredit" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-    </table>
-    <table id="v_akun_2">
-      <phrase id="tblcaption" value="v akun 2" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-    </table>
-    <table id="v_akun_2_sum">
-      <phrase id="tblcaption" value="v akun 2 sum" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="akun_id">
-        <phrase id="fldcaption" value="akun id" />
-      </field>
-      <field id="tgl">
-        <phrase id="fldcaption" value="tgl" />
-      </field>
-      <field id="sm_debet">
-        <phrase id="fldcaption" value="sm debet" />
-      </field>
-      <field id="sm_kredit">
-        <phrase id="fldcaption" value="sm kredit" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-    </table>
-    <table id="v_akun_3">
-      <phrase id="tblcaption" value="v akun 3" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-    </table>
-    <table id="v_akun_3_sum">
-      <phrase id="tblcaption" value="v akun 3 sum" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="akun_id">
-        <phrase id="fldcaption" value="akun id" />
-      </field>
-      <field id="tgl">
-        <phrase id="fldcaption" value="tgl" />
-      </field>
-      <field id="sm_debet">
-        <phrase id="fldcaption" value="sm debet" />
-      </field>
-      <field id="sm_kredit">
-        <phrase id="fldcaption" value="sm kredit" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-    </table>
     <table id="v_akun_4">
       <phrase id="tblcaption" value="v akun 4" />
       <field id="level1_nama">
@@ -1886,9 +1703,6 @@
     <table id="r_neraca0_php">
       <phrase id="tblcaption" value="Periode Neraca" />
     </table>
-    <table id="r_neraca1_php">
-      <phrase id="tblcaption" value="Neraca" />
-    </table>
     <table id="v_labarugi">
       <phrase id="tblcaption" value="v labarugi" />
       <field id="level1_nama">
@@ -1899,150 +1713,6 @@
       </field>
       <field id="level4_id">
         <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="akun_id">
-        <phrase id="fldcaption" value="akun id" />
-      </field>
-      <field id="tgl">
-        <phrase id="fldcaption" value="tgl" />
-      </field>
-      <field id="sm_debet">
-        <phrase id="fldcaption" value="sm debet" />
-      </field>
-      <field id="sm_kredit">
-        <phrase id="fldcaption" value="sm kredit" />
-      </field>
-    </table>
-    <table id="v_akun_1_nrc">
-      <phrase id="tblcaption" value="v akun 1 nrc" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-    </table>
-    <table id="v_akun_1_nrc_sum">
-      <phrase id="tblcaption" value="v akun 1 nrc sum" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-      <field id="akun_id">
-        <phrase id="fldcaption" value="akun id" />
-      </field>
-      <field id="tgl">
-        <phrase id="fldcaption" value="tgl" />
-      </field>
-      <field id="sm_debet">
-        <phrase id="fldcaption" value="sm debet" />
-      </field>
-      <field id="sm_kredit">
-        <phrase id="fldcaption" value="sm kredit" />
-      </field>
-    </table>
-    <table id="v_akun_2_nrc">
-      <phrase id="tblcaption" value="v akun 2 nrc" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-    </table>
-    <table id="v_akun_2_nrc_sum">
-      <phrase id="tblcaption" value="v akun 2 nrc sum" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-      <field id="akun_id">
-        <phrase id="fldcaption" value="akun id" />
-      </field>
-      <field id="tgl">
-        <phrase id="fldcaption" value="tgl" />
-      </field>
-      <field id="sm_debet">
-        <phrase id="fldcaption" value="sm debet" />
-      </field>
-      <field id="sm_kredit">
-        <phrase id="fldcaption" value="sm kredit" />
-      </field>
-    </table>
-    <table id="v_akun_3_nrc">
-      <phrase id="tblcaption" value="v akun 3 nrc" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
-      </field>
-    </table>
-    <table id="v_akun_3_nrc_sum">
-      <phrase id="tblcaption" value="v akun 3 nrc sum" />
-      <field id="level1_nama">
-        <phrase id="fldcaption" value="level 1 nama" />
-      </field>
-      <field id="nama_akun">
-        <phrase id="fldcaption" value="nama akun" />
-      </field>
-      <field id="level4_id">
-        <phrase id="fldcaption" value="level 4 id" />
-      </field>
-      <field id="sa_debet">
-        <phrase id="fldcaption" value="sa debet" />
-      </field>
-      <field id="sa_kredit">
-        <phrase id="fldcaption" value="sa kredit" />
       </field>
       <field id="akun_id">
         <phrase id="fldcaption" value="akun id" />

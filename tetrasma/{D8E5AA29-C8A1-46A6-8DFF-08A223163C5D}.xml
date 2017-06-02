@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <configuration date="2017/06/03" author="e.World Technology Ltd.">
-  <project id="{D8E5AA29-C8A1-46A6-8DFF-08A223163C5D}" file="D:\xampp\htdocs\tetrasma\tetrasma.pmp" name="tetrasma" product="PHPMaker" version="13.0" datetime="2017/06/03 04:05:15" languagefolder="phplang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
+  <project id="{D8E5AA29-C8A1-46A6-8DFF-08A223163C5D}" file="D:\xampp\htdocs\tetrasma\tetrasma.pmp" name="tetrasma" product="PHPMaker" version="13.0" datetime="2017/06/03 04:18:25" languagefolder="phplang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
     <table id="t_anggota" name="t_anggota" caption="Anggota" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="audittrail" name="audittrail" caption="audittrail" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="t_level1" name="t_level1" caption="Lv. 1" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
@@ -35,12 +35,6 @@
     <table id="v_summary_lr_4" name="v_summary_lr_4" caption="v summary lr 4" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_summary_lr_6" name="v_summary_lr_6" caption="v summary lr 6" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_summary_lr_5" name="v_summary_lr_5" caption="v summary lr 5" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_1" name="v_akun_1" caption="v akun 1" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_1_sum" name="v_akun_1_sum" caption="v akun 1 sum" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_2" name="v_akun_2" caption="v akun 2" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_2_sum" name="v_akun_2_sum" caption="v akun 2 sum" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_3" name="v_akun_3" caption="v akun 3" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_3_sum" name="v_akun_3_sum" caption="v akun 3 sum" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_akun_4" name="v_akun_4" caption="v akun 4" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_akun_4_sum" name="v_akun_4_sum" caption="v akun 4 sum" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_akun_4_sum_lr" name="v_akun_4_sum_lr" caption="v akun 4 sum lr" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
@@ -51,14 +45,7 @@
     <table id="v_akun_6_sum" name="v_akun_6_sum" caption="v akun 6 sum" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_akun_6_sum_lr" name="v_akun_6_sum_lr" caption="v akun 6 sum lr" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="r_neraca0_php" name="r_neraca0.php" caption="Periode Neraca" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="r_neraca1_php" name="r_neraca1.php" caption="Neraca" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_labarugi" name="v_labarugi" caption="v labarugi" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_1_nrc" name="v_akun_1_nrc" caption="v akun 1 nrc" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_1_nrc_sum" name="v_akun_1_nrc_sum" caption="v akun 1 nrc sum" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_2_nrc" name="v_akun_2_nrc" caption="v akun 2 nrc" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_2_nrc_sum" name="v_akun_2_nrc_sum" caption="v akun 2 nrc sum" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_3_nrc" name="v_akun_3_nrc" caption="v akun 3 nrc" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
-    <table id="v_akun_3_nrc_sum" name="v_akun_3_nrc_sum" caption="v akun 3 nrc sum" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_akun_saldo" name="v_akun_saldo" caption="v akun saldo" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_saldo_mutasi_tgl_01" name="v_saldo_mutasi_tgl_01" caption="v saldo mutasi tgl 01" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
     <table id="v_saldo_mutasi_tgl_02" name="v_saldo_mutasi_tgl_02" caption="v saldo mutasi tgl 02" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
