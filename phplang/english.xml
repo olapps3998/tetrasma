@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2017/6/2" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2017/6/3" version="13.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!-- 
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -589,38 +589,11 @@
     <menu id="10172">
       <phrase id="menutext" value="v akun 1 nrc" />
     </menu>
-    <menu id="10173">
-      <phrase id="menutext" value="v akun 1 nrc sum" />
-    </menu>
-    <menu id="10174">
-      <phrase id="menutext" value="v akun 2 nrc" />
-    </menu>
-    <menu id="10175">
-      <phrase id="menutext" value="v akun 2 nrc sum" />
-    </menu>
-    <menu id="10176">
-      <phrase id="menutext" value="v akun 3 nrc" />
-    </menu>
-    <menu id="10177">
-      <phrase id="menutext" value="v akun 3 nrc sum" />
-    </menu>
-    <menu id="10146">
-      <phrase id="menutext" value="v saldo mutasi tgl" />
-    </menu>
-    <menu id="10147">
-      <phrase id="menutext" value="v summary lr 4" />
-    </menu>
-    <menu id="10170">
-      <phrase id="menutext" value="Neraca" />
-    </menu>
-    <menu id="10148">
-      <phrase id="menutext" value="v summary lr 6" />
-    </menu>
     <menu id="22">
       <phrase id="menutext" value="Home" />
     </menu>
-    <menu id="10149">
-      <phrase id="menutext" value="v summary lr 5" />
+    <menu id="10173">
+      <phrase id="menutext" value="v akun 1 nrc sum" />
     </menu>
     <menu id="10065">
       <phrase id="menutext" value="Setup" />
@@ -646,8 +619,8 @@
     <menu id="16">
       <phrase id="menutext" value="User" />
     </menu>
-    <menu id="10150">
-      <phrase id="menutext" value="v akun 1" />
+    <menu id="10174">
+      <phrase id="menutext" value="v akun 2 nrc" />
     </menu>
     <menu id="10106">
       <phrase id="menutext" value="Input" />
@@ -658,8 +631,8 @@
     <menu id="27">
       <phrase id="menutext" value="Jurnal Memorial" />
     </menu>
-    <menu id="10151">
-      <phrase id="menutext" value="v akun 1 sum" />
+    <menu id="10175">
+      <phrase id="menutext" value="v akun 2 nrc sum" />
     </menu>
     <menu id="10128">
       <phrase id="menutext" value="Laporan" />
@@ -676,11 +649,80 @@
     <menu id="10169">
       <phrase id="menutext" value="Neraca" />
     </menu>
+    <menu id="10191">
+      <phrase id="menutext" value="Neraca" />
+    </menu>
     <menu id="10022">
       <phrase id="menutext" value="r bukubesar 2" />
     </menu>
     <menu id="10029">
       <phrase id="menutext" value="Buku Besar" />
+    </menu>
+    <menu id="10176">
+      <phrase id="menutext" value="v akun 3 nrc" />
+    </menu>
+    <menu id="10177">
+      <phrase id="menutext" value="v akun 3 nrc sum" />
+    </menu>
+    <menu id="10178">
+      <phrase id="menutext" value="v akun saldo" />
+    </menu>
+    <menu id="10179">
+      <phrase id="menutext" value="v saldo mutasi tgl 01" />
+    </menu>
+    <menu id="10180">
+      <phrase id="menutext" value="v saldo mutasi tgl 02" />
+    </menu>
+    <menu id="10181">
+      <phrase id="menutext" value="v saldo mutasi tgl 03" />
+    </menu>
+    <menu id="10182">
+      <phrase id="menutext" value="v saldo mutasi tgl 04" />
+    </menu>
+    <menu id="10183">
+      <phrase id="menutext" value="v saldo mutasi tgl 05" />
+    </menu>
+    <menu id="10184">
+      <phrase id="menutext" value="v saldo mutasi tgl 06" />
+    </menu>
+    <menu id="10185">
+      <phrase id="menutext" value="v saldo mutasi tgl 07" />
+    </menu>
+    <menu id="10186">
+      <phrase id="menutext" value="v saldo mutasi tgl 08" />
+    </menu>
+    <menu id="10187">
+      <phrase id="menutext" value="v saldo mutasi tgl 09" />
+    </menu>
+    <menu id="10188">
+      <phrase id="menutext" value="v saldo mutasi tgl 10" />
+    </menu>
+    <menu id="10189">
+      <phrase id="menutext" value="v saldo mutasi tgl 11" />
+    </menu>
+    <menu id="10190">
+      <phrase id="menutext" value="v saldo mutasi tgl 12" />
+    </menu>
+    <menu id="10146">
+      <phrase id="menutext" value="v saldo mutasi tgl" />
+    </menu>
+    <menu id="10147">
+      <phrase id="menutext" value="v summary lr 4" />
+    </menu>
+    <menu id="10170">
+      <phrase id="menutext" value="Neraca" />
+    </menu>
+    <menu id="10148">
+      <phrase id="menutext" value="v summary lr 6" />
+    </menu>
+    <menu id="10149">
+      <phrase id="menutext" value="v summary lr 5" />
+    </menu>
+    <menu id="10150">
+      <phrase id="menutext" value="v akun 1" />
+    </menu>
+    <menu id="10151">
+      <phrase id="menutext" value="v akun 1 sum" />
     </menu>
     <menu id="10153">
       <phrase id="menutext" value="v akun 2" />
@@ -1161,6 +1203,12 @@
       </field>
       <field id="labarugi">
         <phrase id="fldcaption" value="labarugi" />
+      </field>
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="saldo_awal">
+        <phrase id="fldcaption" value="saldo awal" />
       </field>
     </table>
     <table id="v_bukubesar">
@@ -2008,6 +2056,186 @@
       <field id="sm_kredit">
         <phrase id="fldcaption" value="sm kredit" />
       </field>
+    </table>
+    <table id="v_akun_saldo">
+      <phrase id="tblcaption" value="v akun saldo" />
+      <field id="level4_id">
+        <phrase id="fldcaption" value="level 4 id" />
+      </field>
+      <field id="no_akun">
+        <phrase id="fldcaption" value="no akun" />
+      </field>
+      <field id="nama_akun">
+        <phrase id="fldcaption" value="nama akun" />
+      </field>
+      <field id="no_nama_akun">
+        <phrase id="fldcaption" value="no nama akun" />
+      </field>
+      <field id="jurnal">
+        <phrase id="fldcaption" value="jurnal" />
+      </field>
+      <field id="jurnal_kode">
+        <phrase id="fldcaption" value="jurnal kode" />
+      </field>
+      <field id="neraca">
+        <phrase id="fldcaption" value="neraca" />
+      </field>
+      <field id="labarugi">
+        <phrase id="fldcaption" value="labarugi" />
+      </field>
+      <field id="saldo_01">
+        <phrase id="fldcaption" value="saldo 01" />
+      </field>
+      <field id="saldo_02">
+        <phrase id="fldcaption" value="saldo 02" />
+      </field>
+      <field id="saldo_03">
+        <phrase id="fldcaption" value="saldo 03" />
+      </field>
+      <field id="saldo_04">
+        <phrase id="fldcaption" value="saldo 04" />
+      </field>
+      <field id="saldo_05">
+        <phrase id="fldcaption" value="saldo 05" />
+      </field>
+      <field id="saldo_06">
+        <phrase id="fldcaption" value="saldo 06" />
+      </field>
+      <field id="saldo_07">
+        <phrase id="fldcaption" value="saldo 07" />
+      </field>
+      <field id="saldo_08">
+        <phrase id="fldcaption" value="saldo 08" />
+      </field>
+      <field id="saldo_09">
+        <phrase id="fldcaption" value="saldo 09" />
+      </field>
+      <field id="saldo_10">
+        <phrase id="fldcaption" value="saldo 10" />
+      </field>
+      <field id="saldo_11">
+        <phrase id="fldcaption" value="saldo 11" />
+      </field>
+      <field id="saldo_12">
+        <phrase id="fldcaption" value="saldo 12" />
+      </field>
+      <field id="level1_nama">
+        <phrase id="fldcaption" value="level 1 nama" />
+      </field>
+      <field id="saldo_awal">
+        <phrase id="fldcaption" value="saldo awal" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_01">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 01" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_02">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 02" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_03">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 03" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_04">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 04" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_05">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 05" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_06">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 06" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_07">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 07" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_08">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 08" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_09">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 09" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_10">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 10" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_11">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 11" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="v_saldo_mutasi_tgl_12">
+      <phrase id="tblcaption" value="v saldo mutasi tgl 12" />
+      <field id="akun_id">
+        <phrase id="fldcaption" value="akun id" />
+      </field>
+      <field id="saldo">
+        <phrase id="fldcaption" value="saldo" />
+      </field>
+    </table>
+    <table id="r_neraca2_php">
+      <phrase id="tblcaption" value="Neraca" />
     </table>
   </project>
 </ew-language>

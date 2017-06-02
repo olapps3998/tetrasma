@@ -14,9 +14,9 @@ ob_start(); // Turn on output buffering
 // Page class
 //
 
-$r_neraca0_php = NULL; // Initialize page object first
+$r_neraca2_php = NULL; // Initialize page object first
 
-class cr_neraca0_php {
+class cr_neraca2_php {
 
 	// Page ID
 	var $PageID = 'custom';
@@ -25,10 +25,10 @@ class cr_neraca0_php {
 	var $ProjectID = "{D8E5AA29-C8A1-46A6-8DFF-08A223163C5D}";
 
 	// Table name
-	var $TableName = 'r_neraca0.php';
+	var $TableName = 'r_neraca2.php';
 
 	// Page object name
-	var $PageObjName = 'r_neraca0_php';
+	var $PageObjName = 'r_neraca2_php';
 
 	// Page name
 	function PageName() {
@@ -195,7 +195,7 @@ class cr_neraca0_php {
 
 		// Table name (for backward compatibility)
 		if (!defined("EW_TABLE_NAME"))
-			define("EW_TABLE_NAME", 'r_neraca0.php', TRUE);
+			define("EW_TABLE_NAME", 'r_neraca2.php', TRUE);
 
 		// Start timer
 		if (!isset($GLOBALS["gTimer"])) $GLOBALS["gTimer"] = new cTimer();
@@ -284,7 +284,7 @@ class cr_neraca0_php {
 		global $Breadcrumb;
 		$Breadcrumb = new cBreadcrumb();
 		$url = substr(ew_CurrentUrl(), strrpos(ew_CurrentUrl(), "/")+1);
-		$Breadcrumb->Add("custom", "r_neraca0_php", $url, "", "r_neraca0_php", TRUE);
+		$Breadcrumb->Add("custom", "r_neraca2_php", $url, "", "r_neraca2_php", TRUE);
 	}
 }
 ?>
@@ -292,13 +292,13 @@ class cr_neraca0_php {
 <?php
 
 // Create page object
-if (!isset($r_neraca0_php)) $r_neraca0_php = new cr_neraca0_php();
+if (!isset($r_neraca2_php)) $r_neraca2_php = new cr_neraca2_php();
 
 // Page init
-$r_neraca0_php->Page_Init();
+$r_neraca2_php->Page_Init();
 
 // Page main
-$r_neraca0_php->Page_Main();
+$r_neraca2_php->Page_Main();
 
 // Global Page Rendering event (in userfn*.php)
 Page_Rendering();
@@ -311,56 +311,200 @@ Page_Rendering();
 <div class="clearfix"></div>
 </div>
 <?php } ?>
-<form id="myform" name="myform" class="form-horizontal" method="post" action="r_neraca2.php">
-	<div id="r_start" class="form-group">
-		<label for="start" class="col-sm-2 control-label ewLabel">Bulan</label>
-		<div class="col-sm-10">
-		  <span id="el_calendar_start">
-		  <select name="bulan" class="form-control">
-		  	<option value="0">Semua Bulan</option>
-		  	<option value="1" <?php echo (date("n") == 1 ? "selected" : "");?>>Januari</option>
-		  	<option value="2" <?php echo (date("n") == 2 ? "selected" : "");?>>Februari</option>
-		  	<option value="3" <?php echo (date("n") == 3 ? "selected" : "");?>>Maret</option>
-		  	<option value="4" <?php echo (date("n") == 4 ? "selected" : "");?>>April</option>
-		  	<option value="5" <?php echo (date("n") == 5 ? "selected" : "");?>>Mei</option>
-		  	<option value="6" <?php echo (date("n") == 6 ? "selected" : "");?>>Juni</option>
-		  	<option value="7" <?php echo (date("n") == 7 ? "selected" : "");?>>Juli</option>
-		  	<option value="8" <?php echo (date("n") == 8 ? "selected" : "");?>>Agustus</option>
-		  	<option value="9" <?php echo (date("n") == 9 ? "selected" : "");?>>September</option>
-		  	<option value="10" <?php echo (date("n") == 10 ? "selected" : "");?>>Oktober</option>
-		  	<option value="11" <?php echo (date("n") == 11 ? "selected" : "");?>>November</option>
-		  	<option value="12" <?php echo (date("n") == 12 ? "selected" : "");?>>Desember</option>
-		  </select>
-		  <!--<input type="text" name="bulan" data-field="start" data-format="5" size="20" class="form-control" id="start">-->
-		  <!--<script type="text/javascript">
-			ew_CreateCalendar("myform", "start", 5);
-		  </script>-->
-		  </span>
-		</div>
-	</div>
-	<div id="r_end" class="form-group">
-		<label for="end" class="col-sm-2 control-label ewLabel">Tahun</label>
-		<div class="col-sm-10">
-		  <span id="el_calendar_end">
-		  <select name="tahun" class="form-control">
-		  	<option value="2017" <?php echo (date("Y") == 2017 ? "selected" : "");?>>2017</option>
-		  	<option value="2018" <?php echo (date("Y") == 2018 ? "selected" : "");?>>2018</option>
-		  	<option value="2019" <?php echo (date("Y") == 2019 ? "selected" : "");?>>2019</option>
-		  	<option value="2020" <?php echo (date("Y") == 2020 ? "selected" : "");?>>2020</option>
-		  	<option value="2021" <?php echo (date("Y") == 2021 ? "selected" : "");?>>2021</option>
-		  	<option value="2022" <?php echo (date("Y") == 2022 ? "selected" : "");?>>2022</option>
-		  </select>
-		  <!--<input type="text" name="end" data-field="end" data-format="5" size="20" class="form-control" id="end">-->
-		  <!--<script type="text/javascript">
-			ew_CreateCalendar("myform", "end", 5);
-		  </script>-->
-		  </span>
-		</div>
-	</div>
-	<button class="btn btn-primary ewButton" name="btnsubmit" id="btnsubmit" type="submit">Submit</button>
-</form>
+<style>
+	td {padding: 3px;}
+	table {width: 50%;}
+	tr:nth-child(even) {background-color: #f2f2f2}
+</style>
+
+<?php
+$a_namabln = array(
+	1 => "Januari",
+		"Februari",
+		"Maret",
+		"April",
+		"Mei",
+		"Juni",
+		"Juli",
+		"Agustus",
+		"September",
+		"Oktober",
+		"November",
+		"Desember");
+
+$bulan = $_POST["bulan"];
+$tahun = $_POST["tahun"];
+?>
+
+<h3>Laporan Neraca</h3>
+<h4>Periode <?php echo ($_POST["bulan"] != 0 ? $a_namabln[$_POST["bulan"]] : "Tahun")." ".$_POST["tahun"];?></h4>
+<br>
+
+<table>
+
+<?php
+// akun aktiva
+$aktiva = 0;
+
+$q = "
+	select * from v_akun_saldo
+	where
+		neraca = 1 and left(no_akun, 1) = '1'
+	order by no_akun
+";
+$rs = Conn()->Execute($q);
+
+if (!$rs->EOF) {
+	$level1_nama = $rs->fields["level1_nama"];
+	?>
+	<tr><td colspan="4"><b><?php echo $rs->fields["level1_nama"];?></b></td></tr>
+	<?php
+	while (!$rs->EOF) {
+		$saldo_sblm = 0;
+		if ($bulan == 0) {
+			for ($i = 1; $i <= 12; $i++) {
+				$saldo_sblm += $rs->fields["saldo_".substr("00".$i,-2)];
+			} //echo $saldo_sblm;
+			$subtotal = $rs->fields["saldo_awal"] + $saldo_sblm;
+		}
+		else {
+			for ($i = 1; $i < $_POST["bulan"]; $i++) {
+				$saldo_sblm += $rs->fields["saldo_".substr("00".$i,-2)];
+			} //echo $saldo_sblm;
+			$subtotal = $rs->fields["saldo_awal"] + $saldo_sblm + $rs->fields["saldo_".substr("00".$bulan,-2)];
+		}
+		?>
+		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $rs->fields["nama_akun"];?></td><td align="right"><?php echo $kb.number_format(abs($subtotal)).$kt;?></td><td>&nbsp;</td></tr>
+		<?php
+		$aktiva += $subtotal;
+		$rs->MoveNext();
+	}
+	?>
+	<tr><td colspan="3"><b>Total <?php echo $level1_nama;?></b></td><td align="right"><b><?php echo number_format($aktiva);?></b></td></tr>
+	<?php
+}
+?>
+
+<tr><td colspan="4">&nbsp;</td></tr>
+
+<?php
+// akun pasiva
+$pasiva = 0;
+
+/*$q = "select * from v_akun_2_nrc_sum where ";
+if ($_POST["bulan"] != 0) {$q .= "month(tgl) = ".$_POST["bulan"]." and ";}
+$q .= "year(tgl) = ".$_POST["tahun"]." or tgl is null";
+$rs = Conn()->Execute($q);
+if($rs->RecordCount() == 0) {
+	$q = "select * from v_akun_2_nrc";
+	$rs = Conn()->Execute($q);
+}*/
+
+$q = "
+	select
+		a.*
+		, b.sm_debet
+		, b.sm_kredit
+	from
+		v_akun_2_nrc a
+		left join (select * from v_saldo_mutasi_tgl where ";
+	if ($_POST["bulan"] != 0) {
+		$q .= "month(tgl) = ".$_POST["bulan"]." and ";
+	}
+	$q .= "year(tgl) = ".$_POST["tahun"].") b on a.level4_id = b.akun_id";
+$rs = Conn()->Execute($q);
+
+if (!$rs->EOF) {
+	$level1_nama = $rs->fields["level1_nama"];
+	?>
+	<tr><td colspan="4"><b><?php echo $rs->fields["level1_nama"];?></b></td></tr>
+	<?php
+	while (!$rs->EOF) {
+		$level4_id = $rs->fields["level4_id"];
+		$nama_akun = $rs->fields["nama_akun"];
+		//$subtotal = 0;
+		$subtotal = $rs->fields["sa_debet"] - $rs->fields["sa_kredit"];
+		while($level4_id == $rs->fields["level4_id"] and !$rs->EOF) {
+			$subtotal += $rs->fields["sm_debet"] - $rs->fields["sm_kredit"];
+			$rs->MoveNext();
+		}
+		$kb = ""; $kt = "";
+		if ($subtotal < 0) {
+			//$kb = "("; $kt = ")";
+		}
+		?>
+		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo $kb.number_format(abs($subtotal)).$kt;?></td><td>&nbsp;</td></tr>
+		<?php
+		$pasiva += $subtotal;
+	}
+	?>
+	<tr><td colspan="3"><b>Total <?php echo $level1_nama;?></b></td><td align="right"><b><?php echo number_format(abs($pasiva));?></b></td></tr>
+	<?php
+}
+?>
+
+<tr><td colspan="4">&nbsp;</td></tr>
+
+<?php
+// akun modal
+$modal = 0;
+
+/*$q = "select * from v_akun_3_nrc_sum where ";
+if ($_POST["bulan"] != 0) {$q .= "month(tgl) = ".$_POST["bulan"]." and ";}
+$q .= "year(tgl) = ".$_POST["tahun"]." or tgl is null";
+$rs = Conn()->Execute($q);
+if($rs->RecordCount() == 0) {
+	$q = "select * from v_akun_3_nrc";
+	$rs = Conn()->Execute($q);
+}*/
+
+$q = "
+	select
+		a.*
+		, b.sm_debet
+		, b.sm_kredit
+	from
+		v_akun_3_nrc a
+		left join (select * from v_saldo_mutasi_tgl where ";
+	if ($_POST["bulan"] != 0) {
+		$q .= "month(tgl) = ".$_POST["bulan"]." and ";
+	}
+	$q .= "year(tgl) = ".$_POST["tahun"].") b on a.level4_id = b.akun_id";
+$rs = Conn()->Execute($q);
+
+if (!$rs->EOF) {
+	$level1_nama = $rs->fields["level1_nama"];
+	?>
+	<tr><td colspan="4"><b><?php echo $rs->fields["level1_nama"];?></b></td></tr>
+	<?php
+	while (!$rs->EOF) {
+		$level4_id = $rs->fields["level4_id"];
+		$nama_akun = $rs->fields["nama_akun"];
+		//$subtotal = 0;
+		$subtotal = $rs->fields["sa_debet"] - $rs->fields["sa_kredit"];
+		while($level4_id == $rs->fields["level4_id"] and !$rs->EOF) {
+			$subtotal += $rs->fields["sm_debet"] - $rs->fields["sm_kredit"];
+			$rs->MoveNext();
+		}
+		$kb = ""; $kt = "";
+		if ($subtotal < 0) {
+			//$kb = "("; $kt = ")";
+		}
+		?>
+		<tr><td>&nbsp;</td><td style="padding: 5px;"><?php echo $nama_akun;?></td><td align="right"><?php echo $kb.number_format(abs($subtotal)).$kt;?></td><td>&nbsp;</td></tr>
+		<?php
+		$modal += $subtotal;
+	}
+	?>
+	<tr><td colspan="3"><b>Total <?php echo $level1_nama;?></b></td><td align="right"><b><?php echo number_format(abs($modal));?></b></td></tr>
+	<?php
+}
+?>
+<tr><td colspan="4">&nbsp;</td></tr>
+<tr><td colspan="3"><b>Total Pasiva</b></td><td align="right"><b><?php echo number_format(abs($pasiva)+abs($modal));?></b></td></tr>
+</table>
 <?php if (EW_DEBUG_ENABLED) echo ew_DebugMsg(); ?>
 <?php include_once "footer.php" ?>
 <?php
-$r_neraca0_php->Page_Terminate();
+$r_neraca2_php->Page_Terminate();
 ?>

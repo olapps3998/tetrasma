@@ -304,6 +304,8 @@ class cdefault {
 			$this->Page_Terminate("r_neraca0.php");
 		if ($Security->AllowList(CurrentProjectID() . 'r_neraca1.php'))
 			$this->Page_Terminate("r_neraca1.php");
+		if ($Security->AllowList(CurrentProjectID() . 'r_neraca2.php'))
+			$this->Page_Terminate("r_neraca2.php");
 		if ($Security->IsLoggedIn()) {
 			$this->setFailureMessage(ew_DeniedMsg() . "<br><br><a href=\"logout.php\">" . $Language->Phrase("BackToLogin") . "</a>");
 		} else {
