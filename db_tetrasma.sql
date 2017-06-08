@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 02, 2017 at 04:37 AM
+-- Generation Time: Jun 09, 2017 at 04:55 AM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `audittrail` (
   `oldvalue` longtext,
   `newvalue` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=490 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=507 ;
 
 --
 -- Dumping data for table `audittrail`
@@ -533,7 +533,24 @@ INSERT INTO `audittrail` (`id`, `datetime`, `script`, `user`, `action`, `table`,
 (486, '2017-06-01 06:44:36', '/tetrasma/login.php', 'admin', 'login', '::1', '', '', '', ''),
 (487, '2017-06-01 16:30:07', '/tetrasma/login.php', 'admin', 'login', '::1', '', '', '', ''),
 (488, '2017-06-01 16:30:30', '/tetrasma/t_level4list.php', '1', 'U', 't_level4', 'sa_debet', '1', '1000000', '0.00'),
-(489, '2017-06-01 16:31:51', '/tetrasma/t_level4list.php', '1', 'U', 't_level4', 'sa_kredit', '26', '1000000', '0.00');
+(489, '2017-06-01 16:31:51', '/tetrasma/t_level4list.php', '1', 'U', 't_level4', 'sa_kredit', '26', '1000000', '0.00'),
+(490, '2017-06-02 19:29:10', '/tetrasma/login.php', 'admin', 'login', '::1', '', '', '', ''),
+(491, '2017-06-02 21:01:54', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_jurnal', 'akun_id', '4', '', '1'),
+(492, '2017-06-02 21:01:54', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_jurnal', 'jenis_jurnal', '4', '', 'M'),
+(493, '2017-06-02 21:01:54', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_jurnal', 'no_bukti', '4', '', 'KM0040617'),
+(494, '2017-06-02 21:01:54', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_jurnal', 'tgl', '4', '', '2017-06-02'),
+(495, '2017-06-02 21:01:54', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_jurnal', 'ket', '4', '', 'coba data lagi'),
+(496, '2017-06-02 21:01:54', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_jurnal', 'nilai', '4', '', '0'),
+(497, '2017-06-02 21:01:54', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_jurnal', 'jurnal_id', '4', '', '4'),
+(498, '2017-06-02 21:01:55', '/tetrasma/t_jurnaladd.php', '1', '*** Batch insert begin ***', 't_detail', '', '', '', ''),
+(499, '2017-06-02 21:01:55', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_detail', 'akun_id', '4', '', '60'),
+(500, '2017-06-02 21:01:55', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_detail', 'nilai', '4', '', '65000'),
+(501, '2017-06-02 21:01:55', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_detail', 'anggota_id', '4', '', NULL),
+(502, '2017-06-02 21:01:55', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_detail', 'jurnal_id', '4', '', '4'),
+(503, '2017-06-02 21:01:55', '/tetrasma/t_jurnaladd.php', '1', 'A', 't_detail', 'detail_id', '4', '', '4'),
+(504, '2017-06-02 21:01:55', '/tetrasma/t_jurnaladd.php', '1', '*** Batch insert successful ***', 't_detail', '', '', '', ''),
+(505, '2017-06-06 18:30:18', '/tetrasma/login.php', 'admin', 'login', '::1', '', '', '', ''),
+(506, '2017-06-08 18:05:13', '/tetrasma/login.php', 'admin', 'login', '::1', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -824,7 +841,7 @@ CREATE TABLE IF NOT EXISTS `t_detail` (
   `nilai` bigint(20) NOT NULL,
   `anggota_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`detail_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `t_detail`
@@ -833,7 +850,8 @@ CREATE TABLE IF NOT EXISTS `t_detail` (
 INSERT INTO `t_detail` (`detail_id`, `jurnal_id`, `akun_id`, `dk`, `nilai`, `anggota_id`) VALUES
 (1, 1, 17, 1, 10000, 4),
 (2, 2, 17, 1, 20000, 14),
-(3, 3, 17, 1, 75000, 9);
+(3, 3, 17, 1, 75000, 9),
+(4, 4, 60, 1, 65000, NULL);
 
 -- --------------------------------------------------------
 
@@ -873,7 +891,7 @@ CREATE TABLE IF NOT EXISTS `t_jurnal` (
   `akun_id` int(11) NOT NULL,
   `nilai` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`jurnal_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `t_jurnal`
@@ -882,7 +900,8 @@ CREATE TABLE IF NOT EXISTS `t_jurnal` (
 INSERT INTO `t_jurnal` (`jurnal_id`, `no_bukti`, `tgl`, `ket`, `jenis_jurnal`, `akun_id`, `nilai`) VALUES
 (1, 'KM0010517', '2017-05-06', 'x', 'M', 1, 10000),
 (2, 'KM0020517', '2017-05-06', 'y', 'M', 1, 20000),
-(3, 'KM0030517', '2017-05-31', 'coba data', 'M', 1, 75000);
+(3, 'KM0030517', '2017-05-31', 'coba data', 'M', 1, 75000),
+(4, 'KM0040617', '2017-06-02', 'coba data lagi', 'M', 1, 65000);
 
 -- --------------------------------------------------------
 
