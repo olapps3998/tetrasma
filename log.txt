@@ -1,3 +1,9 @@
+9:00 AM 6/9/2017
+- view v_saldo_mutasi_tgl diubah menjadi v_mutasi;
+
+
+
+
 1:27 AM 6/9/2017
 mengulas lagi apa yang sudah dikerjakan terakhir;
 membuat view yang langsung bisa menghitung saldo mutasi perbulan;
